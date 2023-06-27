@@ -20,9 +20,9 @@
 
 #pragma comment(lib,"comctl32.lib")
 #ifdef _DEBUG
-#pragma comment(lib,"..\\..\\opencv\\build\\x64\\vc16\\lib\\opencv_world470d.lib")
+#pragma comment(lib,"D:\\opencv\\build\\x64\\vc16\\lib\\opencv_world470d.lib")
 #else
-#pragma comment(lib,"..\\..\\opencv\\build\\x64\\vc16\\lib\\opencv_world470.lib")
+#pragma comment(lib,"D:\\opencv\\build\\x64\\vc16\\lib\\opencv_world470.lib")
 #endif
 #pragma comment(lib, "IPHLPAPI.lib")
 #pragma comment(lib, "ws2_32.lib")
