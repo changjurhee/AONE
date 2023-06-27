@@ -1,5 +1,26 @@
 #include <gst/gst.h>
 
+// define callback function
+static gboolean on_bus_message(GstBus* bus, GstMessage* const message, gpointer user_data) {
+    switch (GST_MESSAGE_TYPE(message)) {
+    case GST_MESSAGE_ELEMENT: {
+        if (gst_message_has_name(message, "jitterbuffer")) {
+            const GstStructure* stats = gst_message_get_structure(message);
+            if (stats != NULL && gst_structure_has_field(stats, "jitter")) {
+                guint64 jitter;
+                gst_structure_get_uint64(stats, "jitter", &jitter);
+                g_print("Jitter: %" G_GUINT64_FORMAT " ns\n", jitter);
+            }
+        }
+        break;
+    }
+    default:
+        break;
+    }
+    return TRUE;
+}
+
+
 int main(int argc, char* argv[])
 {
     // Initialize GStreamer
@@ -11,6 +32,7 @@ int main(int argc, char* argv[])
     // Create GStreamer pipline elements for video
     GstElement* videoSrc = gst_element_factory_make("udpsrc", "videoSrc");
     GstElement* videoCapsfilter = gst_element_factory_make("capsfilter", "videoCapsfilter");
+    GstElement* videoJitterbuffer = gst_element_factory_make("rtpjitterbuffer", "videoJitterbuffer");
     GstElement* videoDepay = gst_element_factory_make("rtph264depay", "videoDepay");
     GstElement* videoDec = gst_element_factory_make("avdec_h264", "videoDec");
     GstElement* videoSink = gst_element_factory_make("autovideosink", "videoSink");
@@ -21,18 +43,19 @@ int main(int argc, char* argv[])
     // Create GStreamer pipline elements for audio
     GstElement* audioSrc = gst_element_factory_make("udpsrc", "audioSrc");
     GstElement* audioCapsfilter = gst_element_factory_make("capsfilter", "audioCapsfilter");
+    GstElement* audioJitterbuffer = gst_element_factory_make("rtpjitterbuffer", "audioJitterbuffer");
     GstElement* audioDec = gst_element_factory_make("opusdec", "audioDec");
     GstElement* audioDepay = gst_element_factory_make("rtpopusdepay", "audioDepay");
     GstElement* audioConv = gst_element_factory_make("audioconvert", "audioConv");
     GstElement* audioSink = gst_element_factory_make("autoaudiosink", "audioSink");
 
     // Add element to pipeline
-    gst_bin_add_many(GST_BIN(videoPipeline), videoSrc, videoCapsfilter, videoDepay, videoDec, videoSink, NULL);
-    gst_bin_add_many(GST_BIN(audioPipeline), audioSrc, audioCapsfilter, audioDec, audioDepay, audioConv, audioSink, NULL);
+    gst_bin_add_many(GST_BIN(videoPipeline), videoSrc, videoCapsfilter, videoJitterbuffer, videoDepay, videoDec, videoSink, NULL);
+    gst_bin_add_many(GST_BIN(audioPipeline), audioSrc, audioCapsfilter, audioJitterbuffer, audioDec, audioDepay, audioConv, audioSink, NULL);
 
     // linking elements
-    gst_element_link_many(videoSrc, videoCapsfilter, videoDepay, videoDec, videoSink, NULL);
-    gst_element_link_many(audioSrc, audioCapsfilter, audioDepay, audioDec, audioConv, audioSink, NULL);
+    gst_element_link_many(videoSrc, videoCapsfilter, videoJitterbuffer, videoDepay, videoDec, videoSink, NULL);
+    gst_element_link_many(audioSrc, audioCapsfilter, audioJitterbuffer, audioDepay, audioDec, audioConv, audioSink, NULL);
 
     // Receive port setting
     g_object_set(videoSrc, "port", 5001, NULL);
@@ -48,6 +71,10 @@ int main(int argc, char* argv[])
     g_object_set(G_OBJECT(audioCapsfilter), "caps", audioCaps, NULL);
     gst_caps_unref(audioCaps);
 
+    // Set RTP jitter-buffer latency
+    g_object_set(videoJitterbuffer, "latency", 5000, "do-lost", TRUE, NULL);
+    g_object_set(audioJitterbuffer, "latency", 1000, "do-lost", TRUE, NULL);
+
     // Pipeline execution
     GstStateChangeReturn videoRet = gst_element_set_state(videoPipeline, GST_STATE_PLAYING);
     GstStateChangeReturn audioRet = gst_element_set_state(audioPipeline, GST_STATE_PLAYING);
@@ -58,44 +85,11 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    // Run main loop
+    // set up bus and callback function for jitter statistics
     GstBus* bus = gst_element_get_bus(videoPipeline);
-    GstMessage* msg;
-    while ((msg = gst_bus_poll(bus, GST_MESSAGE_ANY, GST_CLOCK_TIME_NONE)))
-    {
-        GError* err;
-        gchar* debug_info;
-        switch (GST_MESSAGE_TYPE(msg))
-        {
-            case GST_MESSAGE_ERROR:
-                gst_message_parse_error(msg, &err, &debug_info);
-                g_printerr("Error received from element %s: %s\n", GST_OBJECT_NAME(msg->src), err->message);
-                g_printerr("Debugging information: %s\n", debug_info ? debug_info : "none");
-                g_error_free(err);
-                g_free(debug_info);
-                break;
-            case GST_MESSAGE_EOS:
-                g_print("End-Of-Stream reached.\n");
-                break;
-            case GST_MESSAGE_STATE_CHANGED:
-            {
-                GstState old_state, new_state, pending_state;
-                gst_message_parse_state_changed(msg, &old_state, &new_state, &pending_state);
-                g_print("State changed from %s to %s\n", gst_element_state_get_name(old_state), gst_element_state_get_name(new_state));
-                break;
-            }
-            case GST_MESSAGE_BUFFERING:
-            {
-                gint percent = 0;
-                gst_message_parse_buffering(msg, &percent);
-                g_print("Buffering %d%%\n", percent);
-                break;
-            }
-            default:
-                break;
-        }
-        gst_message_unref(msg);
-    }
+    gst_bus_add_watch(bus, on_bus_message, NULL);
+
+    while (1);
 
     // Release the pipeline
     gst_element_set_state(videoPipeline, GST_STATE_NULL);
