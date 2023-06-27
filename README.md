@@ -1,6 +1,6 @@
 # AONE
-## 2023 LG SA 
-## VoIP System
+- 2023 LG SA 
+- VoIP System
 # ground rule
 - 오전 시간 : 수업 및 강의 시청
 - 오후 시간 : 프로젝트 (매일 오후 4:00 ~ 5:00 프로젝트 관련 팀 미팅)
