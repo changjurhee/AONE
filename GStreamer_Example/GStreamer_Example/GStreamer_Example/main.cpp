@@ -47,20 +47,28 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             if (!senderThread.joinable())
             {
                 senderThread = std::thread(sendMain);
+                SetWindowText((HWND)lParam, L"송신비활성화");
             }
             else
             {
-                MessageBox(hwnd, L"senderThread를 동작시킬 수 없습니다.", L"알림", MB_OK);
+                MessageBox(hwnd, L"senderThread를 동작시킬 수 없으므로 쓰레드를 종료합니다.", L"알림", MB_OK);
+                quiteSenderMain();
+                senderThread.join();
+                SetWindowText((HWND)lParam, L"송신활성화");
             }
             break;
         case 2:
             if (!receiverThread.joinable())
             {
                 receiverThread = std::thread(recvMain);
+                SetWindowText((HWND)lParam, L"수신비활성화");
             }
             else
             {
-                MessageBox(hwnd, L"receiverThread를 동작시킬 수 없습니다.", L"알림", MB_OK);
+                MessageBox(hwnd, L"receiverThread를 동작시킬 수 없으므로 쓰레드를 종료합니다.", L"알림", MB_OK);
+                quiteReceiverMain();
+                receiverThread.join();
+                SetWindowText((HWND)lParam, L"수신활성화");
             }
             break;
         case 3:

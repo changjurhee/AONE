@@ -134,6 +134,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="recvMain.cpp" />
+    <ClCompile Include="sendMain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sendMain.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="recvMain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
