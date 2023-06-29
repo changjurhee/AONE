@@ -9,7 +9,6 @@
 #include "VoIPServer.h"
 #include "MainFrm.h"
 
-#include "ChildFrm.h"
 #include "VoIPServerDoc.h"
 #include "VoIPServerView.h"
 
@@ -58,6 +57,16 @@ CVoIPServerApp::CVoIPServerApp() noexcept
 // 유일한 CVoIPServerApp 개체입니다.
 
 CVoIPServerApp theApp;
+// 이 식별자는 응용 프로그램에서 통계적으로 고유한 값을 가지도록 생성되었습니다.
+// 특정 식별자를 선호할 경우 변경할 수 있습니다.
+
+// {e8369551-792d-4552-880f-ed63d9e9ba40}
+static const CLSID clsid =
+{0xe8369551,0x792d,0x4552,{0x88,0x0f,0xed,0x63,0xd9,0xe9,0xba,0x40}};
+
+const GUID CDECL _tlid = {0x5988b6c4,0x9318,0x47ae,{0xad,0xfc,0xf0,0x2e,0x8a,0x96,0xb1,0x55}};
+const WORD _wVerMajor = 1;
+const WORD _wVerMinor = 0;
 
 
 // CVoIPServerApp 초기화
@@ -91,7 +100,7 @@ BOOL CVoIPServerApp::InitInstance()
 
 	AfxEnableControlContainer();
 
-	EnableTaskbarInteraction();
+	EnableTaskbarInteraction(FALSE);
 
 	// RichEdit 컨트롤을 사용하려면 AfxInitRichEdit2()가 있어야 합니다.
 	// AfxInitRichEdit2();
@@ -120,23 +129,23 @@ BOOL CVoIPServerApp::InitInstance()
 
 	// 애플리케이션의 문서 템플릿을 등록합니다.  문서 템플릿은
 	//  문서, 프레임 창 및 뷰 사이의 연결 역할을 합니다.
-	CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new CMultiDocTemplate(IDR_VoIPServerTYPE,
+	CSingleDocTemplate* pDocTemplate;
+	pDocTemplate = new CSingleDocTemplate(
+		IDR_MAINFRAME,
+		//IDI_HOMER,
 		RUNTIME_CLASS(CVoIPServerDoc),
-		RUNTIME_CLASS(CChildFrame), // 사용자 지정 MDI 자식 프레임입니다.
+		RUNTIME_CLASS(CMainFrame),       // 주 SDI 프레임 창입니다.
 		RUNTIME_CLASS(CVoIPServerView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
-
-	// 주 MDI 프레임 창을 만듭니다.
-	CMainFrame* pMainFrame = new CMainFrame;
-	if (!pMainFrame || !pMainFrame->LoadFrame(IDR_MAINFRAME))
-	{
-		delete pMainFrame;
-		return FALSE;
-	}
-	m_pMainWnd = pMainFrame;
+	// COleTemplateServer를 문서 템플릿에 연결합니다.
+	//  COleTemplateServer는 OLE 컨테이너를 요청하는 대신 문서 템플릿에
+	//  지정된 정보를 사용하여 새 문서를
+	//  만듭니다.
+	m_server.ConnectTemplate(clsid, pDocTemplate, TRUE);
+		// 참고: SDI 애플리케이션은 명령줄에 /Embedding 또는 /Automation이
+		//   있을 경우에만 서버 개체를 등록합니다.
 
 
 	// 표준 셸 명령, DDE, 파일 열기에 대한 명령줄을 구문 분석합니다.
@@ -144,15 +153,41 @@ BOOL CVoIPServerApp::InitInstance()
 	ParseCommandLine(cmdInfo);
 
 
+	// 응용 프로그램이 /Embedding 또는 /Automation 스위치로 시작되었습니다.
+	// 응용 프로그램을 자동화 서버로 실행합니다.
+	if (cmdInfo.m_bRunEmbedded || cmdInfo.m_bRunAutomated)
+	{
+		// 모든 OLE 서버 팩터리를 실행 중으로 등록합니다.  이렇게 하면
+		//  OLE 라이브러리가 다른 애플리케이션에서 개체를 만들 수 있습니다.
+		COleTemplateServer::RegisterAll();
+
+		// 주 창을 표시하지 않습니다.
+		return TRUE;
+	}
+	// 응용 프로그램이 /Unregserver 또는 /Unregister 스위치로 시작되었습니다. 
+	// typelibrary를 등록 취소합니다.  다른 등록 취소는 ProcessShellCommand()에서 발생합니다.
+	else if (cmdInfo.m_nShellCommand == CCommandLineInfo::AppUnregister)
+	{
+		m_server.UpdateRegistry(OAT_DISPATCH_OBJECT, nullptr, nullptr, FALSE);
+		AfxOleUnregisterTypeLib(_tlid, _wVerMajor, _wVerMinor);
+	}
+	// 응용 프로그램이 독립 실행형으로 시작되었거나 다른 스위치로 시작되었습니다(예: /Register
+	// 또는 /Regserver).  typelibrary를 포함하여 레지스트리 항목을 업데이트합니다.
+	else
+	{
+		m_server.UpdateRegistry(OAT_DISPATCH_OBJECT);
+		COleObjectFactory::UpdateRegistryAll();
+		AfxOleRegisterTypeLib(AfxGetInstanceHandle(), _tlid);
+	}
 
 	// 명령줄에 지정된 명령을 디스패치합니다.
 	// 응용 프로그램이 /RegServer, /Register, /Unregserver 또는 /Unregister로 시작된 경우 FALSE를 반환합니다.
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
-	// 주 창이 초기화되었으므로 이를 표시하고 업데이트합니다.
-	pMainFrame->ShowWindow(SW_SHOWMAXIMIZED);
-	pMainFrame->UpdateWindow();
 
+	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
+	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
+	m_pMainWnd->UpdateWindow();
 	return TRUE;
 }
 

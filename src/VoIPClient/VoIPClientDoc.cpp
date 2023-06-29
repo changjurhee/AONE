@@ -32,9 +32,9 @@ END_DISPATCH_MAP()
 //  VBA에서 형식 안전 바인딩을 지원합니다.
 //  이 IID는 .IDL 파일에 있는 dispinterface의 GUID와 일치해야 합니다.
 
-// {f65ec69c-f4a0-4017-88b1-31f86d5968b1}
+// {ada92bd1-55f0-4922-950a-052e440958fb}
 static const IID IID_IVoIPClient =
-{0xf65ec69c,0xf4a0,0x4017,{0x88,0xb1,0x31,0xf8,0x6d,0x59,0x68,0xb1}};
+{0xada92bd1,0x55f0,0x4922,{0x95,0x0a,0x05,0x2e,0x44,0x09,0x58,0xfb}};
 
 BEGIN_INTERFACE_MAP(CVoIPClientDoc, CDocument)
 	INTERFACE_PART(CVoIPClientDoc, IID_IVoIPClient, Dispatch)

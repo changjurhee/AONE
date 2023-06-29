@@ -27,9 +27,6 @@
     <ClInclude Include="MainFrm.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ChildFrm.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="VoIPClientDoc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -66,9 +63,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="MainFrm.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ChildFrm.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="VoIPClientDoc.cpp">
@@ -210,6 +204,36 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="res\Toolbar256.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-anonymous-mask-30.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-anonymous-mask-60.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-anonymous-mask-90.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-anonymous-mask-100.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-anonymous-mask-120.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-anonymous-mask-240.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-anonymous-mask-480.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\VoIPServer\res\icons8-homer-simpson-32x32.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-anonymous-mask-32x32.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-homer-simpson-32x32.ico">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

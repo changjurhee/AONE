@@ -26,6 +26,8 @@ public:
 	virtual int ExitInstance();
 
 // 구현입니다.
+	COleTemplateServer m_server;
+		// 문서 만들기에 대한 서버 개체입니다.
 	UINT  m_nAppLook;
 	BOOL  m_bHiColorIcons;
 

@@ -16,13 +16,16 @@ class COutlookBar : public CMFCOutlookBar
 	virtual void GetPaneName(CString& strName) const { BOOL bNameValid = strName.LoadString(IDS_OUTLOOKBAR); ASSERT(bNameValid); if (!bNameValid) strName.Empty(); }
 };
 
-class CMainFrame : public CMDIFrameWndEx
+class CMainFrame : public CFrameWndEx
 {
-	DECLARE_DYNAMIC(CMainFrame)
-public:
+	
+protected: // serialization에서만 만들어집니다.
 	CMainFrame() noexcept;
+	DECLARE_DYNCREATE(CMainFrame)
 
 // 특성입니다.
+protected:
+	CSplitterWnd m_wndSplitter;
 public:
 
 // 작업입니다.
@@ -30,6 +33,7 @@ public:
 
 // 재정의입니다.
 public:
+	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = nullptr, CCreateContext* pContext = nullptr);
 
@@ -58,7 +62,6 @@ protected:  // 컨트롤 모음이 포함된 멤버입니다.
 // 생성된 메시지 맵 함수
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnWindowManager();
 	afx_msg void OnViewCustomize();
 	afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
 	afx_msg void OnApplicationLook(UINT id);

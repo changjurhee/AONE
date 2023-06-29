@@ -3,7 +3,7 @@
 // 이 파일은 MIDL 컴파일러에 의해 처리되어
 // 형식 라이브러리(VoIPClient.tlb)입니다.
 
-[ uuid(a7e61e7c-8d36-4166-806e-49110175b267), version(1.0) ]
+[ uuid(88b9a738-8451-4366-92b0-cd60e6f8960f), version(1.0) ]
 library VoIPClient
 {
 	importlib("stdole32.tlb");
@@ -11,7 +11,7 @@ library VoIPClient
 
 	//  CVoIPClientDoc의 기본 디스패치 인터페이스
 
-	[ uuid(f65ec69c-f4a0-4017-88b1-31f86d5968b1) ]
+	[ uuid(ada92bd1-55f0-4922-950a-052e440958fb) ]
 	dispinterface IVoIPClient
 	{
 		properties:
@@ -21,7 +21,7 @@ library VoIPClient
 
 	//  CVoIPClientDoc에 대한 클래스 정보
 
-	[ uuid(7f4b2f2c-80e8-4046-a282-d5fb198ab3cf) ]
+	[ uuid(29efbe4f-bbc7-49a2-9a8c-8a6ec6295c7f) ]
 	coclass CVoIPClientDoc
 	{
 		[default] dispinterface IVoIPClient;

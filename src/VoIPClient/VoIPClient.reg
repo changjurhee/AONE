@@ -8,9 +8,9 @@
 HKEY_CLASSES_ROOT\VoIPClient.Document = VoIPClient.Document
 
 
-HKEY_CLASSES_ROOT\VoIPClient.Document\CLSID = {7f4b2f2c-80e8-4046-a282-d5fb198ab3cf}
+HKEY_CLASSES_ROOT\VoIPClient.Document\CLSID = {29efbe4f-bbc7-49a2-9a8c-8a6ec6295c7f}
 
-HKEY_CLASSES_ROOT\CLSID\{7f4b2f2c-80e8-4046-a282-d5fb198ab3cf} = VoIPClient.Document
-HKEY_CLASSES_ROOT\CLSID\{7f4b2f2c-80e8-4046-a282-d5fb198ab3cf}\ProgId = VoIPClient.Document
+HKEY_CLASSES_ROOT\CLSID\{29efbe4f-bbc7-49a2-9a8c-8a6ec6295c7f} = VoIPClient.Document
+HKEY_CLASSES_ROOT\CLSID\{29efbe4f-bbc7-49a2-9a8c-8a6ec6295c7f}\ProgId = VoIPClient.Document
 
-HKEY_CLASSES_ROOT\CLSID\{7f4b2f2c-80e8-4046-a282-d5fb198ab3cf}\LocalServer32 = VoIPClient.EXE
+HKEY_CLASSES_ROOT\CLSID\{29efbe4f-bbc7-49a2-9a8c-8a6ec6295c7f}\LocalServer32 = VoIPClient.EXE

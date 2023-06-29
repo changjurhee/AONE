@@ -1,0 +1,29 @@
+﻿// VoIPServer.idl: VoIPServer.exe의 형식 라이브러리 소스
+
+// 이 파일은 MIDL 컴파일러에 의해 처리되어
+// 형식 라이브러리(VoIPServer.tlb)입니다.
+
+[ uuid(5988b6c4-9318-47ae-adfc-f02e8a96b155), version(1.0) ]
+library VoIPServer
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	//  CVoIPServerDoc의 기본 디스패치 인터페이스
+
+	[ uuid(8ad3ccfc-1604-4f49-bef6-cdf3b7649338) ]
+	dispinterface IVoIPServer
+	{
+		properties:
+
+		methods:
+	};
+
+	//  CVoIPServerDoc에 대한 클래스 정보
+
+	[ uuid(e8369551-792d-4552-880f-ed63d9e9ba40) ]
+	coclass CVoIPServerDoc
+	{
+		[default] dispinterface IVoIPServer;
+	};
+};

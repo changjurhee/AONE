@@ -25,6 +25,21 @@ IMPLEMENT_DYNCREATE(CVoIPServerDoc, CDocument)
 BEGIN_MESSAGE_MAP(CVoIPServerDoc, CDocument)
 END_MESSAGE_MAP()
 
+BEGIN_DISPATCH_MAP(CVoIPServerDoc, CDocument)
+END_DISPATCH_MAP()
+
+// 참고: IID_IVoIPServer에 대한 지원을 추가하여
+//  VBA에서 형식 안전 바인딩을 지원합니다.
+//  이 IID는 .IDL 파일에 있는 dispinterface의 GUID와 일치해야 합니다.
+
+// {8ad3ccfc-1604-4f49-bef6-cdf3b7649338}
+static const IID IID_IVoIPServer =
+{0x8ad3ccfc,0x1604,0x4f49,{0xbe,0xf6,0xcd,0xf3,0xb7,0x64,0x93,0x38}};
+
+BEGIN_INTERFACE_MAP(CVoIPServerDoc, CDocument)
+	INTERFACE_PART(CVoIPServerDoc, IID_IVoIPServer, Dispatch)
+END_INTERFACE_MAP()
+
 
 // CVoIPServerDoc 생성/소멸
 
@@ -32,10 +47,14 @@ CVoIPServerDoc::CVoIPServerDoc() noexcept
 {
 	// TODO: 여기에 일회성 생성 코드를 추가합니다.
 
+	EnableAutomation();
+
+	AfxOleLockApp();
 }
 
 CVoIPServerDoc::~CVoIPServerDoc()
 {
+	AfxOleUnlockApp();
 }
 
 BOOL CVoIPServerDoc::OnNewDocument()

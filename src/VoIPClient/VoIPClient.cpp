@@ -9,7 +9,6 @@
 #include "VoIPClient.h"
 #include "MainFrm.h"
 
-#include "ChildFrm.h"
 #include "VoIPClientDoc.h"
 #include "VoIPClientView.h"
 
@@ -61,11 +60,11 @@ CVoIPClientApp theApp;
 // 이 식별자는 응용 프로그램에서 통계적으로 고유한 값을 가지도록 생성되었습니다.
 // 특정 식별자를 선호할 경우 변경할 수 있습니다.
 
-// {7f4b2f2c-80e8-4046-a282-d5fb198ab3cf}
+// {29efbe4f-bbc7-49a2-9a8c-8a6ec6295c7f}
 static const CLSID clsid =
-{0x7f4b2f2c,0x80e8,0x4046,{0xa2,0x82,0xd5,0xfb,0x19,0x8a,0xb3,0xcf}};
+{0x29efbe4f,0xbbc7,0x49a2,{0x9a,0x8c,0x8a,0x6e,0xc6,0x29,0x5c,0x7f}};
 
-const GUID CDECL _tlid = {0xa7e61e7c,0x8d36,0x4166,{0x80,0x6e,0x49,0x11,0x01,0x75,0xb2,0x67}};
+const GUID CDECL _tlid = {0x88b9a738,0x8451,0x4366,{0x92,0xb0,0xcd,0x60,0xe6,0xf8,0x96,0x0f}};
 const WORD _wVerMajor = 1;
 const WORD _wVerMinor = 0;
 
@@ -101,7 +100,7 @@ BOOL CVoIPClientApp::InitInstance()
 
 	AfxEnableControlContainer();
 
-	EnableTaskbarInteraction();
+	EnableTaskbarInteraction(FALSE);
 
 	// RichEdit 컨트롤을 사용하려면 AfxInitRichEdit2()가 있어야 합니다.
 	// AfxInitRichEdit2();
@@ -130,10 +129,12 @@ BOOL CVoIPClientApp::InitInstance()
 
 	// 애플리케이션의 문서 템플릿을 등록합니다.  문서 템플릿은
 	//  문서, 프레임 창 및 뷰 사이의 연결 역할을 합니다.
-	CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new CMultiDocTemplate(IDR_VoIPClientTYPE,
+	CSingleDocTemplate* pDocTemplate;
+	pDocTemplate = new CSingleDocTemplate(
+		IDR_MAINFRAME,
+		//IDI_MASK,
 		RUNTIME_CLASS(CVoIPClientDoc),
-		RUNTIME_CLASS(CChildFrame), // 사용자 지정 MDI 자식 프레임입니다.
+		RUNTIME_CLASS(CMainFrame),       // 주 SDI 프레임 창입니다.
 		RUNTIME_CLASS(CVoIPClientView));
 	if (!pDocTemplate)
 		return FALSE;
@@ -142,21 +143,9 @@ BOOL CVoIPClientApp::InitInstance()
 	//  COleTemplateServer는 OLE 컨테이너를 요청하는 대신 문서 템플릿에
 	//  지정된 정보를 사용하여 새 문서를
 	//  만듭니다.
-	m_server.ConnectTemplate(clsid, pDocTemplate, FALSE);
-	// 모든 OLE 서버 팩터리를 실행 중으로 등록합니다.  이렇게 하면
-	//  OLE 라이브러리가 다른 애플리케이션에서 개체를 만들 수 있습니다.
-	COleTemplateServer::RegisterAll();
-		// 참고: MDI 애플리케이션은 명령줄의 /Embedding 또는 /Automation에
-		//  상관 없이 모든 서버 개체를 등록합니다.
-
-	// 주 MDI 프레임 창을 만듭니다.
-	CMainFrame* pMainFrame = new CMainFrame;
-	if (!pMainFrame || !pMainFrame->LoadFrame(IDR_MAINFRAME))
-	{
-		delete pMainFrame;
-		return FALSE;
-	}
-	m_pMainWnd = pMainFrame;
+	m_server.ConnectTemplate(clsid, pDocTemplate, TRUE);
+		// 참고: SDI 애플리케이션은 명령줄에 /Embedding 또는 /Automation이
+		//   있을 경우에만 서버 개체를 등록합니다.
 
 
 	// 표준 셸 명령, DDE, 파일 열기에 대한 명령줄을 구문 분석합니다.
@@ -168,6 +157,10 @@ BOOL CVoIPClientApp::InitInstance()
 	// 응용 프로그램을 자동화 서버로 실행합니다.
 	if (cmdInfo.m_bRunEmbedded || cmdInfo.m_bRunAutomated)
 	{
+		// 모든 OLE 서버 팩터리를 실행 중으로 등록합니다.  이렇게 하면
+		//  OLE 라이브러리가 다른 애플리케이션에서 개체를 만들 수 있습니다.
+		COleTemplateServer::RegisterAll();
+
 		// 주 창을 표시하지 않습니다.
 		return TRUE;
 	}
@@ -191,10 +184,10 @@ BOOL CVoIPClientApp::InitInstance()
 	// 응용 프로그램이 /RegServer, /Register, /Unregserver 또는 /Unregister로 시작된 경우 FALSE를 반환합니다.
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
-	// 주 창이 초기화되었으므로 이를 표시하고 업데이트합니다.
-	pMainFrame->ShowWindow(SW_SHOWMAXIMIZED);
-	pMainFrame->UpdateWindow();
 
+	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
+	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
+	m_pMainWnd->UpdateWindow();
 	return TRUE;
 }
 

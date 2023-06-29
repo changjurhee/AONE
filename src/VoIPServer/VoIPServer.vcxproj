@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
-    <ProjectGuid>{A826A453-6D63-480E-8F6D-571135E846DB}</ProjectGuid>
+    <ProjectGuid>{9F93CF8D-6D28-451D-894D-64118E3AA159}</ProjectGuid>
     <Keyword>MFCProj</Keyword>
     <RootNamespace>VoIPServer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
@@ -96,11 +96,14 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <RegisterOutput>true</RegisterOutput>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <ValidateAllParameters>true</ValidateAllParameters>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>$(IntDir)VoIPServer.tlb</TypeLibraryName>
+      <HeaderFileName>VoIPServer_h.h</HeaderFileName>
     </Midl>
     <ResourceCompile>
       <Culture>0x0412</Culture>
@@ -118,11 +121,14 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <RegisterOutput>true</RegisterOutput>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <ValidateAllParameters>true</ValidateAllParameters>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>$(IntDir)VoIPServer.tlb</TypeLibraryName>
+      <HeaderFileName>VoIPServer_h.h</HeaderFileName>
     </Midl>
     <ResourceCompile>
       <Culture>0x0412</Culture>
@@ -144,11 +150,14 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <RegisterOutput>true</RegisterOutput>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <ValidateAllParameters>true</ValidateAllParameters>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>$(IntDir)VoIPServer.tlb</TypeLibraryName>
+      <HeaderFileName>VoIPServer_h.h</HeaderFileName>
     </Midl>
     <ResourceCompile>
       <Culture>0x0412</Culture>
@@ -170,11 +179,14 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <RegisterOutput>true</RegisterOutput>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <ValidateAllParameters>true</ValidateAllParameters>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>$(IntDir)VoIPServer.tlb</TypeLibraryName>
+      <HeaderFileName>VoIPServer_h.h</HeaderFileName>
     </Midl>
     <ResourceCompile>
       <Culture>0x0412</Culture>
@@ -184,7 +196,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="calendarbar.h" />
-    <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
@@ -201,7 +212,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="calendarbar.cpp" />
-    <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
@@ -219,6 +229,13 @@
     <ClCompile Include="VoIPServerView.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Midl Include="VoIPServer.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\VoIPServer.rc2" />
+    <None Include="VoIPServer.reg" />
+  </ItemGroup>
+  <ItemGroup>
     <ResourceCompile Include="VoIPServer.rc" />
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +249,15 @@
     <Image Include="res\fileview_hc.bmp" />
     <Image Include="res\file_view.ico" />
     <Image Include="res\file_view_hc.ico" />
+    <Image Include="res\icon1.ico" />
+    <Image Include="res\icons8-homer-simpson-100.png" />
+    <Image Include="res\icons8-homer-simpson-120.png" />
+    <Image Include="res\icons8-homer-simpson-240.png" />
+    <Image Include="res\icons8-homer-simpson-30.png" />
+    <Image Include="res\icons8-homer-simpson-32x32.ico" />
+    <Image Include="res\icons8-homer-simpson-480.png" />
+    <Image Include="res\icons8-homer-simpson-60.png" />
+    <Image Include="res\icons8-homer-simpson-90.png" />
     <Image Include="res\info.bmp" />
     <Image Include="res\menuimages.bmp" />
     <Image Include="res\menuimages_hc.bmp" />
@@ -254,9 +280,6 @@
     <Image Include="res\userimages.bmp" />
     <Image Include="res\VoIPServer.ico" />
     <Image Include="res\VoIPServerDoc.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\VoIPServer.rc2" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

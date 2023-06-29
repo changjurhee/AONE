@@ -27,9 +27,6 @@
     <ClInclude Include="MainFrm.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ChildFrm.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="VoIPServerDoc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -68,9 +65,6 @@
     <ClCompile Include="MainFrm.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ChildFrm.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="VoIPServerDoc.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -98,6 +92,17 @@
     <ClCompile Include="pch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="VoIPServer.idl">
+      <Filter>소스 파일</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VoIPServer.reg" />
+    <None Include="res\VoIPServer.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VoIPServer.rc">
@@ -201,10 +206,32 @@
     <Image Include="res\Toolbar256.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\VoIPServer.rc2">
+    <Image Include="res\icons8-homer-simpson-30.png">
       <Filter>리소스 파일</Filter>
-    </None>
+    </Image>
+    <Image Include="res\icons8-homer-simpson-60.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-homer-simpson-90.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-homer-simpson-100.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-homer-simpson-120.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-homer-simpson-240.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-homer-simpson-480.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-homer-simpson-32x32.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icon1.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>
