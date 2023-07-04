@@ -4,6 +4,7 @@
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
+#define IDS_CALL_VIEW                   101
 #define IDP_SOCKETS_INIT_FAILED         104
 #define IDR_POPUP_EDIT                  119
 #define ID_STATUSBAR_PANE1              120
@@ -115,14 +116,40 @@
 #define IDI_MASK                        319
 #define IDI_ICON1                       320
 #define IDI_HOMER                       320
+#define IDD_DLG_ACCOUNT_LOGIN           321
+#define IDD_DLG_MANAGE_ACCOUNT          322
+#define IDD_DLG_CALL_VIEW               327
+#define IDB_PNG8                        332
+#define IDB_BITMAP1                     334
+#define IDB_MASK                        334
+#define IDD_DLG_CALL_LIST_VIEW          335
+#define ID_VIEW_CALLVIEW                400
+#define IDC_ED_EMAIL_ID                 1000
+#define IDC_ED_PASSWORD                 1001
+#define IDC_IPADDRESS_SERVER            1002
+#define IDC_MFCBTN_LOGIN                1004
+#define IDC_MFCBTN_SIGN_IN              1005
+#define IDC_ED_NAME                     1007
+#define IDC_MFCBTN_CREATE               1008
+#define IDC_MFCBTN_UPDATE               1009
+#define IDC_LIST1                       1010
+#define IDC_LST_CONTACT_ID              1010
+#define ID_TEST_32771                   32771
+#define ID_TEST_32772                   32772
+#define ID_TEST_LOG_IN                  32773
+#define ID_TEST_LOG_OUT                 32774
+#define ID_TEST_32775                   32775
+#define ID_TEST_32776                   32776
+#define ID_TEST_CREATE_USER             32777
+#define ID_TEST_UPDATE_USER             32778
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        321
-#define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1000
+#define _APS_NEXT_RESOURCE_VALUE        337
+#define _APS_NEXT_COMMAND_VALUE         32779
+#define _APS_NEXT_CONTROL_VALUE         1011
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

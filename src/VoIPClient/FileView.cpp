@@ -171,8 +171,6 @@ void CFileView::AdjustLayout()
 
 void CFileView::OnProperties()
 {
-	AfxMessageBox(_T("속성...."));
-
 }
 
 void CFileView::OnFileOpen()

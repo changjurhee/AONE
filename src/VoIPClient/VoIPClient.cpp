@@ -6,6 +6,7 @@
 #include "framework.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
+#include "AccountLoginDlg.h"
 #include "VoIPClient.h"
 #include "MainFrm.h"
 
@@ -257,6 +258,8 @@ void CVoIPClientApp::PreLoadState()
 
 void CVoIPClientApp::LoadCustomState()
 {
+	CAccountLoginDlg accountLoginDlg;
+	accountLoginDlg.DoModal();
 }
 
 void CVoIPClientApp::SaveCustomState()

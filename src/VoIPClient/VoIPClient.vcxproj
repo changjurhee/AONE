@@ -197,11 +197,15 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AccountLoginDlg.h" />
     <ClInclude Include="calendarbar.h" />
+    <ClInclude Include="CallListView.h" />
+    <ClInclude Include="CallView.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="ManageUserAccountDlg.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PropertiesWnd.h" />
@@ -221,10 +225,14 @@
     <ClInclude Include="VoIPClientView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AccountLoginDlg.cpp" />
     <ClCompile Include="calendarbar.cpp" />
+    <ClCompile Include="CallListView.cpp" />
+    <ClCompile Include="CallView.cpp" />
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="ManageUserAccountDlg.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -254,6 +262,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\VoIPServer\res\icons8-homer-simpson-32x32.ico" />
+    <Image Include="..\VoIPServer\res\icons8-homer-simpson-480.png" />
+    <Image Include="res\bitmap1.bmp" />
     <Image Include="res\classview.bmp" />
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
@@ -269,6 +279,7 @@
     <Image Include="res\icons8-anonymous-mask-240.png" />
     <Image Include="res\icons8-anonymous-mask-30.png" />
     <Image Include="res\icons8-anonymous-mask-32x32.ico" />
+    <Image Include="res\icons8-anonymous-mask-480.bmp" />
     <Image Include="res\icons8-anonymous-mask-480.png" />
     <Image Include="res\icons8-anonymous-mask-60.png" />
     <Image Include="res\icons8-anonymous-mask-90.png" />

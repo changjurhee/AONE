@@ -13,8 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Media">
+      <UniqueIdentifier>{78f9663d-3efb-42a9-b52d-024ee0834785}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Session">
-      <UniqueIdentifier>{94b5e3ff-835a-4646-b2ca-2d5464b7275d}</UniqueIdentifier>
+      <UniqueIdentifier>{b08d6a4b-994d-4ed2-bfb7-954b543d4308}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +87,18 @@
     <ClInclude Include="session\SessionManager.h">
       <Filter>Session</Filter>
     </ClInclude>
+    <ClInclude Include="AccountLoginDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ManageUserAccountDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CallView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CallListView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VoIPClient.cpp">
@@ -130,6 +145,18 @@
     </ClCompile>
     <ClCompile Include="session\SessionManager.cpp">
       <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="ManageUserAccountDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="AccountLoginDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CallView.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CallListView.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -273,6 +300,15 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="res\icons8-homer-simpson-32x32.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\VoIPServer\res\icons8-homer-simpson-480.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-anonymous-mask-480.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>
