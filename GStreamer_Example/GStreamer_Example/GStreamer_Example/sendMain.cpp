@@ -1,6 +1,5 @@
 ﻿#include <gst/gst.h>
 #include "sendMain.h"
-#include "gstwebrtcdsp.h"
 
 #define H_264_TUNE_NONE         (0x00000000)
 #define H_264_TUNE_STILLIMAGE   (0x00000001)

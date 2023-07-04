@@ -1,4 +1,5 @@
 #include <gst/gst.h>
+#include <gst/video/videooverlay.h>
 #include "recvMain.h"
 
 // Create GStreamer loop
@@ -30,7 +31,7 @@ static gboolean on_audio_bus_message(GstBus* bus, GstMessage* const message, gpo
     return FALSE;
 }
 
-int recvMain()
+int recvMain(HWND hwnd)
 {
     g_printerr("Receiver : Start recvMain thread\n");
 
@@ -43,7 +44,7 @@ int recvMain()
     GstElement* videoJitterbuffer = gst_element_factory_make("rtpjitterbuffer", "videoJitterbuffer");
     GstElement* videoDepay = gst_element_factory_make("rtph264depay", "videoDepay");
     GstElement* videoDec = gst_element_factory_make("avdec_h264", "videoDec");
-    GstElement* videoSink = gst_element_factory_make("autovideosink", "videoSink");
+    GstElement* videoSink = gst_element_factory_make("d3dvideosink", "videoSink");
 
     // Create GStreamer pipline for audio
     GstElement* audioPipeline = gst_pipeline_new("audioReceiver_pipeline");
@@ -92,6 +93,10 @@ int recvMain()
     // Set RTP jitter-buffer latency
     g_object_set(videoJitterbuffer, "latency", 0, "do-lost", TRUE, NULL);
     g_object_set(audioJitterbuffer, "latency", 500, "do-lost", TRUE, NULL);
+
+    // Set video sink
+    g_object_set(G_OBJECT(videoSink), "force-aspect-ratio", TRUE, NULL);
+    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(videoSink), (guintptr)hwnd);
 
     // Pipeline execution
     GstStateChangeReturn videoRet = gst_element_set_state(videoPipeline, GST_STATE_PLAYING);

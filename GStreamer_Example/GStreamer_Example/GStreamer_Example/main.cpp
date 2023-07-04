@@ -11,6 +11,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 std::thread senderThread;
 std::thread receiverThread;
 
+HWND gOverlayWindow;
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     static bool senderActive = false; // 송신 활성화 플래그
@@ -27,17 +29,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         break;
     case WM_CREATE:
     {
+        // 영상 윈도우 생성
+        gOverlayWindow = CreateWindowEx(WS_EX_TOPMOST, L"STATIC", NULL, WS_VISIBLE | WS_CHILD | WS_BORDER,
+            50, 50, 1280, 720, hwnd, NULL, GetModuleHandle(NULL), NULL);
+
         // 버튼 생성
         HWND button1 = CreateWindow(L"BUTTON", L"송신활성화", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-            200, 200, 200, 50, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
+            400, 800, 200, 25, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
         // 버튼 생성
         HWND button2 = CreateWindow(L"BUTTON", L"수신활성화", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-            200, 300, 200, 50, hwnd, (HMENU)2, GetModuleHandle(NULL), NULL);
+            400, 850, 200, 25, hwnd, (HMENU)2, GetModuleHandle(NULL), NULL);
         HWND hText = CreateWindow(L"STATIC", L"해상도 설정", WS_VISIBLE | WS_CHILD,
-            200, 400, 200, 20, hwnd, NULL, GetModuleHandle(NULL), NULL);
+            700, 800, 200, 20, hwnd, NULL, GetModuleHandle(NULL), NULL);
         // 버튼 생성
         HWND hComboBox = CreateWindow(L"COMBOBOX", NULL, CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-            200, 430, 200, 300, hwnd, (HMENU)3, GetModuleHandle(NULL), NULL);
+            800, 800, 200, 300, hwnd, (HMENU)3, GetModuleHandle(NULL), NULL);
 
         // 드롭다운 목록에 아이템 추가
         const wchar_t* items[] = { L"1280 * 720", L"640 * 480", L"320 * 240" };
@@ -45,7 +51,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)items[i]);
         }
-
+        SendMessage(hComboBox, CB_SETCURSEL, 0, 0);  // 초기값으로 1280 * 720 선택
         EnableWindow(hComboBox, FALSE); // 드롭다운 목록 버튼 비활성화
         break;
     }
@@ -74,7 +80,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case 2:
             if (!receiverThread.joinable())
             {
-                receiverThread = std::thread(recvMain);
+                //쓰레드 생성하면서 영상 윈도우 핸들러 전달
+                receiverThread = std::thread(recvMain, gOverlayWindow);
                 SetWindowText((HWND)lParam, L"수신비활성화");
             }
             else
@@ -148,7 +155,7 @@ int main(int argc, char* argv[])
     // 윈도우 생성
     HWND hwnd = CreateWindowEx(0, L"ButtonWindowClass", L"송수신 테스트",
         WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-        640, 800, NULL, NULL, GetModuleHandle(NULL), NULL);
+        1380, 1000, NULL, NULL, GetModuleHandle(NULL), NULL);
     if (hwnd == NULL)
     {
         std::cerr << "윈도우 생성 실패" << std::endl;
