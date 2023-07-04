@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Session">
+      <UniqueIdentifier>{94b5e3ff-835a-4646-b2ca-2d5464b7275d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VoIPClient.h">
@@ -57,6 +60,30 @@
     <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="session\AccountManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\AccountManagerListener.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\Call.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\CallsManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\CallsManagerListener.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\Constants.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\SessionControl.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\SessionManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VoIPClient.cpp">
@@ -91,6 +118,18 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="session\AccountManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\Call.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\CallsManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\SessionManager.cpp">
+      <Filter>Session</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
