@@ -110,7 +110,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;gstvideo-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -129,11 +129,19 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;gstvideo-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="recvMain.cpp" />
+    <ClCompile Include="sendMain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sendMain.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="recvMain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

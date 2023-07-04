@@ -1,7 +1,12 @@
 #include <gst/gst.h>
+#include <gst/video/videooverlay.h>
+#include "recvMain.h"
+
+// Create GStreamer loop
+GMainLoop* gReceiverLoop;
 
 // define callback function
-static gboolean on_bus_message(GstBus* bus, GstMessage* const message, gpointer user_data) {
+static gboolean on_video_bus_message(GstBus* bus, GstMessage* const message, gpointer user_data) {
     switch (GST_MESSAGE_TYPE(message)) {
     case GST_MESSAGE_ELEMENT: {
         if (gst_message_has_name(message, "jitterbuffer")) {
@@ -9,7 +14,7 @@ static gboolean on_bus_message(GstBus* bus, GstMessage* const message, gpointer 
             if (stats != NULL && gst_structure_has_field(stats, "jitter")) {
                 guint64 jitter;
                 gst_structure_get_uint64(stats, "jitter", &jitter);
-                g_print("Jitter: %" G_GUINT64_FORMAT " ns\n", jitter);
+                g_print("Receiver : Jitter: %" G_GUINT64_FORMAT " ns\n", jitter);
             }
         }
         break;
@@ -17,14 +22,18 @@ static gboolean on_bus_message(GstBus* bus, GstMessage* const message, gpointer 
     default:
         break;
     }
-    return TRUE;
+    return FALSE;
 }
 
+// define callback function
+static gboolean on_audio_bus_message(GstBus* bus, GstMessage* const message, gpointer user_data) {
+    g_print("Receiver: Callback!\n");
+    return FALSE;
+}
 
-int main(int argc, char* argv[])
+int recvMain(HWND hwnd)
 {
-    // Initialize GStreamer
-    gst_init(&argc, &argv);
+    g_printerr("Receiver : Start recvMain thread\n");
 
     // Create GStreamer pipline for video
     GstElement* videoPipeline = gst_pipeline_new("videoReceiver_pipeline");
@@ -35,7 +44,7 @@ int main(int argc, char* argv[])
     GstElement* videoJitterbuffer = gst_element_factory_make("rtpjitterbuffer", "videoJitterbuffer");
     GstElement* videoDepay = gst_element_factory_make("rtph264depay", "videoDepay");
     GstElement* videoDec = gst_element_factory_make("avdec_h264", "videoDec");
-    GstElement* videoSink = gst_element_factory_make("autovideosink", "videoSink");
+    GstElement* videoSink = gst_element_factory_make("d3dvideosink", "videoSink");
 
     // Create GStreamer pipline for audio
     GstElement* audioPipeline = gst_pipeline_new("audioReceiver_pipeline");
@@ -48,6 +57,16 @@ int main(int argc, char* argv[])
     GstElement* audioDepay = gst_element_factory_make("rtpopusdepay", "audioDepay");
     GstElement* audioConv = gst_element_factory_make("audioconvert", "audioConv");
     GstElement* audioSink = gst_element_factory_make("autoaudiosink", "audioSink");
+
+    // set up video bus and callback function for jitter statistics
+    GstBus* videoBus = gst_element_get_bus(videoPipeline);
+    gst_bus_add_watch(videoBus, on_video_bus_message, NULL);
+    gst_object_unref(videoBus);
+
+    // set up audio bus and callback function to check whether an audio packet has been received
+    GstBus* audioBus = gst_element_get_bus(audioPipeline);
+    gst_bus_add_watch(audioBus, on_audio_bus_message, NULL);
+    gst_object_unref(audioBus);
 
     // Add element to pipeline
     gst_bin_add_many(GST_BIN(videoPipeline), videoSrc, videoCapsfilter, videoJitterbuffer, videoDepay, videoDec, videoSink, NULL);
@@ -72,8 +91,12 @@ int main(int argc, char* argv[])
     gst_caps_unref(audioCaps);
 
     // Set RTP jitter-buffer latency
-    g_object_set(videoJitterbuffer, "latency", 5000, "do-lost", TRUE, NULL);
-    g_object_set(audioJitterbuffer, "latency", 1000, "do-lost", TRUE, NULL);
+    g_object_set(videoJitterbuffer, "latency", 0, "do-lost", TRUE, NULL);
+    g_object_set(audioJitterbuffer, "latency", 500, "do-lost", TRUE, NULL);
+
+    // Set video sink
+    g_object_set(G_OBJECT(videoSink), "force-aspect-ratio", TRUE, NULL);
+    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(videoSink), (guintptr)hwnd);
 
     // Pipeline execution
     GstStateChangeReturn videoRet = gst_element_set_state(videoPipeline, GST_STATE_PLAYING);
@@ -85,16 +108,25 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    // set up bus and callback function for jitter statistics
-    GstBus* bus = gst_element_get_bus(videoPipeline);
-    gst_bus_add_watch(bus, on_bus_message, NULL);
+    g_printerr("Receiver : Run receiver main loop!\n");
 
-    while (1);
+    // Start the main loop
+    gReceiverLoop = g_main_loop_new(NULL, FALSE);
+    g_main_loop_run(gReceiverLoop);
+
+    g_printerr("Receiver : Stop receiver main loop!\n");
 
     // Release the pipeline
     gst_element_set_state(videoPipeline, GST_STATE_NULL);
     gst_element_set_state(audioPipeline, GST_STATE_NULL);
     gst_object_unref(videoPipeline);
     gst_object_unref(audioPipeline);
+    g_main_loop_unref(gReceiverLoop);
+
     return 0;
+}
+
+void quiteReceiverMain()
+{
+    g_main_loop_quit(gReceiverLoop);
 }
