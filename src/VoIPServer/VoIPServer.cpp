@@ -132,7 +132,7 @@ BOOL CVoIPServerApp::InitInstance()
 	CSingleDocTemplate* pDocTemplate;
 	pDocTemplate = new CSingleDocTemplate(
 		IDR_MAINFRAME,
-		//IDI_HOMER,
+		//IDI_HOMER_FRAME,
 		RUNTIME_CLASS(CVoIPServerDoc),
 		RUNTIME_CLASS(CMainFrame),       // 주 SDI 프레임 창입니다.
 		RUNTIME_CLASS(CVoIPServerView));
