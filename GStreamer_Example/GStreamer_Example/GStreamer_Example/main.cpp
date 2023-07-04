@@ -13,6 +13,8 @@ std::thread receiverThread;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    static bool senderActive = false; // 송신 활성화 플래그
+
     switch (uMsg)
     {
     case WM_CLOSE:
@@ -31,12 +33,20 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         // 버튼 생성
         HWND button2 = CreateWindow(L"BUTTON", L"수신활성화", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
             200, 300, 200, 50, hwnd, (HMENU)2, GetModuleHandle(NULL), NULL);
+        HWND hText = CreateWindow(L"STATIC", L"해상도 설정", WS_VISIBLE | WS_CHILD,
+            200, 400, 200, 20, hwnd, NULL, GetModuleHandle(NULL), NULL);
         // 버튼 생성
-        HWND button3 = CreateWindow(L"BUTTON", L"320 x 240으로 해상도 변경", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-            200, 400, 200, 50, hwnd, (HMENU)3, GetModuleHandle(NULL), NULL);
-        // 버튼 생성
-        HWND button4 = CreateWindow(L"BUTTON", L"640 x 480으로 해상도 변경", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-            200, 500, 200, 50, hwnd, (HMENU)4, GetModuleHandle(NULL), NULL);
+        HWND hComboBox = CreateWindow(L"COMBOBOX", NULL, CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
+            200, 430, 200, 300, hwnd, (HMENU)3, GetModuleHandle(NULL), NULL);
+
+        // 드롭다운 목록에 아이템 추가
+        const wchar_t* items[] = { L"1280 * 720", L"640 * 480", L"320 * 240" };
+        for (int i = 0; i < 3; i++)
+        {
+            SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)items[i]);
+        }
+
+        EnableWindow(hComboBox, FALSE); // 드롭다운 목록 버튼 비활성화
         break;
     }
     case WM_COMMAND:
@@ -48,6 +58,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             {
                 senderThread = std::thread(sendMain);
                 SetWindowText((HWND)lParam, L"송신비활성화");
+                senderActive = true; // 송신 활성화 설정
+                EnableWindow(GetDlgItem(hwnd, 3), TRUE); // 드롭다운 목록 버튼 활성화
             }
             else
             {
@@ -55,6 +67,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 quiteSenderMain();
                 senderThread.join();
                 SetWindowText((HWND)lParam, L"송신활성화");
+                senderActive = false; // 송신 비활성화 설정
+                EnableWindow(GetDlgItem(hwnd, 3), FALSE); // 드롭다운 목록 버튼 비활성화
             }
             break;
         case 2:
@@ -72,10 +86,37 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
             break;
         case 3:
-            changeVideoResolution(320, 240);
-            break;
-        case 4:
-            changeVideoResolution(640, 480);
+            if (HIWORD(wParam) == CBN_SELCHANGE && senderActive)
+            {
+                HWND hComboBox = GetDlgItem(hwnd, 3);
+                int selectedIndex = SendMessage(hComboBox, CB_GETCURSEL, 0, 0);
+                wchar_t selectedText[256];
+                SendMessage(hComboBox, CB_GETLBTEXT, selectedIndex, (LPARAM)selectedText);
+
+                // 선택된 항목에 따라 동작 수행
+                if (wcscmp(selectedText, L"1280 * 720") == 0)
+                {
+                    // 선택된 해상도가 "1280 * 720"일 때의 동작 수행
+                    // ...
+                    changeVideoResolution(1280, 720);
+                }
+                else if (wcscmp(selectedText, L"640 * 480") == 0)
+                {
+                    // 선택된 해상도가 "640 * 480"일 때의 동작 수행
+                    // ...
+                    changeVideoResolution(640, 480);
+                }
+                else if (wcscmp(selectedText, L"320 * 240") == 0)
+                {
+                    // 선택된 해상도가 "320 * 240"일 때의 동작 수행
+                    // ...
+                    changeVideoResolution(320, 240);
+                }
+            }
+            else
+            {
+                /* NOP */
+            }
             break;
         default:
             break;

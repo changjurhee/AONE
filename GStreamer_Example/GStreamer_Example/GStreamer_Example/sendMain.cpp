@@ -1,5 +1,11 @@
 ﻿#include <gst/gst.h>
 #include "sendMain.h"
+#include "gstwebrtcdsp.h"
+
+#define H_264_TUNE_NONE         (0x00000000)
+#define H_264_TUNE_STILLIMAGE   (0x00000001)
+#define H_264_TUNE_FASTCODE     (0x00000002)
+#define H_264_TUNE_ZEROLATENCY  (0x00000004)
 
 // Create GStreamer loop
 GMainLoop* gSenderLoop;
@@ -17,6 +23,7 @@ GstElement* gSendVideoSink;
 
 // Create GStreamer pipline elements for audio
 GstElement* gSendAudioSrc;
+GstElement* gSendAudioWebRTC;
 GstElement* gSendAudioConv;
 GstElement* gSendAudioResample;
 GstElement* gSendAudioOpusenc;
@@ -54,7 +61,7 @@ static gboolean handle_level_message(GstBus* bus, GstMessage* message, gpointer 
 void changeVideoResolution(int width, int height)
 {
     // Pipeline stop(?)
-    GstStateChangeReturn ret = gst_element_set_state(gSendPipeline, GST_STATE_PAUSED);
+    GstStateChangeReturn ret = gst_element_set_state(gSendPipeline, GST_STATE_NULL);
     if (ret == GST_STATE_CHANGE_FAILURE)
     {
         g_printerr("Sender : Unable to start the pipeline.\n");
@@ -89,7 +96,7 @@ int sendMain()
 
     // Create GStreamer pipline elements for video
     gSendVideoSrc = gst_element_factory_make("mfvideosrc", "videoSrc");
-    gSendVideoScale = gst_element_factory_make("videoscale", "gSendVideoScale");
+    gSendVideoScale = gst_element_factory_make("videoscale", "VideoScale");
     gSendVideoCapsFilter = gst_element_factory_make("capsfilter", "videoCapsFilter");
     gSendVideoEnc = gst_element_factory_make("x264enc", "videoEnc");
     gSendVideoPay = gst_element_factory_make("rtph264pay", "videoPay");
@@ -98,6 +105,7 @@ int sendMain()
     // Create GStreamer pipline elements for audio
     gSendAudioSrc = gst_element_factory_make("autoaudiosrc", "audioSrc");
     gSendAudioConv = gst_element_factory_make("audioconvert", "audioConv");
+    gSendAudioWebRTC = gst_element_factory_make("webrtcdsp", "AudioWebRTC");
     gSendAudioResample = gst_element_factory_make("audioresample", "audioResample");
     gSendAudioOpusenc = gst_element_factory_make("opusenc", "audioOpusenc");
     gSendAudioPay = gst_element_factory_make("rtpopuspay", "audioPay");
@@ -123,7 +131,7 @@ int sendMain()
     g_object_set(gSendVideoSrc, "device-index", 0, NULL);  // 0은 첫 번째 카메라를 나타냅니다.
 
     // Set the tune attribute of the x264enc element to "zerolatency"
-    g_object_set(gSendVideoEnc, "tune", 0x00000004, NULL);
+    g_object_set(gSendVideoEnc, "tune", H_264_TUNE_ZEROLATENCY, NULL);
 
     // generic (2049)               – Generic audio
     // voice (2048)                 – Voice
