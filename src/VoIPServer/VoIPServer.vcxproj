@@ -263,8 +263,6 @@
     <Image Include="res\file_view.ico" />
     <Image Include="res\file_view_hc.ico" />
     <Image Include="res\homer.ico" />
-    <Image Include="res\ico00001.ico" />
-    <Image Include="res\icon1.ico" />
     <Image Include="res\icons8-homer-simpson-100.png" />
     <Image Include="res\icons8-homer-simpson-120.png" />
     <Image Include="res\icons8-homer-simpson-240.png" />

@@ -262,8 +262,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\VoIPServer\res\icons8-homer-simpson-32x32.ico" />
-    <Image Include="..\VoIPServer\res\icons8-homer-simpson-480.png" />
-    <Image Include="res\bitmap1.bmp" />
     <Image Include="res\classview.bmp" />
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
