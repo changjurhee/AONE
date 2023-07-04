@@ -1,86 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Media">
-      <UniqueIdentifier>{78f9663d-3efb-42a9-b52d-024ee0834785}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Session">
-      <UniqueIdentifier>{b08d6a4b-994d-4ed2-bfb7-954b543d4308}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="VoIPClient.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="framework.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="MainFrm.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="VoIPClientDoc.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="VoIPClientView.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FileView.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ClassView.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewTree.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputWnd.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="PropertiesWnd.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="calendarbar.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="AccountLoginDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ManageUserAccountDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CallView.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CallListView.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="VoIPClient.cpp">
+    <ClCompile Include="session\AccountManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\Call.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\CallsManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\SessionManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="AccountLoginDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="calendarbar.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CallListView.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CallView.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ClassView.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FileView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="MainFrm.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ManageUserAccountDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputWnd.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertiesWnd.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewTree.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="VoIPClient.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="VoIPClientDoc.cpp">
@@ -89,73 +58,92 @@
     <ClCompile Include="VoIPClientView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="FileView.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ClassView.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewTree.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputWnd.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="PropertiesWnd.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="calendarbar.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ManageUserAccountDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="AccountLoginDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CallView.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CallListView.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="VoIPClient.idl">
-      <Filter>소스 파일</Filter>
-    </Midl>
+    <ClInclude Include="session\AccountManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\AccountManagerListener.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\Call.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\CallsManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\CallsManagerListener.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\Constants.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\SessionControl.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\SessionManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="AccountLoginDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="calendarbar.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CallListView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CallView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FileView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ManageUserAccountDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertiesWnd.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewTree.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="VoIPClient.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="VoIPClientDoc.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="VoIPClientView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputWnd.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="VoIPClient.reg" />
-    <None Include="res\VoIPClient.rc2">
-      <Filter>리소스 파일</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="VoIPClient.rc">
-      <Filter>리소스 파일</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\file_view.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\file_view_hc.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
     <Image Include="res\class_view.ico">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="res\class_view_hc.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\fileview.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\fileview_hc.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="res\classview.bmp">
@@ -170,73 +158,22 @@
     <Image Include="res\explorer_hc.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\sort.bmp">
+    <Image Include="res\file_view.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\sort_hc.bmp">
+    <Image Include="res\file_view_hc.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\menuimages.bmp">
+    <Image Include="res\fileview.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\menuimages_hc.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\output_wnd.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\output_wnd_hc.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\properties_wnd.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\properties_wnd_hc.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\properties.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\properties_hc.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\nav_large.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\nav_large_hc.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\pages.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\pages_hc.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\pages_small.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\pages_small_hc.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\info.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\userimages.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\VoIPClientDoc.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\VoIPClient.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\Toolbar.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\Toolbar256.bmp">
+    <Image Include="res\fileview_hc.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="res\icons8-anonymous-mask-30.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-anonymous-mask-32x32.ico">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="res\icons8-anonymous-mask-60.png">
@@ -254,26 +191,113 @@
     <Image Include="res\icons8-anonymous-mask-240.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="res\icons8-anonymous-mask-480.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
     <Image Include="res\icons8-anonymous-mask-480.png">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="..\VoIPServer\res\icons8-homer-simpson-32x32.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\icons8-anonymous-mask-32x32.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
     <Image Include="res\icons8-homer-simpson-32x32.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\bitmap1.bmp">
+    <Image Include="res\info.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\VoIPServer\res\icons8-homer-simpson-480.png">
+    <Image Include="res\menuimages.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\icons8-anonymous-mask-480.bmp">
+    <Image Include="res\menuimages_hc.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="res\nav_large.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\nav_large_hc.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\output_wnd.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\output_wnd_hc.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\pages.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\pages_hc.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\pages_small.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\pages_small_hc.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\properties.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\properties_hc.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\properties_wnd.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\properties_wnd_hc.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\sort.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\sort_hc.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Toolbar256.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\userimages.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\VoIPClient.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\VoIPClientDoc.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VoIPClient.reg" />
+    <None Include="res\VoIPClient.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Session">
+      <UniqueIdentifier>{c6ef20f4-f1f7-4402-bec8-ba51e3baff6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{b05c1bd0-50fa-490a-8b81-1869c4f3e798}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{3f1eae08-aeb0-439e-8d1a-fa725748b2ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{2fd9150a-3c68-4592-b616-c7d766b8a641}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="VoIPClient.idl">
+      <Filter>소스 파일</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="VoIPClient.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -113,7 +113,6 @@
 #define IDB_PNG6                        316
 #define IDB_PNG7                        317
 #define IDI_HOMER                       318
-#define IDI_ICON1                       322
 #define IDI_HOMER_FRAME                 322
 
 // Next default values for new objects
