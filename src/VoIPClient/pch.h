@@ -9,7 +9,35 @@
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
+#include <memory>
+#include <string>
+#include <string_view>
+
+using tstring = std::basic_string<TCHAR>;
+using tstring_view = std::basic_string_view<TCHAR>;
+using tstringstream = std::basic_stringstream<TCHAR>;
 
 #define UM_VAD_STATE           (WM_USER+101)
+
+#pragma warning(push)
+#pragma warning(disable:4840)
+template<class ... TypeTs>
+static std::wstring FormatString(const std::wstring_view& rsFormat, TypeTs ... Variables)
+{
+	CStringW sMessage;
+	sMessage.Format(rsFormat.data(), Variables...);
+
+	return std::wstring(sMessage);
+}
+
+template<class ... TypeTs>
+static std::string FormatString(const std::string_view& rsFormat, TypeTs ... Variables)
+{
+	CStringA sMessage;
+	sMessage.Format(rsFormat.data(), Variables...);
+
+	return std::string(sMessage);
+}
+#pragma warning(pop)
 
 #endif //PCH_H

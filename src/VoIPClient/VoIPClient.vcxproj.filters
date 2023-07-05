@@ -269,6 +269,11 @@
     <Image Include="res\VoIPClientDoc.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="..\VoIPServer\res\icons8-homer-simpson-480.png" />
+    <Image Include="res\login_95461.ico" />
+    <Image Include="res\sign_6358961.ico" />
+    <Image Include="res\login_95461_64x64.ico" />
+    <Image Include="res\sign_6358961_64x64.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="VoIPClient.reg" />

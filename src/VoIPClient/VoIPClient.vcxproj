@@ -93,6 +93,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -175,6 +176,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -262,6 +264,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\VoIPServer\res\icons8-homer-simpson-32x32.ico" />
+    <Image Include="..\VoIPServer\res\icons8-homer-simpson-480.png" />
     <Image Include="res\classview.bmp" />
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
@@ -283,6 +286,8 @@
     <Image Include="res\icons8-anonymous-mask-90.png" />
     <Image Include="res\icons8-homer-simpson-32x32.ico" />
     <Image Include="res\info.bmp" />
+    <Image Include="res\login_95461.ico" />
+    <Image Include="res\login_95461_64x64.ico" />
     <Image Include="res\menuimages.bmp" />
     <Image Include="res\menuimages_hc.bmp" />
     <Image Include="res\nav_large.bmp" />
@@ -297,6 +302,8 @@
     <Image Include="res\properties_hc.bmp" />
     <Image Include="res\properties_wnd.ico" />
     <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\sign_6358961.ico" />
+    <Image Include="res\sign_6358961_64x64.ico" />
     <Image Include="res\sort.bmp" />
     <Image Include="res\sort_hc.bmp" />
     <Image Include="res\Toolbar.bmp" />
