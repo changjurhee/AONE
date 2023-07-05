@@ -5,6 +5,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "VoIPClient.h"
+#include "AccountLoginDlg.h"
+#include "ManageUserAccountDlg.h"
 
 #include "CallView.h"
 #include "CallListView.h"
@@ -616,6 +618,21 @@ void CMainFrame::OnUpdateViewPropertiesWindow(CCmdUI* pCmdUI)
 BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext)
 {
 	// 기본 클래스가 실제 작업을 수행합니다.
+	CAccountLoginDlg accountLoginDlg;
+	INT_PTR nRet = -1;
+	nRet = accountLoginDlg.DoModal();
+	if (IDCANCEL != nRet) {
+		if ((CAccountLoginDlg::KResponse)nRet == CAccountLoginDlg::KResponse::LOGIN) {
+			std::shared_ptr<CAccountLoginDlg::userInfo> spUserInfo = accountLoginDlg.GetUserInfo();
+			// @todo do something for login
+			// FIleOpen 시 state가 바뀌는데 같은 역할을 해주면 좋을 듯 함. 
+			// SetWindowText(FormatString(_T("%s"), spUserInfo->email.c_str()).data());
+		}
+		else {
+			CManageUserAccountDlg manageUserAccountDlg;
+			manageUserAccountDlg.DoModal();
+		}
+	}
 
 	if (!CFrameWndEx::LoadFrame(nIDResource, dwDefaultStyle, pParentWnd, pContext))
 	{

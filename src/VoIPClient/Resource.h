@@ -123,6 +123,11 @@
 #define IDB_BITMAP1                     334
 #define IDB_MASK                        334
 #define IDD_DLG_CALL_LIST_VIEW          335
+#define IDI_LOGIN                       337
+#define IDI_SIGNIN                      338
+#define IDI_LOGIN_64                    339
+#define IDI_ICON4                       340
+#define IDI_SIGNIN_64                   340
 #define ID_VIEW_CALLVIEW                400
 #define IDC_ED_EMAIL_ID                 1000
 #define IDC_ED_PASSWORD                 1001
@@ -134,6 +139,8 @@
 #define IDC_MFCBTN_UPDATE               1009
 #define IDC_LIST1                       1010
 #define IDC_LST_CONTACT_ID              1010
+#define IDC_ST_LOGO                     1011
+#define IDC_MFCBTN_RESET_PW             1012
 #define ID_TEST_32771                   32771
 #define ID_TEST_32772                   32772
 #define ID_TEST_LOG_IN                  32773
@@ -147,9 +154,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        337
+#define _APS_NEXT_RESOURCE_VALUE        341
 #define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1011
+#define _APS_NEXT_CONTROL_VALUE         1013
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
