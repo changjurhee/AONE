@@ -6,7 +6,14 @@
 #include "framework.h"
 #include "VoIPClient.h"
 
+#include "CallView.h"
+#include "CallListView.h"
 #include "MainFrm.h"
+
+// Session
+#include "session/CallsManager.h"
+#include "session/AccountManager.h"
+#include "session/SessionManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -158,7 +165,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	DockPane(&m_wndOutput);
 	m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndProperties);
-
+	
 	// 보관된 값에 따라 비주얼 관리자 및 스타일을 설정합니다.
 	OnApplicationLook(theApp.m_nAppLook);
 
@@ -204,7 +211,23 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_SORTING_SORTBYACCESS);
 	lstBasicCommands.AddTail(ID_SORTING_GROUPBYTYPE);
 
+	// @ test menu
+	lstBasicCommands.AddTail(ID_TEST_LOG_IN);
+	lstBasicCommands.AddTail(ID_TEST_CREATE_USER);
+	lstBasicCommands.AddTail(ID_TEST_UPDATE_USER);
+
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
+
+	// Session init[S]
+	SessionManager* sessionManager = SessionManager::getInstance();
+	AccountManager* accountManager = AccountManager::getInstance();
+	CallsManager* callsManager = CallsManager::getInstance();
+	sessionManager->setAccountListener(accountManager);
+	sessionManager->setCallsListener(callsManager);
+	accountManager->setSessionControl(sessionManager);
+	callsManager->setSessionControl(sessionManager);
+	sessionManager->init("127.0.0.1", 5555); // TODO dynamic Server IP,Port
+	// Session init[E]
 
 	return 0;
 }
@@ -212,10 +235,31 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/,
 	CCreateContext* pContext)
 {
-	return m_wndSplitter.Create(this,
-		2, 2,               // TODO: 행 및 열의 개수를 조정합니다.
-		CSize(10, 10),      // TODO: 최소 창 크기를 조정합니다.
-		pContext);
+	const int nRow = 1, nCol = 2;
+	if (!m_wndSplitter.CreateStatic(this, nRow, nCol))
+	{
+		TRACE0("Fail to create splitter.\n");
+		return FALSE;
+	}
+
+	if (!m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(CCallView), CSize(900, 900), pContext))
+	{
+		AfxMessageBox(_T("Failed to create left pane of nested splitter"));
+		return FALSE;
+	}
+
+	if (!m_wndSplitter.CreateView(0, 1, RUNTIME_CLASS(CCallListView), CSize(300, 900), pContext))
+	{
+		AfxMessageBox(_T("Failed to create right pane of nested splitter"));
+		return FALSE;
+	}
+
+	return TRUE;
+
+	//return m_wndSplitter.Create(this,
+	//	2, 2,						// TODO: 행 및 열의 개수를 조정합니다.
+	//	CSize(10, 10),      // TODO: 최소 창 크기를 조정합니다.
+	//	pContext);
 }
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
@@ -568,7 +612,6 @@ void CMainFrame::OnUpdateViewPropertiesWindow(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(TRUE);
 }
-
 
 BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext)
 {

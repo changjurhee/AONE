@@ -8,6 +8,12 @@
 
 #include "MainFrm.h"
 
+// Session
+#include <thread>
+#include "session/SessionManager.h"
+#include "session/TelephonyManager.h"
+#include "session/AccountManager.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif

@@ -6,11 +6,13 @@
 #include "framework.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
+#include "AccountLoginDlg.h"
 #include "VoIPClient.h"
 #include "MainFrm.h"
 
 #include "VoIPClientDoc.h"
 #include "VoIPClientView.h"
+#include "ClientMediaManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -188,6 +190,21 @@ BOOL CVoIPClientApp::InitInstance()
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 	m_pMainWnd->UpdateWindow();
+	
+
+#if 0
+	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
+	ClientMediaManager test = ClientMediaManager(1);
+	ContactInfo contact_info;
+	OperatingInfo operate_info;
+	contact_info.dest_ip = "127.0.0.1";
+	contact_info.dest_video_port=5001;
+	contact_info.dest_audio_port = 5002;
+	contact_info.org_video_port = 5001;
+	contact_info.org_audio_port = 5002;
+
+	test.startCall(contact_info, operate_info);
+#endif
 	return TRUE;
 }
 
@@ -257,6 +274,8 @@ void CVoIPClientApp::PreLoadState()
 
 void CVoIPClientApp::LoadCustomState()
 {
+	CAccountLoginDlg accountLoginDlg;
+	accountLoginDlg.DoModal();
 }
 
 void CVoIPClientApp::SaveCustomState()
