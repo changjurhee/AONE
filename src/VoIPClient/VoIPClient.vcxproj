@@ -93,11 +93,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <RegisterOutput>true</RegisterOutput>
-      <AdditionalDependencies>ws2_32.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -175,13 +177,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <RegisterOutput>true</RegisterOutput>
-      <AdditionalDependencies>ws2_32.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -198,12 +202,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h" />
+    <ClInclude Include="..\common\debug.h" />
+    <ClInclude Include="..\media\AudioMediaPipeline.h" />
+    <ClInclude Include="..\media\call_info.h" />
+    <ClInclude Include="..\media\MediaManager.h" />
+    <ClInclude Include="..\media\MediaPipeline.h" />
+    <ClInclude Include="..\media\VideoMediaPipeline.h" />
     <ClInclude Include="calendarbar.h" />
     <ClInclude Include="CallListView.h" />
     <ClInclude Include="CallView.h" />
     <ClInclude Include="ClassView.h" />
+    <ClInclude Include="ClientMediaManager.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="IClientMediaManager.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="ManageUserAccountDlg.h" />
     <ClInclude Include="OutputWnd.h" />
@@ -226,10 +238,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AccountLoginDlg.cpp" />
+    <ClCompile Include="..\common\debug.cpp" />
+    <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
+    <ClCompile Include="..\media\MediaManager.cpp" />
+    <ClCompile Include="..\media\MediaPipeline.cpp" />
+    <ClCompile Include="..\media\VideoMediaPipeline.cpp" />
     <ClCompile Include="calendarbar.cpp" />
     <ClCompile Include="CallListView.cpp" />
     <ClCompile Include="CallView.cpp" />
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="ClientMediaManager.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="ManageUserAccountDlg.cpp" />
