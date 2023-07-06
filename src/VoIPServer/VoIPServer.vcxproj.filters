@@ -63,10 +63,22 @@
     <ClInclude Include="session\AccountManager.h">
       <Filter>Session</Filter>
     </ClInclude>
-    <ClInclude Include="session\AccountManagerListener.h">
+    <ClInclude Include="session\ConferenceDb.h">
       <Filter>Session</Filter>
     </ClInclude>
     <ClInclude Include="session\Connection.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\ContactDb.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\DatabaseManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\IAccountManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\ITelephonyManager.h">
       <Filter>Session</Filter>
     </ClInclude>
     <ClInclude Include="session\SessionControl.h">
@@ -76,9 +88,6 @@
       <Filter>Session</Filter>
     </ClInclude>
     <ClInclude Include="session\TelephonyManager.h">
-      <Filter>Session</Filter>
-    </ClInclude>
-    <ClInclude Include="session\TelephonyManagerListener.h">
       <Filter>Session</Filter>
     </ClInclude>
   </ItemGroup>
@@ -119,7 +128,16 @@
     <ClCompile Include="session\AccountManager.cpp">
       <Filter>Session</Filter>
     </ClCompile>
+    <ClCompile Include="session\ConferenceDb.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
     <ClCompile Include="session\Connection.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\ContactDb.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\DatabaseManager.cpp">
       <Filter>Session</Filter>
     </ClCompile>
     <ClCompile Include="session\SessionManager.cpp">

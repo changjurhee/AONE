@@ -13,8 +13,6 @@
 #include "MainFrm.h"
 
 // Session
-#include "session/CallsManager.h"
-#include "session/AccountManager.h"
 #include "session/SessionManager.h"
 
 #ifdef _DEBUG
@@ -222,12 +220,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// Session init[S]
 	SessionManager* sessionManager = SessionManager::getInstance();
-	AccountManager* accountManager = AccountManager::getInstance();
-	CallsManager* callsManager = CallsManager::getInstance();
-	sessionManager->setAccountListener(accountManager);
-	sessionManager->setCallsListener(callsManager);
-	accountManager->setSessionControl(sessionManager);
-	callsManager->setSessionControl(sessionManager);
 	sessionManager->init("127.0.0.1", 5555); // TODO dynamic Server IP,Port
 	// Session init[E]
 

@@ -4,44 +4,41 @@
 #include <string>
 #include <vector>
 #include <thread>
-#include <WinSock2.h>
-#include <WS2tcpip.h>
 
 #include "SessionControl.h"
-#include "TelephonyManagerListener.h"
-#include "AccountManagerListener.h"
+#include "ITelephonyManager.h"
+#include "IAccountManager.h"
 
-
-#define PACKET_SIZE 1024
+constexpr auto PACKET_SIZE = 1024;
 
 class SessionManager : public SessionControl {
 private:
 	static SessionManager* instance;
 
 	int serverPort = 5555;
-	const int MAX_CLIENTS = 10;  // ÃÖ´ë Å¬¶óÀÌ¾ğÆ® ¼ö
+	const int MAX_CLIENTS = 10;  // ìµœëŒ€ì°¸ì—¬ì ìˆ˜
 	std::map<std::string, int> clientMap;
 	std::vector<std::thread> clientThread;
 
 	int contactNum; // For TEST
 
-	TelephonyManagerListener* telephonyListener;
-	AccountManagerListener* accountListener;
+	ITelephonyManager* telephonyManager;
+	IAccountManager* accountManager;
 
 	SessionManager();
 
 public:
 	static SessionManager* getInstance();
+	static void releaseInstance();
 
 	void init();
+	void release();
 	void openSocket();
 	void HandleClient(int clientSocket);
 	std::string GetClientName(int clientSocket);
-	void setTelephonyListener(TelephonyManagerListener* listener);
-	void setAccountListener(AccountManagerListener* listener);
-	std::vector<std::string> split(const std::string& str, char delimiter);
 
 	// interface
 	void sendData(const char* message, std::string to) override;
+	void sendData(int msgId, Json::Value payload, std::string to) override;
 };
 
