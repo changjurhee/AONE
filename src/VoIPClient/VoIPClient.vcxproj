@@ -285,6 +285,7 @@
     <Image Include="res\icons8-anonymous-mask-60.png" />
     <Image Include="res\icons8-anonymous-mask-90.png" />
     <Image Include="res\icons8-homer-simpson-32x32.ico" />
+    <Image Include="res\icons8-homer-simpson-480.png" />
     <Image Include="res\info.bmp" />
     <Image Include="res\login_95461.ico" />
     <Image Include="res\login_95461_64x64.ico" />
