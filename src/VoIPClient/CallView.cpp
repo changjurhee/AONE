@@ -27,6 +27,12 @@ void CCallView::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CCallView, CFormView)
 	ON_MESSAGE(UM_VAD_STATE, &CCallView::OnVadNotify)
+    ON_BN_CLICKED(IDC_Client_StartCall, &CCallView::OnBnClickedClientStartcall)
+    ON_BN_CLICKED(IDC_Client_EndCall, &CCallView::OnBnClickedClientEndcall)
+    ON_BN_CLICKED(IDC_Server_StartCall, &CCallView::OnBnClickedServerStartcall)
+    ON_BN_DOUBLECLICKED(IDC_Server_EndCall, &CCallView::OnBnDoubleclickedServerEndcall)
+    ON_BN_CLICKED(IDC_Server_AddClient, &CCallView::OnBnClickedServerAddclient)
+    ON_BN_CLICKED(IDC_Server_RemoveClient, &CCallView::OnBnClickedServerRemoveclient)
 END_MESSAGE_MAP()
 
 
@@ -81,4 +87,75 @@ LRESULT CCallView::OnVadNotify(WPARAM wParam, LPARAM lParam)
     }*/
 
 	return TRUE;
+}
+
+void CCallView::OnBnClickedClientStartcall()
+{
+    CString client_ServerIP;
+    CString client_ClientIP;
+    CString client_VideoCodec;
+    CString client_AudioCodec;
+
+    // Get information from call view to operating start call by client
+    GetDlgItemText(IDC_Client_ServerIP, client_ServerIP);
+    GetDlgItemText(IDC_Client_ClientIP, client_ClientIP);
+    GetDlgItemText(IDC_Client_VideoCodec, client_VideoCodec);
+    GetDlgItemText(IDC_Client_AudioCodec, client_AudioCodec);
+
+    // TODO : Get client_EncryptionAlgo, client_EncryptionKey
+
+    // TODO : Start Call
+
+}
+
+
+void CCallView::OnBnClickedClientEndcall()
+{
+    // TODO: 여기에 Client의 EndCall이 눌렸을 때 처리 코드를 추가합니다.
+}
+
+
+void CCallView::OnBnClickedServerStartcall()
+{
+    CString server_ServerIP;
+    CString server_ClientIPForStart;
+    CString server_VideoCodec;
+    CString server_AudioCodec;
+
+    // Get information from call view to operating start call by server
+    GetDlgItemText(IDC_Server_ServerIP, server_ServerIP);
+    GetDlgItemText(IDC_Server_ClientIPForStart, server_ClientIPForStart);
+    GetDlgItemText(IDC_Server_VideoCodec, server_VideoCodec);
+    GetDlgItemText(IDC_Server_AudioCodec, server_AudioCodec);
+
+    // TODO : Get server_EncryptionAlgo, server_EncryptionKey
+
+    // TODO : Start Call
+
+}
+
+
+void CCallView::OnBnDoubleclickedServerEndcall()
+{
+    // TODO: 여기에 Server의 EndCall이 눌렸을 때 처리 코드를 추가합니다.
+}
+
+
+void CCallView::OnBnClickedServerAddclient()
+{
+    CString server_ClientIPForAdd;
+    CString server_RID;
+    CString server_CID;
+
+    // Get information from call view to operating add client
+    GetDlgItemText(IDC_Server_RID, server_RID);
+    GetDlgItemText(IDC_Server_ClientIPForAdd, server_ClientIPForAdd);
+    GetDlgItemText(IDC_Server_CID, server_CID);
+
+}
+
+
+void CCallView::OnBnClickedServerRemoveclient()
+{
+    // TODO: 여기에 Server의 RemoveClient가 눌렸을 때 처리 코드를 추가합니다.
 }
