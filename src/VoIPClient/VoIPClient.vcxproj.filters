@@ -73,6 +73,7 @@
     <ClCompile Include="..\media\litevad.cpp">
       <Filter>media</Filter>
     </ClCompile>
+    <ClCompile Include="ServerMediaManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h">
@@ -186,6 +187,8 @@
     <ClInclude Include="..\media\litevad.h">
       <Filter>media</Filter>
     </ClInclude>
+    <ClInclude Include="IServerMediaManager.h" />
+    <ClInclude Include="ServerMediaManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\class_view.ico">

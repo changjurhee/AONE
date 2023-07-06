@@ -193,16 +193,18 @@ BOOL CVoIPClientApp::InitInstance()
 
 #if 0
 	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
-	ClientMediaManager test = ClientMediaManager(1);
-	ContactInfo contact_info;
-	OperatingInfo operate_info;
-	contact_info.dest_ip = "127.0.0.1";
-	contact_info.dest_video_port=5001;
-	contact_info.dest_audio_port = 5002;
-	contact_info.org_video_port = 5001;
-	contact_info.org_audio_port = 5002;
+	ClientMediaManager *test = ClientMediaManager::getInstance();
 
-	test.startCall(contact_info, operate_info);
+	Json::Value client_join_info;
+	client_join_info["rid"] = "TEST_ID";
+	client_join_info["serverip"] = "127.0.0.1";
+	client_join_info["myip"] = "127.0.0.1";
+	client_join_info["videocodec"] = "TEST_ID";
+	client_join_info["audiocodec"] = "TEST_ID";
+	client_join_info["encryption_alg"] = "TEST_ID";
+	client_join_info["encryption_key"] = "TEST_ID";
+
+	test->startCall(client_join_info);
 #endif
 	return TRUE;
 }

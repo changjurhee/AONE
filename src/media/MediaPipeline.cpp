@@ -1,12 +1,10 @@
 ﻿#include "MediaPipeline.h"
 #include <thread>
 
-MediaPipeline::MediaPipeline(int call_index, const vector<PipeMode>& pipe_mode_list) {
-	call_index_ = call_index;
+MediaPipeline::MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list) {
+	rid_ = rid;
 	pipe_mode_list_ = pipe_mode_list;
-
-	vector<ContactInfo> contact_info_vector;
-	contact_info_list_ = contact_info_vector;
+	start_pipeline_ = false;
 
 	OperatingInfo* operate_info_ptr = new OperatingInfo();
 	operate_info_ = *operate_info_ptr;
@@ -60,8 +58,8 @@ string MediaPipeline::get_elements_name(element_type etype, int bin_index, int c
 		case TYPE_UDP_SINK :
 			name = "udpsink_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
-			name = "udpsrc_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 		case TYPE_UDP_SRC :
+			name = "udpsrc_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
 		case TYPE_TEE :
 			name = "tee_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
@@ -125,8 +123,6 @@ SubElements MediaPipeline::pipeline_make_udp_src_with_port(GstBin* parent_bin, i
 	return SubElements(element, element); 
 };
 
-
-
 SubElements MediaPipeline::make_front_device(GstBin* parent_bin, int bin_index, int client_index) {
 	SubElements ret_sub_elements = SubElements(NULL, NULL);
 	SubElements input_pair = pipeline_make_input_device(parent_bin, bin_index, client_index);
@@ -142,21 +138,17 @@ SubElements MediaPipeline::make_front_device(GstBin* parent_bin, int bin_index, 
 }
 
 SubElements MediaPipeline::make_front_udp_n(GstBin* parent_bin, int bin_index, int client_index) {
-#if 0
+#if 1
 	// TODO : Adder 미동작 수정
-	GstElement* start = NULL;
-	GstElement* last = NULL;
-	SubElements adder_pair = pipeline_make_adder(parent_bin, bin_index, client_index);
 
-	start = adder_pair.first;
-	last = adder_pair.second;
+	SubElements ret_sub_elements = SubElements(NULL, NULL);
+	SubElements adder_pair = pipeline_make_adder(parent_bin, bin_index, BASE_CLIENT_ID);
+	ret_sub_elements = connect_subElements(ret_sub_elements, adder_pair);
+
 	SubElements convert_pair = pipeline_make_convert(parent_bin, bin_index, client_index);
-	if (convert_pair.first != NULL) {
-		gst_element_link(last, convert_pair.first);
-		last = convert_pair.second;
-	}
+	ret_sub_elements = connect_subElements(ret_sub_elements, convert_pair);
 
-	return SubElements(start, last); 
+	return ret_sub_elements;
 #else
 	return pipeline_make_convert(parent_bin, bin_index, client_index);
 #endif
@@ -175,12 +167,10 @@ SubElements MediaPipeline::make_back_udp_n(GstBin* parent_bin, int bin_index, in
 
 	SubElements encryption_pair = pipeline_make_encryption(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, encryption_pair);
-#if 0 
+
+#if 1
 	SubElements tee_pair = pipeline_make_tee(parent_bin, bin_index, client_index);
-	if (tee_pair.first != NULL) {
-		gst_element_link(last, tee_pair.first);
-		last = tee_pair.second;
-	}
+	ret_sub_elements = connect_subElements(ret_sub_elements, tee_pair);
 #endif
 
 	return ret_sub_elements;
@@ -248,7 +238,8 @@ void MediaPipeline::pipeline_run() {
 		gst_bin_add(GST_BIN(pipeline), bin);	
 	}
 
-	add_client(&contact_info_list_[0]);
+	start_pipeline_ = true;
+	add_waiting_client();
 
     // Pipeline execution
     GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
@@ -258,8 +249,6 @@ void MediaPipeline::pipeline_run() {
         gst_object_unref(pipeline);
         return;
     }
-
-	logPipelineElements(pipeline, 0);
 
 	enable_debugging();
 	// Start the main loop
@@ -273,7 +262,7 @@ void MediaPipeline::pipeline_run() {
 
 
 void MediaPipeline::makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info) {
-	contact_info_list_ = contact_info_list;
+	contact_info_list_;
 	memcpy(&operate_info_, &operate_info, sizeof(OperatingInfo));
 
 	pipeline_thread_ = std::thread(&MediaPipeline::pipeline_run, this);
@@ -287,16 +276,33 @@ void MediaPipeline::end_call()
 	gst_object_unref(pipeline);
 }
 
-int MediaPipeline::get_client_index(ContactInfo* client_info) {
-	return 0;
+int MediaPipeline::get_client_index(ContactInfo* client_info)
+{
+	string cid = client_info->cid;
+	int client_id = 0;
+	if (client_id_list_.find(cid) == client_id_list_.end()) {
+		int client_id = client_id_list_.size();
+		client_id_list_[cid] = make_pair(client_id, true);
+		contact_info_list_[client_id] = *client_info;
+	} else if (client_id_list_[cid].second) {
+		client_id = client_id_list_[cid].first;
+	} else {
+		client_id = client_id_list_[cid].first;
+		client_id_list_[cid].second = true;
+	}
+
+	return client_id;
 };
 
+void MediaPipeline::disable_client_index(ContactInfo* client_info)
+{
+	string cid = client_info->cid;
+	if (client_id_list_.find(cid) != client_id_list_.end()) {
+		client_id_list_[cid].second = false;
+	}
+}
+
 void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int client_index) {
-#if 0
-	// TODO : adder 미동작 수정
-	std::string name = "adder_"+std::to_string(bin_index)+"_"+std::to_string(BASE_CLIENT_ID);
-	GstElement* adder = gst_bin_get_by_name(GST_BIN(parent_bin), name.c_str());
-#endif
 	SubElements ret_sub_elements = SubElements(NULL, NULL);
 
 	SubElements udp_src_pair = pipeline_make_udp_src(parent_bin, bin_index, client_index);
@@ -311,46 +317,28 @@ void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int c
 	SubElements decoding_pair = pipeline_make_decoding(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, decoding_pair);
 
-	SubElements convert_pair = pipeline_make_convert(parent_bin, bin_index, client_index);
-	ret_sub_elements = connect_subElements(ret_sub_elements, convert_pair);
+	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index);
+	ret_sub_elements = connect_subElements(ret_sub_elements, queue_pair);
 
-	// TODO : QUEUE 미동작 수정
-	//SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index);
-	//ret_sub_elements = connect_subElements(ret_sub_elements, queue_pair);
-
-	SubElements adder = get_elements_by_name(parent_bin, TYPE_OUTPUT_DEVICE, bin_index, BASE_CLIENT_ID);
+	SubElements adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, BASE_CLIENT_ID);
 	ret_sub_elements = connect_subElements(ret_sub_elements, adder);
 
 	return;
 }
 
-void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int client_index) {
+void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int client_index)
+{
+	SubElements ret_sub_elements = SubElements(NULL, NULL);
 
-#if 0
-	std::string name = "tee_" + std::to_string(bin_index) + "_" + std::to_string(BASE_CLIENT_ID);
-	GstElement* tee = gst_bin_get_by_name(GST_BIN(parent_bin), name.c_str());
+	SubElements tee = get_elements_by_name(parent_bin, TYPE_TEE, bin_index, BASE_CLIENT_ID);
+	ret_sub_elements = connect_subElements(ret_sub_elements, tee);
 
-	GstElement* start = NULL;
-	GstElement* last = NULL;
-	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index);
-	start = queue_pair.first;
-	last = queue_pair.second;
+	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index+20);
+	ret_sub_elements = connect_subElements(ret_sub_elements, queue_pair);
+
 	SubElements udp_sink_pair = pipeline_make_udp_sink(parent_bin, bin_index, client_index);
-	if (udp_sink_pair.first != NULL) {
-		gst_element_link(last, udp_sink_pair.first);
-		last = udp_sink_pair.second;
-	}
-	gst_element_link(tee, start);
-#endif
-#if 1
-	std::string name = "encoding_rtp_" + std::to_string(bin_index) + "_" + std::to_string(BASE_CLIENT_ID);
-	GstElement* rtp = gst_bin_get_by_name(GST_BIN(parent_bin), name.c_str());
-	SubElements udp_sink_pair = pipeline_make_udp_sink(parent_bin, bin_index, client_index);
+	ret_sub_elements = connect_subElements(ret_sub_elements, udp_sink_pair);
 
-	gst_element_link(rtp, udp_sink_pair.first);
-	g_printerr(("After tee : " + getLinkedElements(rtp) + "\n").c_str());
-
-#endif
 	return;
 }
 
@@ -394,7 +382,37 @@ void MediaPipeline::remove_client_in_back(GstBin* parent_bin, int bin_index, int
 	}
 }
 
-void MediaPipeline::add_client(ContactInfo* client_info) {
+void MediaPipeline::add_waiting_client(void)
+{
+	while (!client_queue_.empty())
+	{
+		ContactInfo client_info = client_queue_.front();
+
+		add_client(&client_info);
+		client_queue_.pop();
+	}
+}
+
+bool MediaPipeline::check_pipeline(ContactInfo* client_info)
+{
+	if (start_pipeline_)
+		return false;
+	client_queue_.push(*client_info);
+	return true;
+}
+
+void MediaPipeline::add_client(ContactInfo* client_info)
+{
+	if (check_pipeline(client_info))
+		return;
+
+
+	GstState cur_state;
+	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
+	if (cur_state == GST_STATE_PLAYING) {
+		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
+	}
+
 	int client_index = get_client_index(client_info);
 	for (int index = 0; index < pipe_mode_list_.size(); index++) {
 		std::string name = "bin_"+std::to_string(index);
@@ -410,6 +428,10 @@ void MediaPipeline::add_client(ContactInfo* client_info) {
 			add_client_in_back(bin, index, client_index);
 		}
 	}
+	// Pipeline replay(?)
+	gst_element_set_state(pipeline, GST_STATE_PLAYING);
+	logPipelineElements(pipeline, 0);
+
 }
 
 void MediaPipeline::remove_client(ContactInfo* client_info) {
@@ -428,6 +450,7 @@ void MediaPipeline::remove_client(ContactInfo* client_info) {
 			remove_client_in_back(bin, bin_index, client_index);
 		}
 	}
+	disable_client_index(client_info);
 }
 
 string MediaPipeline::getLinkedElements(GstElement* element)
