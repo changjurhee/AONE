@@ -8,8 +8,8 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 	//TODO : 기능 구현하기
 }
 
-SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin) {
-	std::string name = "input_device";
+SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) {
+	std::string name = get_elements_name(TYPE_INPUT_DEVICE, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("mfvideosrc", name.c_str());
 	g_object_set(element, "device-index", 0, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
@@ -17,8 +17,8 @@ SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin) {
 	return SubElements(element, element);
 };
 
-SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin) {
-	std::string name = "output_device";
+SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) {
+	std::string name = get_elements_name(TYPE_OUTPUT_DEVICE, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("autovideosink", name.c_str());
 	gst_bin_add(GST_BIN(parent_bin), element);
 
@@ -26,21 +26,15 @@ SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin) 
 };
 
 SubElements VideoMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bin_index, int client_index) {
-#if 0
-	std::string name = "convert_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
-	GstElement* element = gst_element_factory_make("videoconvert", name.c_str());
-	gst_bin_add(GST_BIN(parent_bin), element);
-	return SubElements(element, element);
-#else
 	return SubElements(NULL, NULL);
-#endif
 }
 
 SubElements VideoMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bin_index, int client_index, int level) {
-	std::string name = "scale_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
-    GstElement* scale_element = gst_element_factory_make("videoscale", name.c_str());
+	std::string scale_name = get_elements_name(TYPE_RESCALE, bin_index, client_index);
+	GstElement* scale_element = gst_element_factory_make("videoscale", scale_name.c_str());
 
-	GstElement* caps_element = gst_element_factory_make("capsfilter", "videoCapsFilter");	
+	std::string caps_name = get_elements_name(TYPE_CAPS, bin_index, client_index);
+	GstElement* caps_element = gst_element_factory_make("capsfilter", caps_name.c_str());
 
     // Set the video resolution using capsfilter
 	// TODO : level에 따른 해상도 적용
@@ -58,7 +52,7 @@ SubElements VideoMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bi
 };
 
 SubElements VideoMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int bin_index, int client_index=0) {
-	std::string encoding_name = "encoding_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
+	std::string encoding_name = get_elements_name(TYPE_ENCODING, bin_index, client_index);
     GstElement* encoding_element = gst_element_factory_make("x264enc", encoding_name.c_str());
 	// TODO : 파라메터 추가검토
 	//  g_object_set(encoding_element, 
@@ -68,7 +62,7 @@ SubElements VideoMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int b
 		//, NULL);
 	g_object_set(encoding_element, "tune", H_264_TUNE_ZEROLATENCY, NULL);
 
-	std::string rtp_name = "encoding_rtp_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
+	std::string rtp_name = get_elements_name(TYPE_ENCODING_RTP, bin_index, client_index);
     GstElement* rtp_element = gst_element_factory_make("rtph264pay", rtp_name.c_str());
 	gst_bin_add(GST_BIN(parent_bin), encoding_element);
 	gst_bin_add(GST_BIN(parent_bin), rtp_element);
@@ -77,10 +71,10 @@ SubElements VideoMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int b
 };
 
 SubElements VideoMediaPipeline::pipeline_make_decoding(GstBin* parent_bin, int bin_index, int client_index) {
-	std::string rtp_name = "decoding_rtp_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
+	std::string rtp_name = get_elements_name(TYPE_DECODING_RTP, bin_index, client_index);
     GstElement* rtp_element = gst_element_factory_make("rtph264depay", rtp_name.c_str());
 
-	std::string decoding_name = "decoding_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
+	std::string decoding_name = get_elements_name(TYPE_DECODING, bin_index, client_index);
     GstElement* decoding_element = gst_element_factory_make("avdec_h264", decoding_name.c_str());
 	gst_bin_add(GST_BIN(parent_bin), rtp_element);
 	gst_bin_add(GST_BIN(parent_bin), decoding_element);
@@ -89,7 +83,7 @@ SubElements VideoMediaPipeline::pipeline_make_decoding(GstBin* parent_bin, int b
 };
 
 SubElements VideoMediaPipeline::pipeline_make_adder(GstBin* parent_bin, int bin_index, int client_index) {
-	std::string name = "adder_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
+	std::string name = get_elements_name(TYPE_ADDER, bin_index, client_index);
     GstElement* element = gst_element_factory_make("compositor", name.c_str());
 	g_printerr(("video"+name + "\n").c_str());
 
@@ -106,7 +100,7 @@ SubElements VideoMediaPipeline::pipeline_make_adder(GstBin* parent_bin, int bin_
 };
 
 SubElements VideoMediaPipeline::pipeline_make_jitter_buffer(GstBin* parent_bin, int bin_index, int client_index=0) {
-	std::string name = "jitterbuffer_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
+	std::string name = get_elements_name(TYPE_ADDER, bin_index, client_index);
     GstElement* element = gst_element_factory_make("rtpjitterbuffer", name.c_str());
     g_object_set(element, "latency", 500, "do-lost", TRUE, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
@@ -121,7 +115,7 @@ SubElements VideoMediaPipeline::pipeline_make_udp_sink(GstBin* parent_bin, int b
 SubElements VideoMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bin_index, int client_index) {
 	SubElements udpsrc_pair = MediaPipeline::pipeline_make_udp_src_with_port(parent_bin, bin_index, client_index, contact_info_list_[client_index].org_video_port);
 
-	std::string name = "capsfilter_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+	std::string name = get_elements_name(TYPE_CAPS, bin_index, client_index);
 	GstElement* videoCapsfilter = gst_element_factory_make("capsfilter", name.c_str());
 	GstCaps* videoCaps = gst_caps_from_string("application/x-rtp, media=(string)video, payload=(int)96");
 	g_object_set(G_OBJECT(videoCapsfilter), "caps", videoCaps, NULL);
