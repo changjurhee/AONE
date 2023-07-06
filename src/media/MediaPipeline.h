@@ -17,6 +17,25 @@ enum pipe_topology_mode {
 	MODE_MAX
 };
 
+enum element_type {
+	TYPE_INPUT_DEVICE,
+	TYPE_OUTPUT_DEVICE,
+	TYPE_CONVERT,
+	TYPE_RESCALE,
+	TYPE_CAPS,
+	TYPE_ENCODING,
+	TYPE_ENCODING_RTP,
+	TYPE_DECODING,
+	TYPE_DECODING_RTP,
+	TYPE_ADDER,
+	TYPE_JITTER,
+	TYPE_UDP_SINK,
+	TYPE_UDP_SRC,
+	TYPE_QUEUE,
+	TYPE_TEE,
+	TYPE_MAX
+};
+
 typedef pair<GstElement*, GstElement*> SubElements;
 typedef pair<int, int> PipeMode;
 
@@ -34,13 +53,12 @@ protected :
 	vector<ContactInfo> contact_info_list_;
 	OperatingInfo operate_info_;
 	GstElement* pipeline;
-	virtual SubElements pipeline_make_input_device(GstBin* parent_bin) = 0;
-	virtual SubElements pipeline_make_output_device(GstBin* parent_bin) = 0;
+	virtual SubElements pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) = 0;
+	virtual SubElements pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_convert(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_rescale(GstBin* parent_bin, int bin_index, int client_index, int level) = 0;
 	virtual SubElements pipeline_make_encoding(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_decoding(GstBin* parent_bin, int bin_index, int client_index) = 0;
-
 	virtual SubElements pipeline_make_adder(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_jitter_buffer(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_udp_sink(GstBin* parent_bin, int bin_index, int client_index) = 0;
@@ -51,9 +69,7 @@ protected :
 	SubElements pipeline_make_tee(GstBin* parent_bin, int bin_index, int client_index);
 
 	SubElements make_front_device(GstBin* parent_bin, int bin_index, int client_index);
-	SubElements make_front_udp_1(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements make_front_udp_n(GstBin* parent_bin, int bin_index, int client_index);
-	SubElements make_back_udp_1(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements make_back_device(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements MediaPipeline::make_back_udp_n(GstBin* parent_bin, int bin_index, int client_index);
 	void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int client_index);
@@ -64,6 +80,9 @@ protected :
 	int MediaPipeline::get_client_index(ContactInfo* client_info);
 	void logPipelineElements(GstElement* element, int level);
 	string MediaPipeline::getLinkedElements(GstElement* element);
+	SubElements connect_subElements(SubElements front, SubElements back);
+	string get_elements_name(element_type etype, int bin_index, int client_index);
+	SubElements get_elements_by_name(GstBin* parent_bin, element_type etype, int bin_index, int client_index);
 public:
 	MediaPipeline(int call_index, const vector<PipeMode>& pipe_mode_list);
 	void makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info);

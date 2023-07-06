@@ -5,8 +5,8 @@
 class AudioMediaPipeline: public MediaPipeline
 {
 protected:
-	SubElements pipeline_make_input_device(GstBin* parent_bin) override;
-	SubElements pipeline_make_output_device(GstBin* parent_bin) override;
+	SubElements pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) override;
+	SubElements pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) override;
 
 	SubElements pipeline_make_convert(GstBin* parent_bin, int bin_index, int client_index) override;
 	SubElements pipeline_make_rescale(GstBin* parent_bin, int bin_index, int client_index, int level) override;
