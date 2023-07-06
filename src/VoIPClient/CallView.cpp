@@ -117,14 +117,16 @@ void CCallView::OnBnClickedClientEndcall()
 
 void CCallView::OnBnClickedServerStartcall()
 {
+    CString server_RID;
     CString server_ServerIP;
-    CString server_ClientIPForStart;
+    CString server_MaxClients;
     CString server_VideoCodec;
     CString server_AudioCodec;
 
     // Get information from call view to operating start call by server
+    GetDlgItemText(IDC_Server_RIDForStart, server_RID);
     GetDlgItemText(IDC_Server_ServerIP, server_ServerIP);
-    GetDlgItemText(IDC_Server_ClientIPForStart, server_ClientIPForStart);
+    GetDlgItemText(IDC_Server_MaxClient, server_MaxClients);
     GetDlgItemText(IDC_Server_VideoCodec, server_VideoCodec);
     GetDlgItemText(IDC_Server_AudioCodec, server_AudioCodec);
 
