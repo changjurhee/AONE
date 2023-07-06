@@ -125,10 +125,6 @@ BOOL CVoIPClientApp::InitInstance()
 	InitKeyboardManager();
 
 	InitTooltipManager();
-
-	// SessionManager init
-	SessionManager::getInstance()->init("127.0.0.1", 5555); // TODO modify dynamic serverIp, serverPort
-
 	CMFCToolTipInfo ttParams;
 	ttParams.m_bVislManagerTheme = TRUE;
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
