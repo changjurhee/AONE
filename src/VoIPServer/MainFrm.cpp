@@ -211,8 +211,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
 
 	// Session init[S]
-	SessionManager* sessionManager = SessionManager::getInstance();
-	sessionManager->init();
+	//SessionManager* sessionManager = SessionManager::getInstance();
+	//sessionManager->init();
 	//std::thread t(&SessionManager::init, sessionManager);
 	//t.join();
 	// Session init[E]
