@@ -14,7 +14,7 @@
 // limitations under the License.
 */
 
-#include "common/logger.h"
+#include "logger.h"
 
 std::shared_ptr<Logger> Logger::loggerInstance = std::shared_ptr<Logger>(new Logger());
 
