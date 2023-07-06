@@ -58,6 +58,12 @@
     <ClCompile Include="VoIPClientView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\debug.cpp" />
+    <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
+    <ClCompile Include="..\media\MediaManager.cpp" />
+    <ClCompile Include="..\media\MediaPipeline.cpp" />
+    <ClCompile Include="..\media\VideoMediaPipeline.cpp" />
+    <ClCompile Include="ClientMediaManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="session\AccountManager.h">
