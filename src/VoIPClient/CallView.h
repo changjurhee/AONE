@@ -36,6 +36,7 @@ public:
 	afx_msg void OnBnDoubleclickedServerEndcall();
 	afx_msg void OnBnClickedServerAddclient();
 	afx_msg void OnBnClickedServerRemoveclient();
+	CStatic mDisplayBox;
 };
 
 

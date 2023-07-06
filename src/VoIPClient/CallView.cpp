@@ -22,7 +22,8 @@ CCallView::~CCallView()
 
 void CCallView::DoDataExchange(CDataExchange* pDX)
 {
-	CFormView::DoDataExchange(pDX);
+    CFormView::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_DISPLAY, mDisplayBox);
 }
 
 BEGIN_MESSAGE_MAP(CCallView, CFormView)
@@ -105,6 +106,21 @@ void CCallView::OnBnClickedClientStartcall()
     // TODO : Get client_EncryptionAlgo, client_EncryptionKey
 
     // TODO : Start Call
+
+    // Get DC(Device Context) from window handle
+    HDC hdc = ::GetDC(mDisplayBox);
+
+    // Get window size from handle
+    RECT rect;
+    ::GetClientRect(mDisplayBox, &rect);
+
+    // Overlay as much as the size of the window in red
+    HBRUSH hBrush = ::CreateSolidBrush(RGB(255, 0, 0));
+    ::FillRect(hdc, &rect, hBrush);
+
+    // Release
+    ::ReleaseDC(mDisplayBox, hdc);
+    ::DeleteObject(hBrush);
 
 }
 
