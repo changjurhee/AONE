@@ -17,6 +17,8 @@
 #define new DEBUG_NEW
 #endif
 
+// Session
+#include "session/SessionManager.h"
 
 // CVoIPClientApp
 
@@ -123,6 +125,10 @@ BOOL CVoIPClientApp::InitInstance()
 	InitKeyboardManager();
 
 	InitTooltipManager();
+
+	// SessionManager init
+	SessionManager::getInstance()->init("127.0.0.1", 5555); // TODO modify dynamic serverIp, serverPort
+
 	CMFCToolTipInfo ttParams;
 	ttParams.m_bVislManagerTheme = TRUE;
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
@@ -212,6 +218,8 @@ int CVoIPClientApp::ExitInstance()
 	//TODO: 추가한 추가 리소스를 처리합니다.
 	AfxOleTerm(FALSE);
 
+	// Session clear
+	SessionManager::getInstance()->releaseInstance();
 	return CWinAppEx::ExitInstance();
 }
 
