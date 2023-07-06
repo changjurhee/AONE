@@ -23,10 +23,10 @@ string MediaPipeline::get_elements_name(element_type etype, int bin_index, int c
 	switch (etype) 
 	{
 		case TYPE_INPUT_DEVICE :
-			name = "input_device";
+			name = "input_device_" + std::to_string(bin_index) + "_" + std::to_string(client_index);;
 			break;
 		case TYPE_OUTPUT_DEVICE :
-			name = "output_device";
+			name = "output_device_" + std::to_string(bin_index) + "_" + std::to_string(client_index);;
 			break;
 		case TYPE_CONVERT :
 			name = "convert_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
@@ -73,10 +73,37 @@ string MediaPipeline::get_elements_name(element_type etype, int bin_index, int c
 	return name;
 }
 
-SubElements MediaPipeline::get_elements_by_name(GstBin* parent_bin, element_type etype, int bin_index, int client_index) {
+SubElements MediaPipeline::get_elements_by_name(GstBin* parent_bin, element_type etype, int bin_index, int client_index)
+{
 	string name = get_elements_name(etype, bin_index, client_index);
 	GstElement* element = gst_bin_get_by_name(GST_BIN(parent_bin), name.c_str());
 	return SubElements(element, element);
+}
+
+vector<GstElement*> MediaPipeline::get_elements_list(element_type etype)
+{
+	vector<GstElement*> elements_list;
+	for (int bin_index = 0; bin_index < pipe_mode_list_.size(); bin_index++) {
+		std::string name = "bin_" + std::to_string(bin_index);
+		GstBin* bin = GST_BIN(gst_bin_get_by_name(GST_BIN(pipeline), name.c_str()));
+
+		auto iter = client_id_list_.begin();
+		while (iter != client_id_list_.end()) {
+			if (!iter->second.second)
+				continue;
+			int client_index = iter->second.first;
+			string name = get_elements_name(etype, bin_index, client_index);
+			GstElement* element = gst_bin_get_by_name(bin, name.c_str());
+			if (element != NULL)
+				elements_list.push_back(element);
+			++iter;
+		}
+		name = get_elements_name(etype, bin_index, BASE_CLIENT_ID);
+		GstElement* element = gst_bin_get_by_name(bin, name.c_str());
+		if (element != NULL)
+			elements_list.push_back(element);
+	}
+	return elements_list;
 }
 
 SubElements pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) {
@@ -215,7 +242,8 @@ void MediaPipeline::make_bin(GstBin* parent_bin, int bin_index, int front, int b
 		gst_element_link(front_pair.second, back_pair.first);
 }
 
-void enable_debugging() {
+void MediaPipeline::enable_debugging(void)
+{
 	//GstDebugLevel logLevel = GST_LEVEL_DEBUG;
 	//gst_debug_set_threshold_for_name("mfvideosrc", logLevel);
 	//gst_debug_set_threshold_for_name("videoscale", logLevel);
@@ -226,6 +254,16 @@ void enable_debugging() {
 	//gst_debug_set_threshold_for_name("udpsink", logLevel);
 	/* Set default debug level */
 	//gst_debug_set_default_threshold(GST_LEVEL_FIXME);
+	//g_printerr("log start!!!\n");
+
+	//for (int etype_int = TYPE_INPUT_DEVICE; etype_int != TYPE_MAX; etype_int++)
+	//{
+	//	element_type etype = static_cast<element_type>(etype_int);
+	//	vector<GstElement*> element_list = get_elements_list(etype);
+	//	g_printerr(("int : " +std::to_string(etype_int) + " , size : "+ std::to_string(element_list.size())+"\n").c_str());
+	//}
+
+
 }
 
 void MediaPipeline::pipeline_run() {	
@@ -302,7 +340,8 @@ void MediaPipeline::disable_client_index(ContactInfo* client_info)
 	}
 }
 
-void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int client_index) {
+void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int client_index)
+{
 	SubElements ret_sub_elements = SubElements(NULL, NULL);
 
 	SubElements udp_src_pair = pipeline_make_udp_src(parent_bin, bin_index, client_index);
@@ -342,7 +381,8 @@ void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int cl
 	return;
 }
 
-void MediaPipeline::remove_client_in_front(GstBin* parent_bin, int bin_index, int client_index) {
+void MediaPipeline::remove_client_in_front(GstBin* parent_bin, int bin_index, int client_index)
+{
 	std::string current_name = "udpsrc_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
 	std::string target_name = "adder_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
 	while (true) {
@@ -362,7 +402,8 @@ void MediaPipeline::remove_client_in_front(GstBin* parent_bin, int bin_index, in
 	}
 }
 
-void MediaPipeline::remove_client_in_back(GstBin* parent_bin, int bin_index, int client_index) {
+void MediaPipeline::remove_client_in_back(GstBin* parent_bin, int bin_index, int client_index)
+{
 	std::string current_name = "udpsink_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
 	std::string target_name = "tee_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
 	while (true) {
