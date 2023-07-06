@@ -86,12 +86,14 @@ protected :
 	int get_client_index(ContactInfo* client_info);
 	void disable_client_index(ContactInfo* client_info);
 	void logPipelineElements(GstElement* element, int level);
+	vector<GstElement*> get_elements_list(element_type etype);
 	string getLinkedElements(GstElement* element);
 	SubElements connect_subElements(SubElements front, SubElements back);
 	string get_elements_name(element_type etype, int bin_index, int client_index);
 	SubElements get_elements_by_name(GstBin* parent_bin, element_type etype, int bin_index, int client_index);
 	bool check_pipeline(ContactInfo* client_info);
 	void add_waiting_client(void);
+	void enable_debugging(void);
 public:
 	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list);
 	void makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info);
