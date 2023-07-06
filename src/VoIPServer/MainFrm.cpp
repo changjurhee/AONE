@@ -11,8 +11,6 @@
 // Session
 #include <thread>
 #include "session/SessionManager.h"
-#include "session/TelephonyManager.h"
-#include "session/AccountManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -214,12 +212,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// Session init[S]
 	SessionManager* sessionManager = SessionManager::getInstance();
-	AccountManager* accountManager = AccountManager::getInstance();
-	TelephonyManager* telephonyManager = TelephonyManager::getInstance();
-	sessionManager->setAccountListener(accountManager);
-	sessionManager->setTelephonyListener(telephonyManager);
-	accountManager->setSessionControl(sessionManager);
-	telephonyManager->setSessionControl(sessionManager);
 	sessionManager->init();
 	//std::thread t(&SessionManager::init, sessionManager);
 	//t.join();

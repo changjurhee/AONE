@@ -1,18 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="session\AccountManager.cpp">
-      <Filter>Session</Filter>
-    </ClCompile>
-    <ClCompile Include="session\Call.cpp">
-      <Filter>Session</Filter>
-    </ClCompile>
-    <ClCompile Include="session\CallsManager.cpp">
-      <Filter>Session</Filter>
-    </ClCompile>
-    <ClCompile Include="session\SessionManager.cpp">
-      <Filter>Session</Filter>
-    </ClCompile>
     <ClCompile Include="AccountLoginDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -64,32 +52,20 @@
     <ClCompile Include="..\media\MediaPipeline.cpp" />
     <ClCompile Include="..\media\VideoMediaPipeline.cpp" />
     <ClCompile Include="ClientMediaManager.cpp" />
+    <ClCompile Include="session\AccountManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\Call.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\CallsManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="session\SessionManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="session\AccountManager.h">
-      <Filter>Session</Filter>
-    </ClInclude>
-    <ClInclude Include="session\AccountManagerListener.h">
-      <Filter>Session</Filter>
-    </ClInclude>
-    <ClInclude Include="session\Call.h">
-      <Filter>Session</Filter>
-    </ClInclude>
-    <ClInclude Include="session\CallsManager.h">
-      <Filter>Session</Filter>
-    </ClInclude>
-    <ClInclude Include="session\CallsManagerListener.h">
-      <Filter>Session</Filter>
-    </ClInclude>
-    <ClInclude Include="session\Constants.h">
-      <Filter>Session</Filter>
-    </ClInclude>
-    <ClInclude Include="session\SessionControl.h">
-      <Filter>Session</Filter>
-    </ClInclude>
-    <ClInclude Include="session\SessionManager.h">
-      <Filter>Session</Filter>
-    </ClInclude>
     <ClInclude Include="AccountLoginDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -167,6 +143,30 @@
     </ClInclude>
     <ClInclude Include="..\media\VideoMediaPipeline.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="session\AccountManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\Call.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\CallsManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\Constants.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\IAccountManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\ICallsManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\SessionControl.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\SessionManager.h">
+      <Filter>Session</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
