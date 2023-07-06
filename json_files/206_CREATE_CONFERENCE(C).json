@@ -1,0 +1,14 @@
+{
+    "msgId":206, 
+    "payload" : 
+        {
+            "cid":"",
+            "dateAndTime":1688454555, 
+            "duration" : 3600000, 
+            "participants" : [
+                "tom.cruise@gmail.com",  
+                "john.mayer@gmail.com",      
+                "jane.poster@gmail.com"
+            ]
+        }
+}

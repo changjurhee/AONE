@@ -99,7 +99,7 @@
       <SubSystem>Windows</SubSystem>
       <RegisterOutput>true</RegisterOutput>
       <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -185,7 +185,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <RegisterOutput>true</RegisterOutput>
       <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -211,12 +211,15 @@
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="session\AccountManager.h" />
-    <ClInclude Include="session\AccountManagerListener.h" />
+    <ClInclude Include="session\ConferenceDb.h" />
     <ClInclude Include="session\Connection.h" />
+    <ClInclude Include="session\ContactDb.h" />
+    <ClInclude Include="session\DatabaseManager.h" />
+    <ClInclude Include="session\IAccountManager.h" />
+    <ClInclude Include="session\ITelephonyManager.h" />
     <ClInclude Include="session\SessionControl.h" />
     <ClInclude Include="session\SessionManager.h" />
     <ClInclude Include="session\TelephonyManager.h" />
-    <ClInclude Include="session\TelephonyManagerListener.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ViewTree.h" />
     <ClInclude Include="VoIPServer.h" />
@@ -237,7 +240,10 @@
     </ClCompile>
     <ClCompile Include="PropertiesWnd.cpp" />
     <ClCompile Include="session\AccountManager.cpp" />
+    <ClCompile Include="session\ConferenceDb.cpp" />
     <ClCompile Include="session\Connection.cpp" />
+    <ClCompile Include="session\ContactDb.cpp" />
+    <ClCompile Include="session\DatabaseManager.cpp" />
     <ClCompile Include="session\SessionManager.cpp" />
     <ClCompile Include="session\TelephonyManager.cpp" />
     <ClCompile Include="ViewTree.cpp" />

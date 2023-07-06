@@ -94,13 +94,13 @@
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Demo\webrtcVAD\webrtcVAD\webrtc\inc;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <RegisterOutput>true</RegisterOutput>
       <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -179,7 +179,7 @@
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Demo\webrtcVAD\webrtcVAD\webrtc\inc;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -187,7 +187,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <RegisterOutput>true</RegisterOutput>
       <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -203,6 +203,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\media\litevad.h" />
     <ClInclude Include="AccountLoginDlg.h" />
     <ClInclude Include="..\common\debug.h" />
     <ClInclude Include="..\media\AudioMediaPipeline.h" />
@@ -225,11 +226,11 @@
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="session\AccountManager.h" />
-    <ClInclude Include="session\AccountManagerListener.h" />
     <ClInclude Include="session\Call.h" />
     <ClInclude Include="session\CallsManager.h" />
-    <ClInclude Include="session\CallsManagerListener.h" />
     <ClInclude Include="session\Constants.h" />
+    <ClInclude Include="session\IAccountManager.h" />
+    <ClInclude Include="session\ICallsManager.h" />
     <ClInclude Include="session\SessionControl.h" />
     <ClInclude Include="session\SessionManager.h" />
     <ClInclude Include="targetver.h" />
@@ -239,6 +240,7 @@
     <ClInclude Include="VoIPClientView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\media\litevad.cpp" />
     <ClCompile Include="AccountLoginDlg.cpp" />
     <ClCompile Include="..\common\debug.cpp" />
     <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
