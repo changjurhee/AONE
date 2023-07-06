@@ -15,6 +15,8 @@
 // Session
 #include "session/SessionManager.h"
 
+#include "common/logger.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -219,9 +221,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
 
 	// Session init[S]
-	SessionManager* sessionManager = SessionManager::getInstance();
-	sessionManager->init("127.0.0.1", 5555); // TODO dynamic Server IP,Port
+	//SessionManager* sessionManager = SessionManager::getInstance();
+	//sessionManager->init("127.0.0.1", 5555); // TODO dynamic Server IP,Port
 	// Session init[E]
+
+
+	// Media
+	Logger::GetInstance()->SetLogLevel(LogLevel::LL_DEBUG);
 
 	return 0;
 }

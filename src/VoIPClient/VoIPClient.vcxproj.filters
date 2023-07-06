@@ -64,6 +64,15 @@
     <ClCompile Include="session\SessionManager.cpp">
       <Filter>Session</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\logger.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\utility.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\litevad.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h">
@@ -167,6 +176,15 @@
     </ClInclude>
     <ClInclude Include="session\SessionManager.h">
       <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\logger.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\utility.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\litevad.h">
+      <Filter>media</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -324,6 +342,12 @@
     </Filter>
     <Filter Include="헤더 파일">
       <UniqueIdentifier>{2fd9150a-3c68-4592-b616-c7d766b8a641}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{232296c9-a189-403a-aae2-24e2ed9b58cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="media">
+      <UniqueIdentifier>{02c0442a-31a0-4b34-b736-3f0e4006bd98}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
