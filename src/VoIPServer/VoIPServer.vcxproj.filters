@@ -266,9 +266,6 @@
     <Image Include="res\icons8-homer-simpson-32x32.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\icon1.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
     <Image Include="res\homer.ico">
       <Filter>리소스 파일</Filter>
     </Image>

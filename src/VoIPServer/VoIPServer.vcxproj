@@ -99,7 +99,7 @@
       <SubSystem>Windows</SubSystem>
       <RegisterOutput>true</RegisterOutput>
       <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -185,7 +185,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <RegisterOutput>true</RegisterOutput>
       <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
