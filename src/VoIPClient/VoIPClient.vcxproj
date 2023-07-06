@@ -94,7 +94,7 @@
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Demo\webrtcVAD\webrtcVAD\webrtc\inc;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -179,7 +179,7 @@
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Demo\webrtcVAD\webrtcVAD\webrtc\inc;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -203,6 +203,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\media\litevad.h" />
     <ClInclude Include="AccountLoginDlg.h" />
     <ClInclude Include="..\common\debug.h" />
     <ClInclude Include="..\media\AudioMediaPipeline.h" />
@@ -239,6 +240,7 @@
     <ClInclude Include="VoIPClientView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\media\litevad.cpp" />
     <ClCompile Include="AccountLoginDlg.cpp" />
     <ClCompile Include="..\common\debug.cpp" />
     <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
