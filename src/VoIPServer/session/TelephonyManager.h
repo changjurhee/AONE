@@ -3,10 +3,11 @@
 #include <map>
 
 #include "SessionControl.h"
-#include "TelephonyManagerListener.h"
+#include "ITelephonyManager.h"
 #include "Connection.h"
+#include "../../json/json.h"
 
-class TelephonyManager : public TelephonyManagerListener {
+class TelephonyManager : public ITelephonyManager {
 private:
 	static TelephonyManager* instance;
 
@@ -18,12 +19,16 @@ private:
 
 public:
 	static TelephonyManager* getInstance();
+	static void releaseInstance();
 
-	void setSessionControl(SessionControl* control);
+	void handleAnswer(Json::Value data);
+	void handleReject(Json::Value data);
 
 	// Listener
-	void handleOutgoingCall(std::string from, std::string to) override;
-	void handleAnswer(std::string connId, std::string from) override;
-	void handleReject(std::string connId, std::string cause, std::string from) override;
-	void handleDisconnect(std::string connId) override;
+	void setSessionControl(SessionControl* control) override;
+	void handleOutgoingCall(Json::Value data) override;
+	void handleOutgoingCallNoUser(Json::Value data) override;
+	void handleIncomingCallResponse(Json::Value data) override;
+	void handleDisconnect(Json::Value data) override;
+	void releaseConnection(std::string cid) override;
 };

@@ -211,12 +211,15 @@
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="session\AccountManager.h" />
-    <ClInclude Include="session\AccountManagerListener.h" />
+    <ClInclude Include="session\ConferenceDb.h" />
     <ClInclude Include="session\Connection.h" />
+    <ClInclude Include="session\ContactDb.h" />
+    <ClInclude Include="session\DatabaseManager.h" />
+    <ClInclude Include="session\IAccountManager.h" />
+    <ClInclude Include="session\ITelephonyManager.h" />
     <ClInclude Include="session\SessionControl.h" />
     <ClInclude Include="session\SessionManager.h" />
     <ClInclude Include="session\TelephonyManager.h" />
-    <ClInclude Include="session\TelephonyManagerListener.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ViewTree.h" />
     <ClInclude Include="VoIPServer.h" />
@@ -237,7 +240,10 @@
     </ClCompile>
     <ClCompile Include="PropertiesWnd.cpp" />
     <ClCompile Include="session\AccountManager.cpp" />
+    <ClCompile Include="session\ConferenceDb.cpp" />
     <ClCompile Include="session\Connection.cpp" />
+    <ClCompile Include="session\ContactDb.cpp" />
+    <ClCompile Include="session\DatabaseManager.cpp" />
     <ClCompile Include="session\SessionManager.cpp" />
     <ClCompile Include="session\TelephonyManager.cpp" />
     <ClCompile Include="ViewTree.cpp" />

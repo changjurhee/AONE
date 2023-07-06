@@ -1,15 +1,20 @@
 #include <iostream>
-#include <sstream>
+#include <WinSock2.h>
+#include <WS2tcpip.h>
 
 #include "SessionManager.h"
+#include "TelephonyManager.h"
+#include "AccountManager.h"
 
 SessionManager* SessionManager::instance = nullptr;
+SOCKET serverSocket;
+bool isRunning = true;
 
 SessionManager::SessionManager() {
 	contactNum = 0;
 
-	telephonyListener = nullptr;
-	accountListener = nullptr;
+	telephonyManager = TelephonyManager::getInstance();
+	accountManager = AccountManager::getInstance();
 }
 
 SessionManager* SessionManager::getInstance() {
@@ -19,17 +24,32 @@ SessionManager* SessionManager::getInstance() {
 	return instance;
 }
 
+void SessionManager::releaseInstance() {
+	if (instance != nullptr) {
+		instance->release();
+		delete instance;
+		instance = nullptr;
+	}
+}
+
 void SessionManager::init() {
+	telephonyManager->setSessionControl(this);
+	accountManager->setSessionControl(this);
+
 	std::thread sessionThread(&SessionManager::openSocket, instance);
 	sessionThread.join();
 }
 
-void SessionManager::setTelephonyListener(TelephonyManagerListener* listener) {
-	telephonyListener = listener;
-}
+void SessionManager::release() {
+	std::cout << "SessionManager release" << std::endl;
+	for (const auto& client : clientMap) {
+		shutdown(client.second, SD_SEND);
+	}
+	isRunning = false;
+	closesocket(serverSocket);
 
-void SessionManager::setAccountListener(AccountManagerListener* listener) {
-	accountListener = listener;
+	telephonyManager->setSessionControl(nullptr);
+	accountManager->setSessionControl(nullptr);
 }
 
 void SessionManager::openSocket() {
@@ -39,7 +59,7 @@ void SessionManager::openSocket() {
 		return;
 	}
 
-	SOCKET serverSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+	serverSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (serverSocket == -1) {
 		std::cerr << "Failed to create socket." << std::endl;
 		return;
@@ -63,7 +83,7 @@ void SessionManager::openSocket() {
 	}
 
 	std::cout << "Waiting for client..." << std::endl;
-	while (true) {
+	while (isRunning) {
 		SOCKADDR_IN clientAddress{};
 		int clientAddressLengh = sizeof(clientAddress);
 		SOCKET clientSocket = accept(serverSocket, (SOCKADDR*)&clientAddress, &clientAddressLengh);
@@ -72,30 +92,32 @@ void SessionManager::openSocket() {
 			continue;
 		}
 
-		// Å¬¶óÀÌ¾ðÆ®¿ÍÀÇ Åë½ÅÀ» º°µµ ½º·¹µå·Î Ã³¸®
+		// í´ë¼ì´ì–¸íŠ¸ì™€ì˜ í†µì‹ ì„ ë³„ë„ ìŠ¤ë ˆë“œë¡œ ì²˜ë¦¬
 		std::thread clientThread(&SessionManager::HandleClient, instance, clientSocket);
 		clientThread.detach();
 	}
 
-	// ¼­¹ö ¼ÒÄÏ ´Ý±â
+	// ì„œë²„ ì†Œì¼“ ë‹«ê¸°
 	closesocket(serverSocket);
 	WSACleanup();
 }
 
 void SessionManager::HandleClient(int clientSocket) {
-	// Å¬¶óÀÌ¾ðÆ®¿ÍÀÇ Åë½Å Ã³¸®
-	// ¿¹: ¸Þ½ÃÁö ¼Û¼ö½Å, µ¥ÀÌÅÍ Ã³¸® µî
+	// í´ë¼ì´ì–¸íŠ¸ì™€ì˜ í†µì‹  ì²˜ë¦¬
+	// ì˜ˆ: ë©”ì‹œì§€ ì†¡ìˆ˜ì‹ , ë°ì´í„° ì²˜ë¦¬ ë“±
 
 	std::string displayName = GetClientName(clientSocket);
 
 	std::cout << "Connected to client! " << displayName << std::endl;
 
-	std::string contactId;
+	std::string contactId = GetClientName(clientSocket);
+	clientMap.insert({ contactId, clientSocket });
 	char buffer[PACKET_SIZE];
+	Json::Reader jsonReader;
 	while (true) {
 		memset(buffer, 0, sizeof(buffer));
 
-		// Å¬¶óÀÌ¾ðÆ®·ÎºÎÅÍ ¸Þ¼¼Áö ¼ö½Å
+		// í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„° ë©”ì„¸ì§€ ìˆ˜ì‹ 
 		SSIZE_T bytesRead = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
 		if (bytesRead == -1) {
 			std::cerr << "Failed to receive message" << displayName << std::endl;
@@ -103,43 +125,92 @@ void SessionManager::HandleClient(int clientSocket) {
 		}
 		if (bytesRead == 0) {
 			std::cout << "disconnected to client." << displayName << std::endl;
+			telephonyManager->releaseConnection(contactId);
 			break;
 		}
 
-
 		// listener test
 		std::string msg(buffer);
+		std::string msgStr;
 		if (msg.find("Login") != std::string::npos) {
+			msgStr = "LOGIN";
 			contactId = ("CONTACT_" + std::to_string(contactNum++));
 			clientMap.insert({ contactId, clientSocket });
-			accountListener->handleLogin(contactId.c_str());
+			accountManager->handleLogin_(contactId.c_str());
 		}
-		else if (msg.find("startOutgoingCall") != std::string::npos) {
-			std::vector<std::string> tokens = split(msg, ',');
-			std::string to(tokens.back());
-			if (clientMap.count(to) == 0) {
-				sendData("onFailedOutgoingCall,unreachable", contactId);
-				continue;
+
+		//-------------------------------------------------------------
+		// JSON payload parser
+		Json::Value jsonData;
+		if (jsonReader.parse(msg, jsonData) == true) {
+			// received data parsed as JSON data			
+			int msgId = std::stoi(jsonData["msgId"].asString());
+			Json::Value payloads = jsonData["payload"];
+			switch (msgId) {
+			case 101: // 101 : REGISTER_CONTACT 		
+				msgStr = "REGISTER_CONTACT";
+				accountManager->handleRegisterContact(payloads, contactId);
+				break;
+			case 102: // 102 : LOGIN		
+				{
+					msgStr = "LOGIN";
+					string ipAddress = GetClientName(clientSocket);
+					string cid = accountManager->handleLogin(payloads, ipAddress, contactId);
+					if (!cid.empty()) {		
+					    // Replace client map(IP Address:Port) to valid contactId after logged in				
+						clientMap.erase(contactId);
+						contactId = cid;
+						clientMap.insert({ cid, clientSocket });
+					}
+				}
+				break;
+			case 103: // 103 : LOGOUT
+				msgStr = "LOGOUT";
+				if (accountManager->handleLogout(payloads)) {
+					// Erase contactID -> socket map when logged out
+					clientMap.erase(contactId);
+					contactId = GetClientName(clientSocket);
+				}
+				break;
+			case 104: // 104 : UPDATE_MY_CONTACTLIST
+				msgStr = "UPDATE_MY_CONTACTLIST";
+				accountManager->handleUpdateMyContactList(payloads, contactId);
+				break;
+			case 105: // 105 : RESET_PASSWORD
+				msgStr = "RESET_PASSWORD";
+				accountManager->handleResetPassword(payloads, contactId);
+				break;
+			case 106: // 106 : GET_ALL_CONTACT
+				msgStr = "GET_ALL_CONTACT";
+				accountManager->handleGetAllContact(contactId);
+				break;
+			case 301: // 301 : OUTGOING_CALL
+				{
+					msgStr = "OUTGOING_CALL";
+					payloads["from"] = contactId;
+					std::string to(payloads["to"].asString());
+					if (clientMap.count(to) == 0) {
+						telephonyManager->handleOutgoingCallNoUser(payloads);
+						break;
+					}
+					telephonyManager->handleOutgoingCall(payloads);
+					break;
+				}
+			case 302: // 302 : INCOMING_CALL_RESPONSE
+				msgStr = "INCOMING_CALL_RESPONSE";
+				payloads["from"] = contactId;
+				telephonyManager->handleIncomingCallResponse(payloads);
+				break;
+			case 305: // 305 : DISCONNECT_CALL
+				msgStr = "DISCONNECT_CALL";
+				telephonyManager->handleDisconnect(payloads);
+				break;
+			default:
+				break;
 			}
-			telephonyListener->handleOutgoingCall(contactId, to);
 		}
-		else if (msg.find("answerCall") != std::string::npos) {
-			std::vector<std::string> tokens = split(msg, ',');
-			telephonyListener->handleAnswer(tokens.back(), contactId);
-		}
-		else if (msg.find("rejectCall") != std::string::npos) {
-			std::vector<std::string> tokens = split(msg, ',');
-			std::string cause = tokens[tokens.size() - 2];
-			telephonyListener->handleReject(tokens.back(), cause, contactId);
-		}
-		else if (msg.find("disconnectCall") != std::string::npos) {
-			std::vector<std::string> tokens = split(msg, ',');
-			telephonyListener->handleDisconnect(tokens.back());
-		}
-
-		std::cout << "Received message from client" << displayName << ": " << buffer << std::endl;
+		std::cout << "Received message from client [" << displayName << "][" << msgStr << "]" << std::endl << buffer << std::endl;
 	}
-
 	clientMap.erase(contactId);
 	closesocket(clientSocket);
 }
@@ -159,19 +230,20 @@ std::string SessionManager::GetClientName(int clientSocket)
 	std::string portStr = std::to_string(clientPort);
 	std::string displayName = "(" + ip + ":" + portStr + ")";
 
-	return displayName;
+	//return displayName;
+	return ip;
 }
 
 void SessionManager::sendData(const char* data, std::string to) {
 	send(clientMap[to], data, strlen(data), 0);
 }
 
-std::vector<std::string> SessionManager::split(const std::string& str, char delimiter) {
-	std::vector<std::string> tokens;
-	std::istringstream ss(str);
-	std::string token;
-	while (std::getline(ss, token, delimiter)) {
-		tokens.push_back(token);
-	}
-	return tokens;
+void SessionManager::sendData(int msgId, Json::Value payload, std::string to) {
+	Json::FastWriter fastWriter;
+	Json::Value root;
+	root["msgId"] = msgId;
+	root["payload"] = payload;
+	std::string jsonString = fastWriter.write(root);
+	const char* data = jsonString.c_str();
+	send(clientMap[to], data, strlen(data), 0);
 }
