@@ -15,6 +15,9 @@ IMPLEMENT_DYNCREATE(CCallView, CFormView)
 CCallView::CCallView()
 	: CFormView(IDD_DLG_CALL_VIEW)
 {
+    ClientMediaManager* test = ClientMediaManager::getInstance();
+
+    //while (mDisplayBox.GetSafeHwnd() == nullptr);
 
 }
 
@@ -119,6 +122,7 @@ void CCallView::OnBnClickedClientStartcall()
     client_join_info["audiocodec"] = string(CT2CA(client_AudioCodec));
     client_join_info["encryption_alg"] = "TEST_ID";
     client_join_info["encryption_key"] = "TEST_ID";
+    test->setViewHandler((handleptr)mDisplayBox.GetSafeHwnd());
 
     test->startCall(client_join_info);
 

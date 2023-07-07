@@ -18,7 +18,6 @@ public:
 	void updateClientVideoQuality(string rid, string cid, int level) override;
 	void registerNotifyTargetVideoQualityCallback(void (*notifyTargetVideoQuality)(int, int)) override;
 	void startCall(Json::Value room_creat_info);
-
 	void endCall(Json::Value room_remove_info) override;
 	void addClient(Json::Value add_client_info) override;
 	void removeClient(Json::Value remove_client_info) override;

@@ -1,4 +1,5 @@
 #include "VideoMediaPipeline.h"
+#include <gst/video/videooverlay.h>
 
 VideoMediaPipeline::VideoMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list) : MediaPipeline(rid, pipe_mode_list) {
 
@@ -20,8 +21,19 @@ SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, i
 
 SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_OUTPUT_DEVICE, bin_index, client_index);
+#if 0
 	GstElement* element = gst_element_factory_make("autovideosink", name.c_str());
+#else
+	GstElement* element = gst_element_factory_make("d3dvideosink", name.c_str());
+
+	// Set video sink
+	g_object_set(G_OBJECT(element), "force-aspect-ratio", TRUE, NULL);
+
+	//GST_VIDEO_OVERLAY(element);
+	gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(element), (guintptr) view_handler_);
+#endif
 	gst_bin_add(GST_BIN(parent_bin), element);
+
 
 	return SubElements(element, element);
 };

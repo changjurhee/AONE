@@ -5,6 +5,7 @@ MediaPipeline::MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list)
 	rid_ = rid;
 	pipe_mode_list_ = pipe_mode_list;
 	start_pipeline_ = false;
+	view_handler_ = NULL;
 
 	OperatingInfo* operate_info_ptr = new OperatingInfo();
 	operate_info_ = *operate_info_ptr;
@@ -300,9 +301,11 @@ void MediaPipeline::pipeline_run() {
 }
 
 
-void MediaPipeline::makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info) {
+void MediaPipeline::makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info, handleptr view_handler)
+{
 	contact_info_list_;
 	memcpy(&operate_info_, &operate_info, sizeof(OperatingInfo));
+	view_handler_ = view_handler;
 
 	pipeline_thread_ = std::thread(&MediaPipeline::pipeline_run, this);
 }

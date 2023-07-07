@@ -85,7 +85,8 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
 		pipeline->add_client(&contact_info_list[0]);
-		pipeline->makePipeline(contact_info_list, *operate_info);
+		while(view_handler_ == 0);
+		pipeline->makePipeline(contact_info_list, *operate_info, view_handler_);
 	}
 
 #if 0
@@ -96,6 +97,11 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 		pipeline->makePipeline(contact_info_list, operate_info);
 	}
 #endif 
+}
+
+void ClientMediaManager::setViewHandler(handleptr view_handler)
+{
+	view_handler_ = view_handler;
 }
 
 void ClientMediaManager::endCall(Json::Value client_join_info) {

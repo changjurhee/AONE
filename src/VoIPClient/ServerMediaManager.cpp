@@ -60,7 +60,7 @@ void ServerMediaManager::startCall(Json::Value room_creat_info)
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
-		pipeline->makePipeline(contact_info_list, *operate_info);
+		pipeline->makePipeline(contact_info_list, *operate_info, NULL);
 	}
 #endif
 #if 0
