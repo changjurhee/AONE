@@ -16,6 +16,12 @@
     <Filter Include="Session">
       <UniqueIdentifier>{ae74d6c4-277e-408d-9b32-fa0603814f84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="media">
+      <UniqueIdentifier>{251ec2d1-9976-4116-9820-409e05af4f30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{84a00209-763d-45d8-ae25-1e5fb285ac87}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VoIPServer.h">
@@ -90,38 +96,38 @@
     <ClInclude Include="session\TelephonyManager.h">
       <Filter>Session</Filter>
     </ClInclude>
-    <ClInclude Include="IServerMediaManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerMediaManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\AudioMediaPipeline.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\call_info.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\MediaManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\MediaPipeline.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\VideoMediaPipeline.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\debug.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="DumpMediaManager.h">
       <Filter>Session</Filter>
     </ClInclude>
     <ClInclude Include="session\ISessionMediaCallback.h">
       <Filter>Session</Filter>
     </ClInclude>
+    <ClInclude Include="..\media\AudioMediaPipeline.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\call_info.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\debug.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="IServerMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
     <ClInclude Include="..\common\logger.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\MediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\MediaPipeline.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\VideoMediaPipeline.h">
+      <Filter>media</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -179,29 +185,29 @@
     <ClCompile Include="session\TelephonyManager.cpp">
       <Filter>Session</Filter>
     </ClCompile>
-    <ClCompile Include="ServerMediaManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\media\AudioMediaPipeline.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\media\MediaManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\media\MediaPipeline.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\media\VideoMediaPipeline.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\debug.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="DumpMediaManager.cpp">
       <Filter>Session</Filter>
     </ClCompile>
+    <ClCompile Include="..\media\AudioMediaPipeline.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\debug.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
     <ClCompile Include="..\common\logger.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\MediaManager.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\MediaPipeline.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerMediaManager.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\VideoMediaPipeline.cpp">
+      <Filter>media</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

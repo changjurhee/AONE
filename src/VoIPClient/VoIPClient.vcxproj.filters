@@ -46,12 +46,6 @@
     <ClCompile Include="VoIPClientView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\debug.cpp" />
-    <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
-    <ClCompile Include="..\media\MediaManager.cpp" />
-    <ClCompile Include="..\media\MediaPipeline.cpp" />
-    <ClCompile Include="..\media\VideoMediaPipeline.cpp" />
-    <ClCompile Include="ClientMediaManager.cpp" />
     <ClCompile Include="session\AccountManager.cpp">
       <Filter>Session</Filter>
     </ClCompile>
@@ -73,7 +67,6 @@
     <ClCompile Include="..\media\litevad.cpp">
       <Filter>media</Filter>
     </ClCompile>
-    <ClCompile Include="ServerMediaManager.cpp" />
     <ClCompile Include="..\media\vad_processor.cpp">
       <Filter>media</Filter>
     </ClCompile>
@@ -82,6 +75,27 @@
     </ClCompile>
     <ClCompile Include="DumpMediaManager.cpp">
       <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\MediaManager.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\MediaPipeline.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerMediaManager.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientMediaManager.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\AudioMediaPipeline.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\debug.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\VideoMediaPipeline.cpp">
+      <Filter>media</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -139,30 +153,6 @@
     <ClInclude Include="OutputWnd.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\debug.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientMediaManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="IClientMediaManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\AudioMediaPipeline.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\call_info.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\MediaManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\MediaPipeline.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\VideoMediaPipeline.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="session\AccountManager.h">
       <Filter>Session</Filter>
     </ClInclude>
@@ -196,8 +186,6 @@
     <ClInclude Include="..\media\litevad.h">
       <Filter>media</Filter>
     </ClInclude>
-    <ClInclude Include="IServerMediaManager.h" />
-    <ClInclude Include="ServerMediaManager.h" />
     <ClInclude Include="..\media\vad_processor.h">
       <Filter>media</Filter>
     </ClInclude>
@@ -209,6 +197,36 @@
     </ClInclude>
     <ClInclude Include="session\ISessionMediaCallback.h">
       <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="IServerMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\AudioMediaPipeline.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\call_info.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="IClientMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\MediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\MediaPipeline.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\VideoMediaPipeline.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\debug.h">
+      <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

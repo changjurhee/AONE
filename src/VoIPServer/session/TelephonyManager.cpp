@@ -4,7 +4,7 @@
 #include <ctime>
 
 #include "TelephonyManager.h"
-#include "../DumpMediaManager.h"
+#include "../ServerMediaManager.h"
 
 TelephonyManager* TelephonyManager::instance = nullptr;
 Json::FastWriter fastWriter;
@@ -45,24 +45,16 @@ void TelephonyManager::onAnswer(Json::Value data) {
 	std::string connId = data["rid"].asString();
 	std::string from = data["from"].asString();
 
-	Json::Value payload;
+	Json::Value payload = ServerMediaManager::getInstance()->getMediaProperty();
 	payload["rid"] = connId;
 	payload["result"] = 1;
-	// TODO Media - Should receive MediaInfo
-	payload["videoCodec"] = "codec";
-	payload["audioCodec"] = "codec";
-	payload["encryption_alg"] = "alg";
-	payload["encryption_key"] = "key";
 
-	// TODO Media - SESSION_MEDIA_SERVER_CREATE
 	Json::Value media;
 	media["rid"] = connId;
 	media["conferenceSize"] = 2;
 	media["myIp"] = payload["myIp"].asString();
-	// send media
-	DumpMediaManager::getInstance()->startCall(media);
+	ServerMediaManager::getInstance()->startCall(media);
 
-	// TODO Media - SESSION_MEDIA_SERVER_ADD
 	Json::Value clientMedia;
 	clientMedia["rid"] = connId;
 
@@ -74,8 +66,7 @@ void TelephonyManager::onAnswer(Json::Value data) {
 			clientMedia["clientIp"] = "127.0.0.1";
 			clientMedia["name"] = "DooSan";
 			sessionControl->sendData(303, payload, from);
-			// send media
-			DumpMediaManager::getInstance()->addClient(clientMedia);
+			ServerMediaManager::getInstance()->addClient(clientMedia);
 			continue;
 		}
 
@@ -83,8 +74,7 @@ void TelephonyManager::onAnswer(Json::Value data) {
 		clientMedia["clientIp"] = "127.0.0.1";
 		clientMedia["name"] = "DooSanJJANG";
 		sessionControl->sendData(301, payload, participant);
-		// send media
-		DumpMediaManager::getInstance()->addClient(clientMedia);
+		ServerMediaManager::getInstance()->addClient(clientMedia);
 	}
 }
 
@@ -151,9 +141,9 @@ void TelephonyManager::manageConferenceLifetime(std::string connId) {
 		std::time(&now);
 		char time[26];
 		ctime_s(time, 26, &now);
-		std::cout << displayConn << "���� �ð�: " << time << endl;
+		std::cout << displayConn << "current time: " << time << endl;
 
-		// 1�� ���
+		// wait 1 minute
 		std::this_thread::sleep_for(std::chrono::minutes(1));
 		std::chrono::system_clock::time_point currentTime = std::chrono::system_clock::now();
 
@@ -219,7 +209,6 @@ void TelephonyManager::handleDisconnect(Json::Value data) {
 	}
 	std::string connId(data["rid"].asString());
 
-	// TODO Media - SESSION_MEDIA_SERVER_REMOVE
 	Json::Value clientMedia;
 	clientMedia["rid"] = connId;
 
@@ -232,15 +221,14 @@ void TelephonyManager::handleDisconnect(Json::Value data) {
 		clientMedia["cid"] = participant;
 		msgId = conn.isConference() ? 209 : 305;
 		sessionControl->sendData(msgId, payload, participant);
-		// send media
-		DumpMediaManager::getInstance()->removeClient(clientMedia);
+		ServerMediaManager::getInstance()->removeClient(clientMedia);
 	}
 	if (!conn.isConference()) {
 		connectionMap.erase(connId);
 	}
 	Json::Value media;
 	media["rid"] = connId;
-	DumpMediaManager::getInstance()->endCall(media);
+	ServerMediaManager::getInstance()->endCall(media);
 }
 
 void TelephonyManager::releaseConnection(std::string cid) {
@@ -277,13 +265,11 @@ void TelephonyManager::handleCreateConference(Json::Value data) {
 	std::thread room(&TelephonyManager::manageConferenceLifetime, instance, connId);
 	room.detach();
 
-	// TODO Media - SESSION_MEDIA_SERVER_CREATE
 	Json::Value media;
 	media["rid"] = connId;
 	media["conferenceSize"] = conn.getConferenceList().size();
 	media["myIp"] = data["myIp"].asString();
-	// send media
-	DumpMediaManager::getInstance()->startCall(media);
+	ServerMediaManager::getInstance()->startCall(media);
 }
 
 void TelephonyManager::removeConference(std::string connId) {
@@ -304,47 +290,41 @@ void TelephonyManager::handleJoinConference(Json::Value data) {
 	std::string from(data["from"].asString());
 
 	int joinable = joinableConference(data);
-	Json::Value payload;
+	Json::Value payloadFail;
 
 	if (joinable == 1) {
 		std::cerr << "NO ROOM: " << connId << std::endl;
-		payload["result"] = 2;
-		payload["cause"] = 1;
-		sessionControl->sendData(208, payload, from);
+		payloadFail["result"] = 2;
+		payloadFail["cause"] = 1;
+		sessionControl->sendData(208, payloadFail, from);
 		return;
 	}
 	else if (joinable == 2) {
 		std::cerr << "NO TIME: " << connId << std::endl;
-		payload["result"] = 2;
-		payload["cause"] = 2;
-		sessionControl->sendData(208, payload, from);
+		payloadFail["result"] = 2;
+		payloadFail["cause"] = 2;
+		sessionControl->sendData(208, payloadFail, from);
 	}
 	else if (joinable == 3) {
 		std::cerr << "UNINVITED: " << connId << std::endl;
-		payload["result"] = 2;
-		payload["cause"] = 3;
-		sessionControl->sendData(208, payload, from);
+		payloadFail["result"] = 2;
+		payloadFail["cause"] = 3;
+		sessionControl->sendData(208, payloadFail, from);
 	}
 
 	connectionMap[connId].setParticipant(from);
 
+	Json::Value payload = ServerMediaManager::getInstance()->getMediaProperty();
 	payload["rid"] = connId;
-	// TODO Media - Should receive MediaInfo
-	payload["videoCodec"] = "codec";
-	payload["audioCodec"] = "codec";
-	payload["encryption_alg"] = "alg";
-	payload["encryption_key"] = "key";
-
 	sessionControl->sendData(208, payload, from);
 
-	// TODO Media - SESSION_MEDIA_SERVER_ADD
+
 	Json::Value media;
 	media["rid"] = connId;
 	media["cid"] = from;
 	media["clientIp"] = "127.0.0.1";
 	media["name"] = "DooSan";
-	// send media
-	DumpMediaManager::getInstance()->addClient(media);
+	ServerMediaManager::getInstance()->addClient(media);
 }
 
 void TelephonyManager::handleExitConference(Json::Value data) {
@@ -360,19 +340,16 @@ void TelephonyManager::handleExitConference(Json::Value data) {
 
 	Json::Value payload;
 	payload["result"] = 1;
-
 	sessionControl->sendData(209, payload, from);
 
-	// TODO Media - SESSION_MEDIA_SERVER_REMOVE
 	Json::Value media;
 	media["rid"] = connId;
 	media["cid"] = from;
-	// send media
-	DumpMediaManager::getInstance()->removeClient(media);
+	ServerMediaManager::getInstance()->removeClient(media);
 }
 
 void TelephonyManager::handleRequestVideoQualityChange(Json::Value data) {
-	//DumpMediaManager::getInstance->updateClientVideoQuality(data);
+	ServerMediaManager::getInstance()->updateClientVideoQuality(data);
 }
 
 void TelephonyManager::notifyVideoQualityChanged(std::string rid, int quality) {
