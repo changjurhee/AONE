@@ -106,5 +106,24 @@ public:
 	virtual void setVideoQuality(int video_quality_index) = 0;
 	
 	void end_call();
+
+private:
+	uint32_t bus_watch_id_;
+	uint32_t timer_id_;
+
+	static GstBusSyncReply BusSyncHandlerCallback(GstBus* bus, GstMessage* message, gpointer data) {
+		MediaPipeline* pipeline = static_cast<MediaPipeline*>(data);
+		return pipeline->BusSyncHandler(bus, message, pipeline);
+	}
+	static bool BusHandlerCallback(GstBus* bus, GstMessage* message, gpointer data) {
+		MediaPipeline* pipeline = static_cast<MediaPipeline*>(data);
+		return pipeline->BusHandler(bus, message, pipeline);
+	}
+	GstBusSyncReply BusSyncHandler(GstBus* bus, GstMessage* message, gpointer data);
+	bool BusHandler(GstBus* bus, GstMessage* message, gpointer data);
+
+	static bool TimerTask(gpointer data);
+	void ReadAndNotifyRtpStats();
+
 };
 
