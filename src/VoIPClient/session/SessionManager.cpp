@@ -17,6 +17,7 @@ SessionManager::SessionManager() {
 
 	callsManager = CallsManager::getInstance();
 	accountManager = AccountManager::getInstance();
+	myIp = "";
 }
 
 SessionManager* SessionManager::getInstance() {
@@ -35,6 +36,7 @@ void SessionManager::releaseInstance() {
 }
 
 void SessionManager::init(const char* ip, int port) {
+	getMyIp();
 	if (strlen(ip) > 0) {
 		strcpy_s(serverIP, sizeof(serverIP), ip); // dynamic ip
 	}
@@ -46,8 +48,7 @@ void SessionManager::init(const char* ip, int port) {
 	accountManager->setSessionControl(this);
 
 	std::thread sessionThread(&SessionManager::openSocket, instance);
-	sessionThread.detach();
-	//sessionThread.join();
+	sessionThread.join();
 }
 
 void SessionManager::release() {
@@ -59,6 +60,22 @@ void SessionManager::release() {
 	accountManager->setSessionControl(nullptr);
 }
 
+void SessionManager::getMyIp()
+{
+	struct addrinfo* _addrinfo;
+	struct addrinfo* _res;
+	char _address[INET6_ADDRSTRLEN];
+	char szHostName[255];
+	gethostname(szHostName, sizeof(szHostName));
+	getaddrinfo(szHostName, NULL, 0, &_addrinfo);
+	for (_res = _addrinfo; _res != NULL; _res = _res->ai_next) {
+		if (_res->ai_family == AF_INET) {
+			if (NULL != inet_ntop(AF_INET, &((struct sockaddr_in*)_res->ai_addr)->sin_addr, _address, sizeof(_address))) {
+				myIp = _address;
+			}
+		}
+	}
+}
 // socket Receive function
 void SessionManager::proc_recv() {
 
@@ -84,7 +101,13 @@ void SessionManager::proc_recv() {
 		// listener test
 		
 		std::string msg(buf);
-	
+		std::string msgStr;
+		if (msg.find("onLoginSuccess") != std::string::npos) {
+			msgStr = "onLoginSuccess";
+			std::vector<std::string> tokens = split(msg, ',');
+			accountManager->onLoginSuccess(tokens.back());
+		}
+
 		//-------------------------------------------------------------
 		// JSON payload parser
 		Json::Value jsonData;
@@ -92,7 +115,9 @@ void SessionManager::proc_recv() {
 			// received data parsed as JSON data			
 			int msgId = std::stoi(jsonData["msgId"].asString());
 			Json::Value payloads = jsonData["payload"];
-			std::cout << msgId << ":" << payloads << std::endl;
+			std::cout << "--------------------------------------------------------" << std::endl;
+			std::cout << "RECEIVE[" << msgId << "]PAYLOAD:" << payloads << std::endl;
+			std::cout << "--------------------------------------------------------" << std::endl;
 			switch (msgId) {
 			case 101: // 101 : REGISTER_CONTACT 
 				accountManager->handleRegisterContact(payloads);
@@ -110,28 +135,22 @@ void SessionManager::proc_recv() {
 			case 106: // 106 : GET_ALL_CONTACT
 				accountManager->handleGetAllContact(payloads);
 				break;
-			default:
-				
+			case 205: // 205 : GET_ALL_CONFERENCE
+				msgStr = "GET_ALL_CONFERENCE";
+				accountManager->handleGetAllMyConference(payloads);
 				break;
-			}
-		}
-
-		std::string msgStr;
-		if (msg.find("onLoginSuccess") != std::string::npos) {
-			msgStr = "onLoginSuccess";
-			std::vector<std::string> tokens = split(msg, ',');
-			accountManager->onLoginSuccess(tokens.back());
-		}
-
-		//-------------------------------------------------------------
-		// JSON payload parser
-		if (jsonReader.parse(msg, jsonData) == true) {
-			// received data parsed as JSON data			
-			int msgId = std::stoi(jsonData["msgId"].asString());
-			Json::Value payloads = jsonData["payload"];
-			switch (msgId) {
+			case 208: // 208 : JOIN_CONFERENCE
+				msgStr = "JOIN_CONFERENCE";
+				payloads["myIp"] = myIp;
+				callsManager->onJoinConferenceResult(payloads);
+				break;
+			case 209: // 209 : EXIT_CONFERENCE
+				msgStr = "EXIT_CONFERENCE";
+				callsManager->onExitConference(payloads);
+				break;
 			case 301: // 301 : OUTGOING_CALL_RESULT
 				msgStr = "OUTGOING_CALL_RESULT";
+				payloads["myIp"] = myIp;
 				callsManager->onOutgoingCallResult(payloads);
 				break;
 			case 302: // 302 : INCOMING_CALL
@@ -140,11 +159,16 @@ void SessionManager::proc_recv() {
 				break;
 			case 303: // 303 : INCOMING_CALL_RESULT
 				msgStr = "INCOMING_CALL_RESULT";
+				payloads["myIp"] = myIp;
 				callsManager->onIncomingCallResult(payloads);
 				break;
 			case 305: // 305 : DISCONNECT_CALL
 				msgStr = "DISCONNECT_CALL";
 				callsManager->onDisconnected(payloads);
+				break;
+			case 402: // 402 : 
+				msgStr = "NOTIFY_VIDEO_QUALITY";
+				callsManager->onVideoQualityChanged(payloads);
 				break;
 			default:
 				break;
@@ -157,7 +181,6 @@ void SessionManager::proc_recv() {
 
 // socket Open function
 void SessionManager::openSocket() {
-	std::cout << "openSocket START" << std::endl;
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa)) {
 		std::cout << "WSA error";
@@ -191,8 +214,6 @@ void SessionManager::openSocket() {
 
 	closesocket(clientSocket);
 	WSACleanup();
-
-	std::cout << "openSocket END" << std::endl;
 }
 
 int SessionManager::sendData(const char* data) {

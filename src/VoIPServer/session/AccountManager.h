@@ -5,6 +5,7 @@
 #include "IAccountManager.h"
 #include "SessionControl.h"
 #include "ContactDb.h"
+#include "ConferenceDb.h"
 
 class AccountManager : public IAccountManager {
 private:
@@ -12,6 +13,7 @@ private:
 
 	SessionControl* sessionControl;
 	ContactDb* contactDb; // Contact Database
+	ConferenceDb* conferenceDb; // Conference Database
 
 	AccountManager();
 
@@ -19,7 +21,9 @@ public:
 	static AccountManager* getInstance();
 	static void releaseInstance();
 
-	// Listener
+	void release();
+
+	// interface
 	void setSessionControl(SessionControl* control) override;
 	void handleLogin_(std::string requester) override;
 
@@ -29,5 +33,8 @@ public:
 	bool handleLogout(Json::Value data) override;
 	void handleUpdateMyContactList(Json::Value data, string from) override;
 	void handleResetPassword(Json::Value data, string from) override;
+	void handleUpdateMyContact(Json::Value data, string from) override;
+	void handleCreateConference(Json::Value data, string from) override;
 	void handleGetAllContact(string from) override;
+	void handleGetAllConference(Json::Value data, string from) override;
 };
