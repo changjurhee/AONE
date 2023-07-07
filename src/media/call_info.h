@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 struct ContactInfo {
+	std::string cid;
 	std::string dest_ip;
 	int dest_video_port;
 	int dest_audio_port;

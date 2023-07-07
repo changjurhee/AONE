@@ -1,0 +1,130 @@
+#include "ServerMediaManager.h"
+#include "../common/debug.h"
+
+ServerMediaManager* ServerMediaManager::instance = nullptr;
+
+ServerMediaManager::ServerMediaManager(int max_pipeline) : MediaManager(max_pipeline) {
+	video_pipe_mode_list_.push_back(PipeMode(MODE_UDP_N, MODE_UDP_N));
+	audio_pipe_mode_list_.push_back(PipeMode(MODE_UDP_N, MODE_UDP_N));
+	gst_init(NULL, NULL);
+
+};
+
+ServerMediaManager* ServerMediaManager::getInstance() {
+	if (instance == nullptr) {
+		instance = new ServerMediaManager(1);
+	}
+	return instance;
+}
+
+void ServerMediaManager::releaseInstance() {
+	if (instance != nullptr) {
+		delete instance;
+		instance = nullptr;
+	}
+}
+
+void ServerMediaManager::updateClientVideoQuality(string rid, string cid, int level) {
+	// TODO : VideoQuality 변경 로직 적용 
+};
+
+void ServerMediaManager::registerNotifyTargetVideoQualityCallback(void (*notifyTargetVideoQuality)(string, int)) {
+	notifyTargetVideoQuality_ = notifyTargetVideoQuality;
+};
+
+OperatingInfo* ServerMediaManager::get_operate_info(void)
+{
+	// TODO : SET codec & encryption
+	OperatingInfo* operate_info = new OperatingInfo;
+	operate_info->video_codec = "h264";
+	operate_info->audio_codec = "openus";
+	operate_info->encryption_alg = "";
+	operate_info->encryption_key = "";
+	return operate_info;
+}
+
+void ServerMediaManager::startCall(Json::Value room_creat_info)
+{
+#if 1
+	vector<ContactInfo> contact_info_list;
+	string rid = room_creat_info["rid"].asString();
+	server_ip = room_creat_info["serverip"].asString();
+
+	OperatingInfo* operate_info = get_operate_info();
+
+	Pipelines pipelines;
+	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_pipe_mode_list_));
+	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_pipe_mode_list_));
+
+	pipelineMap_.insert(make_pair(rid, pipelines));
+	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
+	for (auto pipeline : video_pipelines) {
+		if (pipeline == NULL) continue;
+		pipeline->makePipeline(contact_info_list, *operate_info);
+	}
+#endif
+#if 0
+	// TODO : audio 미동작
+	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
+	for (auto pipeline : audio_pipelines) {
+		if (pipeline == NULL) continue;
+		pipeline->makePipeline(contact_info_list, operate_info);
+	}
+#endif 
+}
+
+//
+//void ServerMediaManager::endCall(Json::Value room_remove_info)
+//{
+//	string rid = room_remove_info["rid"].asInt();
+//	return MediaManager::endCall(rid);
+//}
+
+
+ContactInfo* ServerMediaManager::get_contact_info(Json::Value add_client_info)
+{
+	ContactInfo* contact_info = new ContactInfo;
+	contact_info->cid = add_client_info["cid"].asString();
+	contact_info->dest_ip = add_client_info["ip"].asString();
+	string my_ip = server_ip;
+	contact_info->dest_video_port = get_port_number(my_ip, "video");
+	contact_info->dest_audio_port = get_port_number(my_ip, "audio");
+
+	contact_info->org_video_port = get_port_number(contact_info->dest_ip, "video");
+	contact_info->org_audio_port = get_port_number(contact_info->dest_ip, "audio");
+	return contact_info;
+}
+
+
+void ServerMediaManager::addClient(Json::Value add_client_info)
+{
+	string rid = add_client_info["rid"].asString();
+
+	//TODO : connect pipleline
+	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
+	ContactInfo* client_info = get_contact_info(add_client_info);
+	for (auto pipeline : video_pipelines) {
+		if (pipeline == NULL) continue;
+		pipeline->add_client(client_info);
+	}
+
+#if 0
+	// TODO : audio 미동작
+	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
+	for (auto pipeline : audio_pipelines) {
+		if (pipeline == NULL) continue;
+		pipeline->add_client(contact_info_list, operate_info);
+	}
+#endif
+}
+
+void ServerMediaManager::removeClient(Json::Value remove_client_info)
+{
+  	//TODO : connect pipleline
+}
+
+void ServerMediaManager::endCall(Json::Value room_remove_info)
+{
+	string rid = room_remove_info["rid"].asString();
+	return end_call_with_rid(rid);
+};

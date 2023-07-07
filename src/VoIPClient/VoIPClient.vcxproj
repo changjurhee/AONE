@@ -94,13 +94,13 @@
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\..\Demo\webrtcVAD\webrtcVAD\webrtc\inc;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Demo\webrtcVAD\webrtcVAD\webrtc\inc;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib;$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <RegisterOutput>true</RegisterOutput>
       <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;gstvideo-1.0.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -187,7 +187,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <RegisterOutput>true</RegisterOutput>
       <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;gstvideo-1.0.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -203,7 +203,11 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\logger.h" />
+    <ClInclude Include="..\common\utility.h" />
     <ClInclude Include="..\media\litevad.h" />
+    <ClInclude Include="..\media\audio_buffer.h" />
+    <ClInclude Include="..\media\vad_processor.h" />
     <ClInclude Include="AccountLoginDlg.h" />
     <ClInclude Include="..\common\debug.h" />
     <ClInclude Include="..\media\AudioMediaPipeline.h" />
@@ -219,12 +223,14 @@
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IClientMediaManager.h" />
+    <ClInclude Include="IServerMediaManager.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="ManageUserAccountDlg.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ServerMediaManager.h" />
     <ClInclude Include="session\AccountManager.h" />
     <ClInclude Include="session\Call.h" />
     <ClInclude Include="session\CallsManager.h" />
@@ -240,7 +246,11 @@
     <ClInclude Include="VoIPClientView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\logger.cpp" />
+    <ClCompile Include="..\common\utility.cpp" />
+    <ClCompile Include="..\media\audio_buffer.cpp" />
     <ClCompile Include="..\media\litevad.cpp" />
+    <ClCompile Include="..\media\vad_processor.cpp" />
     <ClCompile Include="AccountLoginDlg.cpp" />
     <ClCompile Include="..\common\debug.cpp" />
     <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
@@ -263,6 +273,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PropertiesWnd.cpp" />
+    <ClCompile Include="ServerMediaManager.cpp" />
     <ClCompile Include="session\AccountManager.cpp" />
     <ClCompile Include="session\Call.cpp" />
     <ClCompile Include="session\CallsManager.cpp" />

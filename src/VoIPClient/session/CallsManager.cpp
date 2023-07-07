@@ -4,6 +4,8 @@
 
 #include "CallsManager.h"
 #include "Constants.h"
+#include "../../common/utility.h"
+#include "../../common/logger.h"
 
 CallsManager* CallsManager::instance = nullptr;
 Json::FastWriter fastWriter;
@@ -116,6 +118,8 @@ void CallsManager::onFailedOutgoingCall(Json::Value data) {
 void CallsManager::onSuccessfulIncomingCall() {
 	call->setCallState(CallState::STATE_ACTIVE);
 	std::cout << "[Received] -> (STATE_ACTIVE) onSuccessfulIncomingCall" << std::endl;
+
+	LOG_OBJ_DEBUG() << util::MakePortFromIp("192.168.3.10", true);
 }
 
 void CallsManager::onRejectedIncomingCall() {

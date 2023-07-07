@@ -30,6 +30,13 @@ protected:
 
 public:
 	LRESULT OnVadNotify(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnBnClickedClientStartcall();
+	afx_msg void OnBnClickedClientEndcall();
+	afx_msg void OnBnClickedServerStartcall();
+	afx_msg void OnBnDoubleclickedServerEndcall();
+	afx_msg void OnBnClickedServerAddclient();
+	afx_msg void OnBnClickedServerRemoveclient();
+	CStatic mDisplayBox;
 };
 
 

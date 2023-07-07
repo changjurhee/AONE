@@ -5,6 +5,8 @@
 #include<vector>
 #include<thread>
 #include <gst/gst.h>
+#include <queue>
+#include <map>
 using namespace std;
 
 #define BASE_CLIENT_ID 99
@@ -38,11 +40,13 @@ enum element_type {
 
 typedef pair<GstElement*, GstElement*> SubElements;
 typedef pair<int, int> PipeMode;
+typedef pair<int, bool> CIDInfo;
+typedef unsigned long long handleptr;
 
 class MediaPipeline
 {
 protected :
-	int call_index_;
+	string rid_;
 	int media_mode_;
 	int send_input_mode_;
 	int send_output_mode_;
@@ -50,9 +54,13 @@ protected :
 	int receive_output_mode_;
 	std::thread pipeline_thread_;
 	vector<PipeMode> pipe_mode_list_;
-	vector<ContactInfo> contact_info_list_;
+	map<int, ContactInfo> contact_info_list_;
+	map<string, CIDInfo> client_id_list_;
 	OperatingInfo operate_info_;
+	handleptr view_handler_;
 	GstElement* pipeline;
+	queue<ContactInfo> client_queue_;
+	bool start_pipeline_;
 	virtual SubElements pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_convert(GstBin* parent_bin, int bin_index, int client_index) = 0;
@@ -68,24 +76,30 @@ protected :
 	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements pipeline_make_tee(GstBin* parent_bin, int bin_index, int client_index);
 
+	virtual void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	SubElements make_front_device(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements make_front_udp_n(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements make_back_device(GstBin* parent_bin, int bin_index, int client_index);
-	SubElements MediaPipeline::make_back_udp_n(GstBin* parent_bin, int bin_index, int client_index);
-	void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int client_index);
-	void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int client_index);
-	void MediaPipeline::remove_client_in_front(GstBin* parent_bin, int bin_index, int client_index);
-	void MediaPipeline::remove_client_in_back(GstBin* parent_bin, int bin_index, int client_index);
-	void MediaPipeline::make_bin(GstBin* parent_bin, int bin_index, int front, int back);
-	int MediaPipeline::get_client_index(ContactInfo* client_info);
+	SubElements make_back_udp_n(GstBin* parent_bin, int bin_index, int client_index);
+	void add_client_in_front(GstBin* parent_bin, int bin_index, int client_index);
+	void add_client_in_back(GstBin* parent_bin, int bin_index, int client_index);
+	void remove_client_in_front(GstBin* parent_bin, int bin_index, int client_index);
+	void remove_client_in_back(GstBin* parent_bin, int bin_index, int client_index);
+	void make_bin(GstBin* parent_bin, int bin_index, int front, int back);
+	int get_client_index(ContactInfo* client_info);
+	void disable_client_index(ContactInfo* client_info);
 	void logPipelineElements(GstElement* element, int level);
-	string MediaPipeline::getLinkedElements(GstElement* element);
+	vector<GstElement*> get_elements_list(element_type etype);
+	string getLinkedElements(GstElement* element);
 	SubElements connect_subElements(SubElements front, SubElements back);
 	string get_elements_name(element_type etype, int bin_index, int client_index);
 	SubElements get_elements_by_name(GstBin* parent_bin, element_type etype, int bin_index, int client_index);
+	bool check_pipeline(ContactInfo* client_info);
+	void add_waiting_client(void);
+	void enable_debugging(void);
 public:
-	MediaPipeline(int call_index, const vector<PipeMode>& pipe_mode_list);
-	void makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info);
+	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list);
+	void makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info, handleptr handler);
 	void pipeline_run();
 	void add_client(ContactInfo* client_info);
 	void remove_client(ContactInfo* client_info);

@@ -21,8 +21,10 @@ class VideoMediaPipeline: public MediaPipeline
 	SubElements pipeline_make_jitter_buffer(GstBin* parent_bin, int bin_index, int client_index) override;
 	SubElements pipeline_make_udp_sink(GstBin* parent_bin, int port, int client_index) override;
 	SubElements pipeline_make_udp_src(GstBin* parent_bin, int port, int client_index) override;
+
+	void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) override;
 public:
-	VideoMediaPipeline(int call_index, const vector<PipeMode>& pipe_mode_list);
+	VideoMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list);
 	void setVideoQuality(int video_quality_index) override;
 	//void makePipeline(vector<ContactInfo*> contact_info_list, OperatingInfo* operate_info);
 	//void add_client(ContactInfo* client_info):
