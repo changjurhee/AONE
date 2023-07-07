@@ -4,8 +4,8 @@
 
 #include "CallsManager.h"
 #include "Constants.h"
-#include "common/utility.h"
-#include "common/logger.h"
+#include "../../common/utility.h"
+#include "../../common/logger.h"
 
 CallsManager* CallsManager::instance = nullptr;
 Json::FastWriter fastWriter;

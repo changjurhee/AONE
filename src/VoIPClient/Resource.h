@@ -141,6 +141,29 @@
 #define IDC_LST_CONTACT_ID              1010
 #define IDC_ST_LOGO                     1011
 #define IDC_MFCBTN_RESET_PW             1012
+#define IDC_Client_StartCall            1014
+#define IDC_Client_EndCall              1015
+#define IDC_Server_StartCall            1016
+#define IDC_Server_EndCall              1017
+#define IDC_Server_AddClient            1018
+#define IDC_Server_RemoveClient         1019
+#define IDC_Client_EncAlgo              1020
+#define IDC_Client_EncKey               1021
+#define IDC_Client_AudioCodec           1022
+#define IDC_Client_VideoCodec           1023
+#define IDC_Client_ClientIP             1024
+#define IDC_Client_ServerIP             1025
+#define IDC_Server_EncAlgo              1026
+#define IDC_Server_EncKey               1027
+#define IDC_Server_AudioCodec           1028
+#define IDC_Server_VideoCodec           1029
+#define IDC_Server_MaxClient            1030
+#define IDC_Server_ServerIP             1031
+#define IDC_Server_RIDForStart          1032
+#define IDC_Server_RIDForAdd            1033
+#define IDC_Server_ClientIP             1034
+#define IDC_Server_CID                  1035
+#define IDC_DISPLAY                     1037
 #define ID_TEST_32771                   32771
 #define ID_TEST_32772                   32772
 #define ID_TEST_LOG_IN                  32773
@@ -154,9 +177,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        341
+#define _APS_NEXT_RESOURCE_VALUE        342
 #define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1013
+#define _APS_NEXT_CONTROL_VALUE         1038
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
