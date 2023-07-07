@@ -14,6 +14,7 @@
 #include "ClientMediaManager.h"
 #include "ServerMediaManager.h"
 #include "common/logger.h"
+#include "session/CallsManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -200,6 +201,7 @@ BOOL CVoIPClientApp::InitInstance()
 #if 1
 	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
 	ClientMediaManager* client = ClientMediaManager::getInstance();
+	client->setSessionCallback(CallsManager::getInstance());
 	ServerMediaManager* server = ServerMediaManager::getInstance();
 
 	//Json::Value client_join_info;

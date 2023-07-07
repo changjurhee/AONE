@@ -9,6 +9,7 @@ ClientMediaManager::ClientMediaManager(int max_pipeline) : MediaManager(max_pipe
 	audio_sink_pipe_mode_list_.push_back(PipeMode(MODE_DEVICE, MODE_UDP_1));
 	audio_src_pipe_mode_list_.push_back(PipeMode(MODE_UDP_1, MODE_DEVICE));
 
+	sessionCallback_ = nullptr;
 	gst_init(NULL, NULL);
 };
 
@@ -26,10 +27,10 @@ void ClientMediaManager::releaseInstance() {
 	}
 }
 
-void ClientMediaManager::registerRequestVideoQualityCallback(void (*requestVideoQuality)(int))
-{
-	requestVideoQuality_ = requestVideoQuality;
-};
+void ClientMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
+	sessionCallback_ = callback;
+	// sessionCallback_->requestVideoQualityChange(3);
+}
 
 void ClientMediaManager::setVideoQuality(int video_quality_index)
 {
