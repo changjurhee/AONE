@@ -80,6 +80,9 @@
     <ClCompile Include="..\media\audio_buffer.cpp">
       <Filter>media</Filter>
     </ClCompile>
+    <ClCompile Include="DumpMediaManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h">
@@ -200,6 +203,12 @@
     </ClInclude>
     <ClInclude Include="..\media\audio_buffer.h">
       <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="DumpMediaManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\ISessionMediaCallback.h">
+      <Filter>Session</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
