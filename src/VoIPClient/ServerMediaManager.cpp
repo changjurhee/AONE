@@ -102,9 +102,10 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 
 	//TODO : connect pipleline
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
-	ContactInfo* client_info = get_contact_info(add_client_info);
+	ContactInfo* client_info;
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
+		client_info = get_contact_info(add_client_info);
 		pipeline->add_client(client_info);
 	}
 
@@ -113,6 +114,7 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
+		client_info = get_contact_info(add_client_info);
 		pipeline->add_client(contact_info_list, operate_info);
 	}
 #endif
@@ -121,6 +123,26 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 void ServerMediaManager::removeClient(Json::Value remove_client_info)
 {
   	//TODO : connect pipleline
+	string rid = remove_client_info["rid"].asString();
+	ContactInfo* client_info;
+
+	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
+	for (auto pipeline : video_pipelines) {
+		if (pipeline == NULL) continue;
+		client_info = get_contact_info(remove_client_info);
+		pipeline->remove_client(client_info);
+	}
+
+#if 0
+	// TODO : audio 미동작
+	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
+	for (auto pipeline : audio_pipelines) {
+		if (pipeline == NULL) continue;
+		client_info = get_contact_info(remove_client_info);
+		pipeline->remove_client(contact_info_list, operate_info);
+	}
+#endif
+
 }
 
 void ServerMediaManager::endCall(Json::Value room_remove_info)

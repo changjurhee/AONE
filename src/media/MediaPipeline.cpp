@@ -267,8 +267,6 @@ void MediaPipeline::enable_debugging(void)
 	//	vector<GstElement*> element_list = get_elements_list(etype);
 	//	g_printerr(("int : " +std::to_string(etype_int) + " , size : "+ std::to_string(element_list.size())+"\n").c_str());
 	//}
-
-
 }
 
 void MediaPipeline::pipeline_run() {	
@@ -295,12 +293,12 @@ void MediaPipeline::pipeline_run() {
 
 	enable_debugging();
 	// Start the main loop
-	GMainLoop* gSenderLoop = g_main_loop_new(NULL, FALSE);
-    g_main_loop_run(gSenderLoop);
+	mainLoop_ = g_main_loop_new(NULL, FALSE);
+    g_main_loop_run(mainLoop_);
 
     // Release the pipeline
-    gst_element_set_state(pipeline, GST_STATE_NULL);
     gst_object_unref(pipeline);
+	g_printerr("pipeline : End!!!.\n");
 }
 
 
@@ -318,7 +316,7 @@ void MediaPipeline::end_call()
 	// TODO : 동작 확인하기
 	// Release the pipeline
 	gst_element_set_state(pipeline, GST_STATE_NULL);
-	gst_object_unref(pipeline);
+	g_main_loop_quit(mainLoop_);
 }
 
 int MediaPipeline::get_client_index(ContactInfo* client_info)
@@ -389,23 +387,32 @@ void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int cl
 	return;
 }
 
+void MediaPipeline::unref_element(GstElement* element)
+{
+#if 0
+	//TODO : 동작 확인 필요
+	while (GST_OBJECT_REFCOUNT(GST_OBJECT(element)) != 0)
+		gst_object_unref(element);
+#endif
+}
+
 void MediaPipeline::remove_client_in_front(GstBin* parent_bin, int bin_index, int client_index)
 {
 	std::string current_name = "udpsrc_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
-	std::string target_name = "adder_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
-	while (true) {
+	std::string target_name = "adder_"+std::to_string(bin_index)+"_"+std::to_string(BASE_CLIENT_ID);
+	while (current_name != target_name) {
 		// Determine the element linked to 'source'
 		GstElement* current_element = gst_bin_get_by_name(parent_bin, current_name.c_str());
 
 		GstPad *srcPad = gst_element_get_static_pad(current_element, "src");
 		GstPad *linkedPad = gst_pad_get_peer(srcPad);
 		GstElement *linkedElement = gst_pad_get_parent_element(linkedPad);
+		if (linkedElement == NULL) break;
+
+		gst_element_unlink(current_element, linkedElement);
 		gst_object_unref(srcPad);
 		gst_object_unref(linkedPad);
-		gst_object_unref(current_element);
-		if (linkedElement == NULL || gst_element_get_name(linkedElement) == target_name) {
-			break;
-		}
+		unref_element(current_element);
 		current_name = gst_element_get_name(linkedElement);
 	}
 }
@@ -413,20 +420,20 @@ void MediaPipeline::remove_client_in_front(GstBin* parent_bin, int bin_index, in
 void MediaPipeline::remove_client_in_back(GstBin* parent_bin, int bin_index, int client_index)
 {
 	std::string current_name = "udpsink_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
-	std::string target_name = "tee_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
-	while (true) {
+	std::string target_name = "tee_"+std::to_string(bin_index)+"_"+std::to_string(BASE_CLIENT_ID);
+	while (current_name != target_name) {
 		// Determine the element linked to 'source'
 		GstElement* current_element = gst_bin_get_by_name(GST_BIN(parent_bin), current_name.c_str());
 
 		GstPad *sinkPad = gst_element_get_static_pad(current_element, "sink");
 		GstPad *linkedPad = gst_pad_get_peer(sinkPad);
 		GstElement *linkedElement = gst_pad_get_parent_element(linkedPad);
+		if (linkedElement == NULL) break;
+
+		gst_element_unlink(current_element, linkedElement);
 		gst_object_unref(sinkPad);
 		gst_object_unref(linkedPad);
-		gst_object_unref(current_element);
-		if (linkedElement == NULL || gst_element_get_name(linkedElement) == target_name) {
-			break;
-		}
+		unref_element(current_element);
 		current_name = gst_element_get_name(linkedElement);
 	}
 }

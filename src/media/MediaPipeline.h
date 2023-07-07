@@ -62,6 +62,7 @@ protected :
 	GstElement* pipeline;
 	queue<ContactInfo> client_queue_;
 	bool start_pipeline_;
+	GMainLoop* mainLoop_;
 	virtual SubElements pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_convert(GstBin* parent_bin, int bin_index, int client_index) = 0;
@@ -77,6 +78,7 @@ protected :
 	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements pipeline_make_tee(GstBin* parent_bin, int bin_index, int client_index);
 
+	void MediaPipeline::unref_element(GstElement* current_element);
 	virtual void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	SubElements make_front_device(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements make_front_udp_n(GstBin* parent_bin, int bin_index, int client_index);
