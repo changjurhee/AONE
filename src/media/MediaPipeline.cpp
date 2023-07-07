@@ -1,11 +1,19 @@
 ﻿#include "MediaPipeline.h"
 #include <thread>
+#include <functional>
+#include <algorithm>
+#include <format>
+
+#include "common/logger.h"
 
 MediaPipeline::MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list) {
 	rid_ = rid;
 	pipe_mode_list_ = pipe_mode_list;
 	start_pipeline_ = false;
 	view_handler_ = NULL;
+
+	bus_watch_id_ = 0;
+	timer_id_ = 0;
 
 	OperatingInfo* operate_info_ptr = new OperatingInfo();
 	operate_info_ = *operate_info_ptr;
@@ -281,7 +289,17 @@ void MediaPipeline::pipeline_run() {
 	start_pipeline_ = true;
 	add_waiting_client();
 
+	LOG_INFO("Setting handler on bus");
+	GstBus* bus = gst_element_get_bus(pipeline);
+	gst_bus_set_sync_handler(bus, BusSyncHandlerCallback, (gpointer)this, NULL);
+	bus_watch_id_ = gst_bus_add_watch(bus, (GstBusFunc)BusHandlerCallback, (gpointer)this);
+	gst_object_unref(bus);
+
+	LOG_INFO("Setting timer (500 ms)");
+	g_timeout_add(500, (GSourceFunc)TimerTask, (gpointer)this);
+
     // Pipeline execution
+	LOG_INFO("Setting pipeline to PLAYING");
     GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
     if (ret == GST_STATE_CHANGE_FAILURE)
     {
@@ -298,6 +316,7 @@ void MediaPipeline::pipeline_run() {
     // Release the pipeline
     gst_element_set_state(pipeline, GST_STATE_NULL);
     gst_object_unref(pipeline);
+	g_source_remove(bus_watch_id_);
 }
 
 
@@ -553,4 +572,84 @@ void MediaPipeline::logPipelineElements(GstElement * element, int level) {
 			//gst_iterator_free(iter);
 		}
 	}
+}
+
+GstBusSyncReply MediaPipeline::BusSyncHandler(GstBus* bus, GstMessage* message, gpointer data) {
+	GstElement* pipeline = (GstElement*)data;
+
+	switch (GST_MESSAGE_TYPE(message)) {
+	case GST_MESSAGE_STATE_CHANGED:
+		/* we only care about pipeline state change messages */
+		if (GST_MESSAGE_SRC(message) == GST_OBJECT_CAST(pipeline)) {
+			GstState old, news, pending;
+			gchar* state_transition_name;
+
+			gst_message_parse_state_changed(message, &old, &news, &pending);
+
+			state_transition_name = g_strdup_printf("%s_%s",
+				gst_element_state_get_name(old), gst_element_state_get_name(news));
+
+			g_free(state_transition_name);
+		}
+		break;
+	case GST_MESSAGE_ERROR: {
+		GError* error = NULL;
+		gchar* debug_info = NULL;
+
+		gst_message_parse_error(message, &error, &debug_info);
+		LOG_OBJ_ERROR() << "Error received from element " << GST_OBJECT_NAME(message->src)
+			<< ": " << error->message << std::endl;
+		LOG_OBJ_ERROR() << "Debugging information: " << (debug_info ? debug_info : "none") << std::endl;
+
+		// Free resources
+		g_error_free(error);
+		g_free(debug_info);
+
+		//g_main_loop_quit(loop);
+		break;
+	}
+	default:
+		break;
+	}
+
+	return GST_BUS_PASS;
+}
+bool MediaPipeline::BusHandler(GstBus* bus, GstMessage* message, gpointer data) {
+
+	return true;
+}
+
+bool MediaPipeline::TimerTask(gpointer data) {
+	static_cast<MediaPipeline*>(data)->ReadAndNotifyRtpStats();
+
+	return true;
+}
+void MediaPipeline::ReadAndNotifyRtpStats() {
+	std::vector<GstElement*> rtp_jitter_buffers;
+	rtp_jitter_buffers = get_elements_list(TYPE_JITTER);
+
+	for_each(rtp_jitter_buffers.begin(), rtp_jitter_buffers.end(),
+		[&](auto elem) {
+			//guint64 num-pushed: the number of packets pushed out.
+			//guint64 num-lost: the number of packets considered lost.
+			//guint64 num-late : the number of packets arriving too late.
+			//guint64 num-duplicates : the number of duplicate packets.
+			//guint64 avg-jitter : the average jitter in nanoseconds.
+			//guint64 rtx-count : the number of retransmissions requested.
+			//guint64 rtx-success - count : the number of successful retransmissions.
+			//gdouble rtx-per - packet : average number of RTX per packet.
+			//guint64 rtx-rtt : average round trip time per RTX.
+
+			if (!elem) return;
+
+			guint64 lost, late, avg_jitter;
+			GstStructure* s;
+			g_object_get(elem, "stats", &s, NULL);
+			gst_structure_get_uint64(s, "num-lost", &lost);
+			gst_structure_get_uint64(s, "num-late", &late);
+			gst_structure_get_uint64(s, "avg-jitter", &avg_jitter);
+
+			LOG_OBJ_DEBUG() << gst_element_get_name(elem) << ": lost " << lost << ", late " << late
+				<< ", avg_jitter " << avg_jitter/1000 << " us" << std::endl;
+		});
 }
