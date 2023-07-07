@@ -17,6 +17,8 @@
 #define new DEBUG_NEW
 #endif
 
+// Session
+#include "session/SessionManager.h"
 
 // CVoIPServerApp
 
@@ -123,6 +125,10 @@ BOOL CVoIPServerApp::InitInstance()
 	InitKeyboardManager();
 
 	InitTooltipManager();
+
+	// SessionManager init
+	SessionManager::getInstance()->init();
+
 	CMFCToolTipInfo ttParams;
 	ttParams.m_bVislManagerTheme = TRUE;
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
@@ -199,6 +205,9 @@ int CVoIPServerApp::ExitInstance()
 {
 	//TODO: 추가한 추가 리소스를 처리합니다.
 	AfxOleTerm(FALSE);
+
+	// Session clear
+	SessionManager::releaseInstance();
 
 	return CWinAppEx::ExitInstance();
 }

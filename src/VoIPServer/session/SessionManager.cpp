@@ -33,6 +33,7 @@ void SessionManager::releaseInstance() {
 }
 
 void SessionManager::init() {
+	getMyIp();
 	telephonyManager->setSessionControl(this);
 	accountManager->setSessionControl(this);
 
@@ -50,6 +51,23 @@ void SessionManager::release() {
 
 	telephonyManager->setSessionControl(nullptr);
 	accountManager->setSessionControl(nullptr);
+}
+
+void SessionManager::getMyIp()
+{
+	struct addrinfo* _addrinfo;
+	struct addrinfo* _res;
+	char _address[INET6_ADDRSTRLEN];
+	char szHostName[255];
+	gethostname(szHostName, sizeof(szHostName));
+	getaddrinfo(szHostName, NULL, 0, &_addrinfo);
+	for (_res = _addrinfo; _res != NULL; _res = _res->ai_next) {
+		if (_res->ai_family == AF_INET) {
+			if (NULL != inet_ntop(AF_INET, &((struct sockaddr_in*)_res->ai_addr)->sin_addr, _address, sizeof(_address))) {
+				myIp = _address;
+			}
+		}
+	}
 }
 
 void SessionManager::openSocket() {
@@ -144,8 +162,12 @@ void SessionManager::HandleClient(int clientSocket) {
 		Json::Value jsonData;
 		if (jsonReader.parse(msg, jsonData) == true) {
 			// received data parsed as JSON data			
+			string ipAddress = GetClientName(clientSocket);
 			int msgId = std::stoi(jsonData["msgId"].asString());
 			Json::Value payloads = jsonData["payload"];
+			std::cout << "--------------------------------------------------------" << std::endl;
+			std::cout << "RECEIVE[" << msgId << "]IP[" << ipAddress << "]CID[" << contactId  << "]PAYLOAD:" << payloads << std::endl;
+			std::cout << "--------------------------------------------------------" << std::endl;
 			switch (msgId) {
 			case 101: // 101 : REGISTER_CONTACT 		
 				msgStr = "REGISTER_CONTACT";
@@ -153,8 +175,7 @@ void SessionManager::HandleClient(int clientSocket) {
 				break;
 			case 102: // 102 : LOGIN		
 				{
-					msgStr = "LOGIN";
-					string ipAddress = GetClientName(clientSocket);
+					msgStr = "LOGIN";					
 					string cid = accountManager->handleLogin(payloads, ipAddress, contactId);
 					if (!cid.empty()) {		
 					    // Replace client map(IP Address:Port) to valid contactId after logged in				
@@ -170,6 +191,7 @@ void SessionManager::HandleClient(int clientSocket) {
 					// Erase contactID -> socket map when logged out
 					clientMap.erase(contactId);
 					contactId = GetClientName(clientSocket);
+					clientMap.insert({ contactId, clientSocket });
 				}
 				break;
 			case 104: // 104 : UPDATE_MY_CONTACTLIST
@@ -180,9 +202,29 @@ void SessionManager::HandleClient(int clientSocket) {
 				msgStr = "RESET_PASSWORD";
 				accountManager->handleResetPassword(payloads, contactId);
 				break;
+			case 107:
+				msgStr = "UPDATE_MY_CONTACT";
+				accountManager->handleUpdateMyContact(payloads, contactId);
+				break;
 			case 106: // 106 : GET_ALL_CONTACT
 				msgStr = "GET_ALL_CONTACT";
 				accountManager->handleGetAllContact(contactId);
+				break;
+			case 206: // 206 : CREATE_CONFERENCE
+				msgStr = "CREATE_CONFERENCE";
+				payloads["myIp"] = myIp;
+				telephonyManager->handleCreateConference(payloads);
+				accountManager->handleCreateConference(payloads, contactId);
+				break;
+			case 208: // 208 : JOIN_CONFERENCE
+				msgStr = "JOIN_CONFERENCE";
+				payloads["from"] = contactId;
+				telephonyManager->handleJoinConference(payloads);
+				break;
+			case 209: // 209 : EXIT_CONFERENCE
+				msgStr = "EXIT_CONFERENCE";
+				payloads["from"] = contactId;
+				telephonyManager->handleExitConference(payloads);
 				break;
 			case 301: // 301 : OUTGOING_CALL
 				{
@@ -199,18 +241,27 @@ void SessionManager::HandleClient(int clientSocket) {
 			case 302: // 302 : INCOMING_CALL_RESPONSE
 				msgStr = "INCOMING_CALL_RESPONSE";
 				payloads["from"] = contactId;
+				payloads["myIp"] = myIp;
 				telephonyManager->handleIncomingCallResponse(payloads);
 				break;
 			case 305: // 305 : DISCONNECT_CALL
 				msgStr = "DISCONNECT_CALL";
 				telephonyManager->handleDisconnect(payloads);
 				break;
+			case 401: // 401 : REQUEST_VIDEO_QUALITY
+				msgStr = "REQUEST_VIDEO_QUALITY";
+				telephonyManager->handleRequestVideoQualityChange(payloads);
+				break;
 			default:
 				break;
 			}
 		}
-		std::cout << "Received message from client [" << displayName << "][" << msgStr << "]" << std::endl << buffer << std::endl;
+		//std::cout << "Received message from client [" << displayName << "][" << msgStr << "]" << std::endl << buffer << std::endl;
 	}
+	std::cout << "Connection terminated[" << contactId << "]" << endl;
+	Json::Value data;
+	data["cid"] = contactId;
+	accountManager->handleLogout(data);	// Handle logout when connection terminated
 	clientMap.erase(contactId);
 	closesocket(clientSocket);
 }
@@ -228,10 +279,9 @@ std::string SessionManager::GetClientName(int clientSocket)
 
 	std::string ip(clientIP);
 	std::string portStr = std::to_string(clientPort);
-	std::string displayName = "(" + ip + ":" + portStr + ")";
+	std::string displayName = ip + ":" + portStr;
 
-	//return displayName;
-	return ip;
+	return displayName;
 }
 
 void SessionManager::sendData(const char* data, std::string to) {

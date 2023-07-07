@@ -26,8 +26,9 @@ void ClientMediaManager::releaseInstance() {
 	}
 }
 
-void ClientMediaManager::registerNotifyVideoQualityCallback(void (*notifyVideoQuality_)(int)) {
-	notifyVideoQuality_ = notifyVideoQuality_;
+void ClientMediaManager::registerRequestVideoQualityCallback(void (*requestVideoQuality)(int))
+{
+	requestVideoQuality_ = requestVideoQuality;
 };
 
 void ClientMediaManager::setVideoQuality(int video_quality_index)

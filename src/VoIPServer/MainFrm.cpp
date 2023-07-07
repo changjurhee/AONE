@@ -8,10 +8,6 @@
 
 #include "MainFrm.h"
 
-// Session
-#include <thread>
-#include "session/SessionManager.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -209,13 +205,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_SORTING_GROUPBYTYPE);
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
-
-	// Session init[S]
-	//SessionManager* sessionManager = SessionManager::getInstance();
-	//sessionManager->init();
-	//std::thread t(&SessionManager::init, sessionManager);
-	//t.join();
-	// Session init[E]
 
 	return 0;
 }
@@ -608,7 +597,6 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 
 	return TRUE;
 }
-
 
 void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 {
