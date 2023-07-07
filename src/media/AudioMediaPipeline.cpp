@@ -2,7 +2,8 @@
 
 AudioMediaPipeline::AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list) : MediaPipeline(rid, pipe_mode_list) {};
 
-SubElements AudioMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) {
+SubElements AudioMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index)
+{
 	std::string name = get_elements_name(TYPE_INPUT_DEVICE, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("autoaudiosrc", name.c_str());
 	gst_bin_add(GST_BIN(parent_bin), element);
@@ -11,7 +12,8 @@ SubElements AudioMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, i
 };
 
 
-SubElements AudioMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bin_index, int client_index, int level) {
+SubElements AudioMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bin_index, int client_index, int level)
+{
 	std::string name = get_elements_name(TYPE_RESCALE, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("audioresample", name.c_str());
 
@@ -23,7 +25,8 @@ void AudioMediaPipeline::setVideoQuality(int video_quality_index)
 	return;
 };
 
-SubElements AudioMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) {
+SubElements AudioMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index)
+{
 	std::string name = get_elements_name(TYPE_OUTPUT_DEVICE, bin_index, client_index);
 	GstElement* element =  gst_element_factory_make("autoaudiosink", name.c_str());
 	gst_bin_add(GST_BIN(parent_bin), element);
@@ -97,4 +100,10 @@ SubElements AudioMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 	gst_bin_add(GST_BIN(parent_bin), audioCapsfilter);
 	gst_element_link(udpsrc_pair.second, audioCapsfilter);
 	return SubElements(udpsrc_pair.first, audioCapsfilter);
-};
+}
+
+void AudioMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)
+{
+	return;
+}
+;

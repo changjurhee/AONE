@@ -5,6 +5,7 @@ MediaPipeline::MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list)
 	rid_ = rid;
 	pipe_mode_list_ = pipe_mode_list;
 	start_pipeline_ = false;
+	view_handler_ = NULL;
 
 	OperatingInfo* operate_info_ptr = new OperatingInfo();
 	operate_info_ = *operate_info_ptr;
@@ -203,6 +204,7 @@ SubElements MediaPipeline::make_back_udp_n(GstBin* parent_bin, int bin_index, in
 	return ret_sub_elements;
 }
 
+
 void MediaPipeline::make_bin(GstBin* parent_bin, int bin_index, int front, int back) {
 
 	SubElements front_pair = SubElements(NULL, NULL);
@@ -299,9 +301,11 @@ void MediaPipeline::pipeline_run() {
 }
 
 
-void MediaPipeline::makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info) {
+void MediaPipeline::makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info, handleptr view_handler)
+{
 	contact_info_list_;
 	memcpy(&operate_info_, &operate_info, sizeof(OperatingInfo));
+	view_handler_ = view_handler;
 
 	pipeline_thread_ = std::thread(&MediaPipeline::pipeline_run, this);
 }
@@ -319,7 +323,7 @@ int MediaPipeline::get_client_index(ContactInfo* client_info)
 	string cid = client_info->cid;
 	int client_id = 0;
 	if (client_id_list_.find(cid) == client_id_list_.end()) {
-		int client_id = client_id_list_.size();
+		client_id = client_id_list_.size();
 		client_id_list_[cid] = make_pair(client_id, true);
 		contact_info_list_[client_id] = *client_info;
 	} else if (client_id_list_[cid].second) {
@@ -361,7 +365,8 @@ void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int c
 
 	SubElements adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, BASE_CLIENT_ID);
 	ret_sub_elements = connect_subElements(ret_sub_elements, adder);
-
+	
+	update_adder_parameter(parent_bin, bin_index, client_index);
 	return;
 }
 
@@ -475,7 +480,14 @@ void MediaPipeline::add_client(ContactInfo* client_info)
 
 }
 
-void MediaPipeline::remove_client(ContactInfo* client_info) {
+void MediaPipeline::remove_client(ContactInfo* client_info)
+{
+	GstState cur_state;
+	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
+	if (cur_state == GST_STATE_PLAYING) {
+		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
+	}
+
 	int client_index = get_client_index(client_info);
 	for (int bin_index = 0; bin_index < pipe_mode_list_.size(); bin_index++) {
 		std::string name = "bin_" + std::to_string(bin_index);
@@ -492,6 +504,8 @@ void MediaPipeline::remove_client(ContactInfo* client_info) {
 		}
 	}
 	disable_client_index(client_info);
+	// Pipeline replay(?)
+	gst_element_set_state(pipeline, GST_STATE_PLAYING);
 }
 
 string MediaPipeline::getLinkedElements(GstElement* element)

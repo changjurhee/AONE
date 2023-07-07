@@ -9,6 +9,7 @@
 class ClientMediaManager : public MediaManager, public IClientMediaManager {
 private:
 	static ClientMediaManager* instance;
+	handleptr view_handler_;
 	vector<PipeMode> video_sink_pipe_mode_list_;
 	vector<PipeMode> video_src_pipe_mode_list_;
 	vector<PipeMode> audio_sink_pipe_mode_list_;
@@ -21,6 +22,7 @@ public:
 	void registerRequestVideoQualityCallback(void (*requestVideoQuality)(int)) override;
 	void setVideoQuality(int video_quality_index) override;
 	void startCall(Json::Value client_join_info) override;
+	void setViewHandler(handleptr view_handler) override;
 	void endCall(Json::Value client_join_info) override;
 	static ClientMediaManager* getInstance();
 	static void releaseInstance();

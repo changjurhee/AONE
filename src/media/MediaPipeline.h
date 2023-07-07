@@ -41,6 +41,7 @@ enum element_type {
 typedef pair<GstElement*, GstElement*> SubElements;
 typedef pair<int, int> PipeMode;
 typedef pair<int, bool> CIDInfo;
+typedef unsigned long long handleptr;
 
 class MediaPipeline
 {
@@ -56,6 +57,7 @@ protected :
 	map<int, ContactInfo> contact_info_list_;
 	map<string, CIDInfo> client_id_list_;
 	OperatingInfo operate_info_;
+	handleptr view_handler_;
 	GstElement* pipeline;
 	queue<ContactInfo> client_queue_;
 	bool start_pipeline_;
@@ -74,6 +76,7 @@ protected :
 	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements pipeline_make_tee(GstBin* parent_bin, int bin_index, int client_index);
 
+	virtual void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	SubElements make_front_device(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements make_front_udp_n(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements make_back_device(GstBin* parent_bin, int bin_index, int client_index);
@@ -96,7 +99,7 @@ protected :
 	void enable_debugging(void);
 public:
 	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list);
-	void makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info);
+	void makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info, handleptr handler);
 	void pipeline_run();
 	void add_client(ContactInfo* client_info);
 	void remove_client(ContactInfo* client_info);

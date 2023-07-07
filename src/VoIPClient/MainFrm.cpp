@@ -15,7 +15,7 @@
 // Session
 #include "session/SessionManager.h"
 
-#include "common/logger.h"
+#include "../common/logger.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

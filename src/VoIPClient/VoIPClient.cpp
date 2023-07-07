@@ -12,6 +12,7 @@
 #include "VoIPClientDoc.h"
 #include "VoIPClientView.h"
 #include "ClientMediaManager.h"
+#include "ServerMediaManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -191,20 +192,21 @@ BOOL CVoIPClientApp::InitInstance()
 	m_pMainWnd->UpdateWindow();
 	
 
-#if 0
+#if 1
 	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
-	ClientMediaManager *test = ClientMediaManager::getInstance();
+	ClientMediaManager* client = ClientMediaManager::getInstance();
+	ServerMediaManager* server = ServerMediaManager::getInstance();
 
-	Json::Value client_join_info;
-	client_join_info["rid"] = "TEST_ID";
-	client_join_info["serverip"] = "127.0.0.1";
-	client_join_info["myip"] = "127.0.0.1";
-	client_join_info["videocodec"] = "TEST_ID";
-	client_join_info["audiocodec"] = "TEST_ID";
-	client_join_info["encryption_alg"] = "TEST_ID";
-	client_join_info["encryption_key"] = "TEST_ID";
+	//Json::Value client_join_info;
+	//client_join_info["rid"] = "TEST_ID";
+	//client_join_info["serverip"] = "127.0.0.1";
+	//client_join_info["myip"] = "127.0.0.1";
+	//client_join_info["videocodec"] = "TEST_ID";
+	//client_join_info["audiocodec"] = "TEST_ID";
+	//client_join_info["encryption_alg"] = "TEST_ID";
+	//client_join_info["encryption_key"] = "TEST_ID";
 
-	test->startCall(client_join_info);
+	//test->startCall(client_join_info);
 #endif
 	return TRUE;
 }

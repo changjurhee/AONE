@@ -1,4 +1,5 @@
 #include "VideoMediaPipeline.h"
+#include <gst/video/videooverlay.h>
 
 VideoMediaPipeline::VideoMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list) : MediaPipeline(rid, pipe_mode_list) {
 
@@ -20,8 +21,19 @@ SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, i
 
 SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_OUTPUT_DEVICE, bin_index, client_index);
+#if 0
 	GstElement* element = gst_element_factory_make("autovideosink", name.c_str());
+#else
+	GstElement* element = gst_element_factory_make("d3dvideosink", name.c_str());
+
+	// Set video sink
+	g_object_set(G_OBJECT(element), "force-aspect-ratio", TRUE, NULL);
+
+	//GST_VIDEO_OVERLAY(element);
+	gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(element), (guintptr) view_handler_);
+#endif
 	gst_bin_add(GST_BIN(parent_bin), element);
+
 
 	return SubElements(element, element);
 };
@@ -86,7 +98,6 @@ SubElements VideoMediaPipeline::pipeline_make_decoding(GstBin* parent_bin, int b
 SubElements VideoMediaPipeline::pipeline_make_adder(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_ADDER, bin_index, client_index);
     GstElement* element = gst_element_factory_make("compositor", name.c_str());
-	g_printerr(("video"+name + "\n").c_str());
 
 	//TODO : 해당 값 동적 적용 검토
     //g_object_set(G_OBJECT(element), "sink_0::xpos", 0, "sink_0::ypos", 0,
@@ -124,4 +135,24 @@ SubElements VideoMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 	gst_bin_add(GST_BIN(parent_bin), videoCapsfilter);
 	gst_element_link(udpsrc_pair.second, videoCapsfilter);
 	return SubElements(udpsrc_pair.first, videoCapsfilter);
+}
+
+void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)
+{
+	int base_width = 640;
+	int base_hight = 480;
+
+	// get pad
+	GstElement* queue = get_elements_by_name(parent_bin, TYPE_QUEUE, bin_index, client_index).second;
+
+	GstPad* srcPad = gst_element_get_static_pad(queue, "src");
+	GstPad* linkedPad = gst_pad_get_peer(srcPad);
+
+	int x_pos = base_width*(client_index/2);
+	int y_pos = client_index%2==0 ? 0 : base_hight;
+
+	g_object_set(linkedPad, "xpos", x_pos, NULL);
+	g_object_set(linkedPad, "ypos", y_pos, NULL);
+
+	gst_object_unref(linkedPad);
 };
