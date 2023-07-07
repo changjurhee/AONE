@@ -28,8 +28,8 @@ void ServerMediaManager::updateClientVideoQuality(string rid, string cid, int le
 	// TODO : VideoQuality 변경 로직 적용 
 };
 
-void ServerMediaManager::registerNotifyTargetVideoQualityCallback(void (*notifyTargetVideoQuality)(int, int)) {
-	notifyTargetVideoQuality = notifyTargetVideoQuality;
+void ServerMediaManager::registerNotifyTargetVideoQualityCallback(void (*notifyTargetVideoQuality)(string, int)) {
+	notifyTargetVideoQuality_ = notifyTargetVideoQuality;
 };
 
 OperatingInfo* ServerMediaManager::get_operate_info(void)
