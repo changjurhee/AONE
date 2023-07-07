@@ -74,6 +74,12 @@
       <Filter>media</Filter>
     </ClCompile>
     <ClCompile Include="ServerMediaManager.cpp" />
+    <ClCompile Include="..\media\vad_processor.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\audio_buffer.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h">
@@ -189,6 +195,12 @@
     </ClInclude>
     <ClInclude Include="IServerMediaManager.h" />
     <ClInclude Include="ServerMediaManager.h" />
+    <ClInclude Include="..\media\vad_processor.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\audio_buffer.h">
+      <Filter>media</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\class_view.ico">
