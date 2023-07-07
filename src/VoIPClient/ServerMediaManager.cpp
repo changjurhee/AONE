@@ -48,7 +48,7 @@ void ServerMediaManager::startCall(Json::Value room_creat_info)
 #if 1
 	vector<ContactInfo> contact_info_list;
 	string rid = room_creat_info["rid"].asString();
-	server_ip = room_creat_info["serverip"].asString();
+	server_ip = room_creat_info["myIp"].asString();
 
 	OperatingInfo* operate_info = get_operate_info();
 
@@ -81,11 +81,13 @@ void ServerMediaManager::startCall(Json::Value room_creat_info)
 //}
 
 
-ContactInfo* ServerMediaManager::get_contact_info(Json::Value add_client_info)
+ContactInfo* ServerMediaManager::get_contact_info(Json::Value add_client_info, bool is_remove)
 {
 	ContactInfo* contact_info = new ContactInfo;
 	contact_info->cid = add_client_info["cid"].asString();
-	contact_info->dest_ip = add_client_info["ip"].asString();
+
+	if (is_remove) return contact_info;
+	contact_info->dest_ip = add_client_info["clientIp"].asString();
 	string my_ip = server_ip;
 	contact_info->dest_video_port = get_port_number(my_ip, "video");
 	contact_info->dest_audio_port = get_port_number(my_ip, "audio");
@@ -105,7 +107,7 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 	ContactInfo* client_info;
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
-		client_info = get_contact_info(add_client_info);
+		client_info = get_contact_info(add_client_info, false);
 		pipeline->add_client(client_info);
 	}
 
@@ -114,7 +116,7 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
-		client_info = get_contact_info(add_client_info);
+		client_info = get_contact_info(add_client_info, false);
 		pipeline->add_client(contact_info_list, operate_info);
 	}
 #endif
@@ -129,7 +131,7 @@ void ServerMediaManager::removeClient(Json::Value remove_client_info)
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
-		client_info = get_contact_info(remove_client_info);
+		client_info = get_contact_info(remove_client_info, true);
 		pipeline->remove_client(client_info);
 	}
 
@@ -138,7 +140,7 @@ void ServerMediaManager::removeClient(Json::Value remove_client_info)
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
-		client_info = get_contact_info(remove_client_info);
+		client_info = get_contact_info(remove_client_info, true);
 		pipeline->remove_client(contact_info_list, operate_info);
 	}
 #endif

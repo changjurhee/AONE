@@ -11,6 +11,7 @@
 
 #include "VoIPServerDoc.h"
 #include "VoIPServerView.h"
+#include "ServerMediaManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -188,6 +189,9 @@ BOOL CVoIPServerApp::InitInstance()
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 	m_pMainWnd->UpdateWindow();
+
+	ServerMediaManager* server = ServerMediaManager::getInstance();
+
 	return TRUE;
 }
 

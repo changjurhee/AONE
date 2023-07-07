@@ -12,7 +12,7 @@ private:
 	void (*notifyTargetVideoQuality)(int, int);
 	OperatingInfo* ServerMediaManager::get_operate_info(void);
 	ServerMediaManager(int max_pipeline);
-	ContactInfo* get_contact_info(Json::Value add_client_info);
+	ContactInfo* get_contact_info(Json::Value add_client_info, bool is_remove);
 	string server_ip;
 public:
 	void updateClientVideoQuality(string rid, string cid, int level) override;
