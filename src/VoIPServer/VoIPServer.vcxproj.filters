@@ -102,9 +102,6 @@
     <ClInclude Include="..\media\call_info.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\media\litevad.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\media\MediaManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -172,6 +169,24 @@
     </ClCompile>
     <ClCompile Include="session\TelephonyManager.cpp">
       <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerMediaManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\AudioMediaPipeline.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\MediaManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\MediaPipeline.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\VideoMediaPipeline.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\debug.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

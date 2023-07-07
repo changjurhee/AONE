@@ -91,7 +91,7 @@ SubElements AudioMediaPipeline::pipeline_make_udp_sink(GstBin* parent_bin, int b
 SubElements AudioMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bin_index, int client_index) {
 	SubElements udpsrc_pair = MediaPipeline::pipeline_make_udp_src_with_port(parent_bin, bin_index, client_index, contact_info_list_[client_index].org_video_port);
 
-	std::string name = get_elements_name(TYPE_CAPS, bin_index, client_index);
+	std::string name = get_elements_name(TYPE_UDP_CAPS, bin_index, client_index);
 	GstElement* audioCapsfilter = gst_element_factory_make("capsfilter", name.c_str());
 	GstCaps* audioCaps = gst_caps_from_string("application/x-rtp, media=(string)audio, encoding-name=OPUS,  payload=(int)96");
 	g_object_set(G_OBJECT(audioCapsfilter), "caps", audioCaps, NULL);

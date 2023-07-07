@@ -15,9 +15,6 @@ IMPLEMENT_DYNCREATE(CCallView, CFormView)
 CCallView::CCallView()
 	: CFormView(IDD_DLG_CALL_VIEW)
 {
-    ClientMediaManager* test = ClientMediaManager::getInstance();
-
-    //while (mDisplayBox.GetSafeHwnd() == nullptr);
 
 }
 
@@ -126,7 +123,6 @@ void CCallView::OnBnClickedClientStartcall()
 
     test->startCall(client_join_info);
 
-
     // Get DC(Device Context) from window handle
     HDC hdc = ::GetDC(mDisplayBox);
 
@@ -148,6 +144,25 @@ void CCallView::OnBnClickedClientStartcall()
 void CCallView::OnBnClickedClientEndcall()
 {
     // TODO: 여기에 Client의 EndCall이 눌렸을 때 처리 코드를 추가합니다.
+    CString client_ServerIP;
+    CString client_ClientIP;
+    CString client_VideoCodec;
+    CString client_AudioCodec;
+
+    // Get information from call view to operating start call by client
+    GetDlgItemText(IDC_Client_ServerIP, client_ServerIP);
+    GetDlgItemText(IDC_Client_ClientIP, client_ClientIP);
+    GetDlgItemText(IDC_Client_VideoCodec, client_VideoCodec);
+    GetDlgItemText(IDC_Client_AudioCodec, client_AudioCodec);
+
+
+    ClientMediaManager* test = ClientMediaManager::getInstance();
+
+    Json::Value client_join_info;
+    client_join_info["rid"] = "TEST_ID";
+    //test->setViewHandler((handleptr)mDisplayBox.GetSafeHwnd());
+
+    test->endCall(client_join_info);
 }
 
 
@@ -181,13 +196,36 @@ void CCallView::OnBnClickedServerStartcall()
     room_creat_info["audiocodec"] = string(CT2CA(server_AudioCodec));
 
     test->startCall(room_creat_info);
-
 }
 
 
 void CCallView::OnBnDoubleclickedServerEndcall()
 {
     // TODO: 여기에 Server의 EndCall이 눌렸을 때 처리 코드를 추가합니다.
+    CString server_RIDForStart;
+    CString server_ServerIP;
+    CString server_MaxClients;
+    CString server_VideoCodec;
+    CString server_AudioCodec;
+
+    // Get information from call view to operating start call by server
+    GetDlgItemText(IDC_Server_RIDForStart, server_RIDForStart);
+    GetDlgItemText(IDC_Server_ServerIP, server_ServerIP);
+    GetDlgItemText(IDC_Server_MaxClient, server_MaxClients);
+    GetDlgItemText(IDC_Server_VideoCodec, server_VideoCodec);
+    GetDlgItemText(IDC_Server_AudioCodec, server_AudioCodec);
+
+    // TODO : Get server_EncryptionAlgo, server_EncryptionKey
+
+    // TODO : Start Call
+
+    ServerMediaManager* test = ServerMediaManager::getInstance();
+
+    Json::Value room_creat_info;
+    room_creat_info["rid"] = string(CT2CA(server_RIDForStart));
+
+    test->endCall(room_creat_info);
+
 }
 
 
@@ -216,4 +254,19 @@ void CCallView::OnBnClickedServerRemoveclient()
 {
     // TODO: 여기에 Server의 RemoveClient가 눌렸을 때 처리 코드를 추가합니다.
 
+    CString server_ClientIPForAdd;
+    CString server_RID;
+    CString server_CID;
+
+    // Get information from call view to operating add client
+    GetDlgItemText(IDC_Server_RIDForAdd, server_RID);
+    GetDlgItemText(IDC_Server_ClientIP, server_ClientIPForAdd);
+    GetDlgItemText(IDC_Server_CID, server_CID);
+
+    ServerMediaManager* test = ServerMediaManager::getInstance();
+    Json::Value room_creat_info;
+    room_creat_info["rid"] = string(CT2CA(server_RID));
+    room_creat_info["ip"] = string(CT2CA(server_ClientIPForAdd));
+    room_creat_info["cid"] = string(CT2CA(server_CID));
+    test->removeClient(room_creat_info);
 }

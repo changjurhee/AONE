@@ -43,10 +43,10 @@ void ClientMediaManager::setVideoQuality(int video_quality_index)
 ContactInfo* ClientMediaManager::get_contact_info(Json::Value client_join_info)
 {
 	ContactInfo *contact_info = new ContactInfo;
-	contact_info->dest_ip = client_join_info["serverip"].asString();
+	contact_info->dest_ip = client_join_info["serverIp"].asString();
 //	string my_ip = get_ip_address();
 	// TODO : json 문구 확인하기
-	string my_ip = client_join_info["myip"].asString();
+	string my_ip = client_join_info["myIp"].asString();
 	contact_info->dest_video_port = get_port_number(my_ip, "video");
 	contact_info->dest_audio_port = get_port_number(my_ip, "audio");
 
@@ -58,8 +58,8 @@ ContactInfo* ClientMediaManager::get_contact_info(Json::Value client_join_info)
 OperatingInfo* ClientMediaManager::get_operate_info(Json::Value client_join_info)
 {
 	OperatingInfo* operate_info = new OperatingInfo;
-	operate_info->video_codec = client_join_info["videocodec"].asString();
-	operate_info->audio_codec = client_join_info["audiocodec"].asString();
+	operate_info->video_codec = client_join_info["videoCodec"].asString();
+	operate_info->audio_codec = client_join_info["audioCodec"].asString();
 	operate_info->encryption_alg = client_join_info["encryption_alg"].asString();
 	operate_info->encryption_key = client_join_info["encryption_key"].asString();
 	return operate_info;

@@ -12,13 +12,12 @@ private:
 	void (*notifyTargetVideoQuality_)(string, int);
 	OperatingInfo* ServerMediaManager::get_operate_info(void);
 	ServerMediaManager(int max_pipeline);
-	ContactInfo* get_contact_info(Json::Value add_client_info);
+	ContactInfo* get_contact_info(Json::Value add_client_info, bool is_remove);
 	string server_ip;
 public:
 	void updateClientVideoQuality(string rid, string cid, int level) override;
 	void registerNotifyTargetVideoQualityCallback(void (*notifyTargetVideoQuality)(string, int)) override;
 	void startCall(Json::Value room_creat_info);
-
 	void endCall(Json::Value room_remove_info) override;
 	void addClient(Json::Value add_client_info) override;
 	void removeClient(Json::Value remove_client_info) override;
