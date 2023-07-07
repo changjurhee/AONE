@@ -319,7 +319,7 @@ int MediaPipeline::get_client_index(ContactInfo* client_info)
 	string cid = client_info->cid;
 	int client_id = 0;
 	if (client_id_list_.find(cid) == client_id_list_.end()) {
-		int client_id = client_id_list_.size();
+		client_id = client_id_list_.size();
 		client_id_list_[cid] = make_pair(client_id, true);
 		contact_info_list_[client_id] = *client_info;
 	} else if (client_id_list_[cid].second) {

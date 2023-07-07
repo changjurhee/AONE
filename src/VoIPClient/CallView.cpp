@@ -114,9 +114,9 @@ void CCallView::OnBnClickedClientStartcall()
     Json::Value client_join_info;
     client_join_info["rid"] = "TEST_ID";
     client_join_info["serverip"] = string(CT2CA(client_ServerIP));
-    client_join_info["myip"] = string(CT2CA(client_ServerIP));
-    client_join_info["videocodec"] = "TEST_ID";
-    client_join_info["audiocodec"] = "TEST_ID";
+    client_join_info["myip"] = string(CT2CA(client_ClientIP));
+    client_join_info["videocodec"] = string(CT2CA(client_VideoCodec));
+    client_join_info["audiocodec"] = string(CT2CA(client_AudioCodec));
     client_join_info["encryption_alg"] = "TEST_ID";
     client_join_info["encryption_key"] = "TEST_ID";
 
@@ -169,9 +169,9 @@ void CCallView::OnBnClickedServerStartcall()
     ServerMediaManager* test = ServerMediaManager::getInstance();
 
     Json::Value room_creat_info;
-    room_creat_info["rid"] = stoi(string(CT2CA(server_RIDForStart)));
-    //room_creat_info["serverip"] = string(CT2CA(server_ServerIP));
-    room_creat_info["serverip"] = string(CT2CA(server_AudioCodec));
+    room_creat_info["rid"] = string(CT2CA(server_RIDForStart));
+    room_creat_info["serverip"] = string(CT2CA(server_ServerIP));
+    //room_creat_info["serverip"] = string(CT2CA(server_AudioCodec));
     room_creat_info["participantsCount"] = string(CT2CA(server_MaxClients));
     room_creat_info["videocodec"] = string(CT2CA(server_VideoCodec));
     room_creat_info["audiocodec"] = string(CT2CA(server_AudioCodec));
@@ -201,10 +201,9 @@ void CCallView::OnBnClickedServerAddclient()
     ServerMediaManager* test = ServerMediaManager::getInstance();
 
     Json::Value room_creat_info;
-    room_creat_info["rid"] = stoi(string(CT2CA(server_RID)));
+    room_creat_info["rid"] = string(CT2CA(server_RID));
     room_creat_info["ip"] = string(CT2CA(server_ClientIPForAdd));
-    room_creat_info["cid"] = stoi(string(CT2CA(server_CID)));
-    int a = stoi(string(CT2CA(server_RID)));
+    room_creat_info["cid"] = string(CT2CA(server_CID));
     test->addClient(room_creat_info);
 }
 
