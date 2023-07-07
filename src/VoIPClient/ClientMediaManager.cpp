@@ -32,7 +32,7 @@ void ClientMediaManager::registerNotifyVideoQualityCallback(void (*notifyVideoQu
 
 void ClientMediaManager::setVideoQuality(int video_quality_index)
 {
-	vector<VideoMediaPipeline*> pipelines = getVideoPipeLine(DEFAULT_CLIENT_CID);
+	vector<VideoMediaPipeline*> pipelines = getVideoPipeLine(DEFAULT_CLIENT_RID);
 	for (auto pipeline : pipelines) {
 		if (pipeline == NULL) continue;
 		pipeline->setVideoQuality(video_quality_index);

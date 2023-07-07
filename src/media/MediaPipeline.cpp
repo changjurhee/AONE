@@ -35,8 +35,11 @@ string MediaPipeline::get_elements_name(element_type etype, int bin_index, int c
 		case TYPE_RESCALE :
 			name = "scale_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
-		case TYPE_CAPS:
-			name = "caps_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+		case TYPE_RESCALE_CAPS:
+			name = "recale_caps_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
+		case TYPE_UDP_CAPS:
+			name = "udp_caps_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
 		case TYPE_ENCODING :
 			name = "encoding_" + std::to_string(bin_index) + "_" + std::to_string(client_index);

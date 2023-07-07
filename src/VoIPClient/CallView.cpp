@@ -15,9 +15,6 @@ IMPLEMENT_DYNCREATE(CCallView, CFormView)
 CCallView::CCallView()
 	: CFormView(IDD_DLG_CALL_VIEW)
 {
-    ClientMediaManager* test = ClientMediaManager::getInstance();
-
-    //while (mDisplayBox.GetSafeHwnd() == nullptr);
 
 }
 
@@ -126,7 +123,6 @@ void CCallView::OnBnClickedClientStartcall()
 
     test->startCall(client_join_info);
 
-
     // Get DC(Device Context) from window handle
     HDC hdc = ::GetDC(mDisplayBox);
 
@@ -181,7 +177,6 @@ void CCallView::OnBnClickedServerStartcall()
     room_creat_info["audiocodec"] = string(CT2CA(server_AudioCodec));
 
     test->startCall(room_creat_info);
-
 }
 
 

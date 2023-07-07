@@ -8,6 +8,91 @@ VideoMediaPipeline::VideoMediaPipeline(string rid, const vector<PipeMode>& pipe_
 void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 {
 	//TODO : 기능 구현하기
+	GstState cur_state;
+	vector<GstElement*> element_rescale;
+	vector<GstElement*> element_encode;
+	GstElement* rescaleElements;
+	GstElement* encodeElements;
+
+	int videoWidth;
+	int videoHeight;
+	int videoBitRate;
+
+	// Set video resolution & bitrate
+	switch(video_quality_index){
+	default:
+	case 0:
+		// Stop pipeline for stop video transmit
+		gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
+		if (cur_state != GST_STATE_NULL) {
+			GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
+		}
+		return;
+		break;
+	case 1:
+		videoWidth = 320;
+		videoHeight = 240;
+		videoBitRate = 60;
+		break;
+	case 2:
+		videoWidth = 320;
+		videoHeight = 240;
+		videoBitRate = 120;
+		break;
+	case 3:
+		videoWidth = 480;
+		videoHeight = 360;
+		videoBitRate = 500;
+		break;
+	case 4:
+		videoWidth = 640;
+		videoHeight = 480;
+		videoBitRate = 500;
+		break;
+	}
+
+	// Get rescale element
+	element_rescale = get_elements_list(TYPE_RESCALE_CAPS);
+	if (element_rescale.size() != 0) {
+		rescaleElements = element_rescale[0];
+	}
+	else {
+		return;
+	}
+
+	// Stop pipeline
+	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
+	if (cur_state != GST_STATE_NULL) {
+		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
+	}
+
+	// Set the video resolution using capsfilter
+	GstCaps* capsRescale = gst_caps_new_simple("video/x-raw",
+		"width", G_TYPE_INT, videoWidth,
+		"height", G_TYPE_INT, videoHeight,
+		"framerate", GST_TYPE_FRACTION, 30, 1,
+		NULL);
+
+	g_object_set(rescaleElements, "caps", capsRescale, NULL);
+	gst_caps_unref(capsRescale);
+
+	// Get endcode element
+	element_encode = get_elements_list(TYPE_ENCODING);
+	if (element_encode.size() != 0) {
+		encodeElements = element_encode[0];
+	}
+	else {
+		return;
+	}
+
+	// Set the video bitrate
+	g_object_set(encodeElements, "bitrate", videoBitRate, NULL);
+
+	// Start pipeline
+	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
+	if (cur_state != GST_STATE_PLAYING) {
+		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
+	}
 }
 
 SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) {
@@ -46,7 +131,7 @@ SubElements VideoMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bi
 	std::string scale_name = get_elements_name(TYPE_RESCALE, bin_index, client_index);
 	GstElement* scale_element = gst_element_factory_make("videoscale", scale_name.c_str());
 
-	std::string caps_name = get_elements_name(TYPE_CAPS, bin_index, client_index);
+	std::string caps_name = get_elements_name(TYPE_RESCALE_CAPS, bin_index, client_index);
 	GstElement* caps_element = gst_element_factory_make("capsfilter", caps_name.c_str());
 
     // Set the video resolution using capsfilter
@@ -126,7 +211,7 @@ SubElements VideoMediaPipeline::pipeline_make_udp_sink(GstBin* parent_bin, int b
 SubElements VideoMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bin_index, int client_index) {
 	SubElements udpsrc_pair = MediaPipeline::pipeline_make_udp_src_with_port(parent_bin, bin_index, client_index, contact_info_list_[client_index].org_video_port);
 
-	std::string name = get_elements_name(TYPE_CAPS, bin_index, client_index);
+	std::string name = get_elements_name(TYPE_UDP_CAPS, bin_index, client_index);
 	GstElement* videoCapsfilter = gst_element_factory_make("capsfilter", name.c_str());
 	GstCaps* videoCaps = gst_caps_from_string("application/x-rtp, media=(string)video, payload=(int)96");
 	g_object_set(G_OBJECT(videoCapsfilter), "caps", videoCaps, NULL);
