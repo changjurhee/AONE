@@ -128,18 +128,23 @@ BOOL CVoIPClientApp::InitInstance()
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
 		RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
 
+	// Media
+	Logger::GetInstance()->SetLogLevel(LogLevel::LL_DEBUG);
+	LOG_DEBUG("waiting something...");
+
 	// 애플리케이션의 문서 템플릿을 등록합니다.  문서 템플릿은
 	//  문서, 프레임 창 및 뷰 사이의 연결 역할을 합니다.
 	CSingleDocTemplate* pDocTemplate;
 	pDocTemplate = new CSingleDocTemplate(
 		IDR_MAINFRAME,
-		//IDI_MASK,
 		RUNTIME_CLASS(CVoIPClientDoc),
 		RUNTIME_CLASS(CMainFrame),       // 주 SDI 프레임 창입니다.
 		RUNTIME_CLASS(CVoIPClientView));
 	if (!pDocTemplate)
 		return FALSE;
+
 	AddDocTemplate(pDocTemplate);
+
 	// COleTemplateServer를 문서 템플릿에 연결합니다.
 	//  COleTemplateServer는 OLE 컨테이너를 요청하는 대신 문서 템플릿에
 	//  지정된 정보를 사용하여 새 문서를
@@ -188,8 +193,10 @@ BOOL CVoIPClientApp::InitInstance()
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
+	LOG_DEBUG("waiting something...");
 	m_pMainWnd->UpdateWindow();
-	
+	LOG_DEBUG("waiting something...");
+	m_pMainWnd->SetWindowText(_T("MOOZ"));
 
 #if 0
 	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인

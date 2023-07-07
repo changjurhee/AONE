@@ -78,6 +78,9 @@ protected:
 	afx_msg void OnUpdateViewCaptionBar(CCmdUI* pCmdUI);
 	afx_msg void OnOptions();
 	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
+	afx_msg void OnUpdateTest(CCmdUI* pCmdUI);
+	afx_msg void OnViewTest();
+	
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();
@@ -90,6 +93,9 @@ protected:
 	CMFCOutlookBarTabCtrl* FindOutlookParent(CWnd* pWnd);
 	CMFCOutlookBarTabCtrl* m_pCurrOutlookWnd;
 	CMFCOutlookBarPane*    m_pCurrOutlookPage;
+
+public:
+	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 };
 
 

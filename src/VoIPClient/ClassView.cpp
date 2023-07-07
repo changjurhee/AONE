@@ -73,7 +73,7 @@ int CClassView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	rectDummy.SetRectEmpty();
 
 	// 뷰를 만듭니다.
-	const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | TVS_HASLINES | TVS_LINESATROOT | TVS_HASBUTTONS | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+	const DWORD dwViewStyle = WS_OVERLAPPED | WS_VISIBLE | TVS_HASLINES | TVS_LINESATROOT | TVS_HASBUTTONS | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
 	if (!m_wndClassView.Create(dwViewStyle, rectDummy, this, 2))
 	{
@@ -186,7 +186,9 @@ void CClassView::OnContextMenu(CWnd* pWnd, CPoint point)
 	}
 
 	pWndTree->SetFocus();
-	CMenu menu;
+	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EXPLORER, point.x, point.y, this, TRUE);
+
+	/*CMenu menu;
 	menu.LoadMenu(IDR_POPUP_SORT);
 
 	CMenu* pSumMenu = menu.GetSubMenu(0);
@@ -200,7 +202,7 @@ void CClassView::OnContextMenu(CWnd* pWnd, CPoint point)
 
 		((CMDIFrameWndEx*)AfxGetMainWnd())->OnShowPopupMenu(pPopupMenu);
 		UpdateDialogControls(this, FALSE);
-	}
+	}*/
 }
 
 void CClassView::AdjustLayout()

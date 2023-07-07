@@ -323,6 +323,8 @@
     <Image Include="res\login_95461_64x64.ico" />
     <Image Include="res\sign_6358961_64x64.ico" />
     <Image Include="res\icons8-homer-simpson-480.png" />
+    <Image Include="res\icon2.ico" />
+    <Image Include="res\homer.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="VoIPClient.reg" />

@@ -119,7 +119,6 @@
 #define IDD_DLG_ACCOUNT_LOGIN           321
 #define IDD_DLG_MANAGE_ACCOUNT          322
 #define IDD_DLG_CALL_VIEW               327
-#define IDB_PNG8                        332
 #define IDB_BITMAP1                     334
 #define IDB_MASK                        334
 #define IDD_DLG_CALL_LIST_VIEW          335
@@ -154,7 +153,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        341
+#define _APS_NEXT_RESOURCE_VALUE        343
 #define _APS_NEXT_COMMAND_VALUE         32779
 #define _APS_NEXT_CONTROL_VALUE         1013
 #define _APS_NEXT_SYMED_VALUE           310

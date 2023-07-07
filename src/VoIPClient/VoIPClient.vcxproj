@@ -299,6 +299,8 @@
     <Image Include="res\fileview_hc.bmp" />
     <Image Include="res\file_view.ico" />
     <Image Include="res\file_view_hc.ico" />
+    <Image Include="res\homer.ico" />
+    <Image Include="res\icon2.ico" />
     <Image Include="res\icons8-anonymous-mask-100.png" />
     <Image Include="res\icons8-anonymous-mask-120.png" />
     <Image Include="res\icons8-anonymous-mask-240.png" />
