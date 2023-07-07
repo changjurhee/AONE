@@ -18,6 +18,8 @@
 #define new DEBUG_NEW
 #endif
 
+// Session
+#include "session/SessionManager.h"
 
 // CVoIPClientApp
 
@@ -216,6 +218,8 @@ int CVoIPClientApp::ExitInstance()
 	//TODO: 추가한 추가 리소스를 처리합니다.
 	AfxOleTerm(FALSE);
 
+	// Session clear
+	SessionManager::getInstance()->releaseInstance();
 	return CWinAppEx::ExitInstance();
 }
 

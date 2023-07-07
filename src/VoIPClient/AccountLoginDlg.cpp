@@ -6,6 +6,8 @@
 #include "afxdialogex.h"
 #include "AccountLoginDlg.h"
 
+// Session
+#include "session/SessionManager.h"
 
 // CAccountLoginDlg 대화 상자
 
@@ -57,6 +59,9 @@ void CAccountLoginDlg::OnBnClickedMfcbtnLogin()
 	spUserInfo->email = tstring(m_edEmailID);
 	spUserInfo->password = tstring(m_edPassword);
 	spUserInfo->server_ip_num = tstring(m_wdServerIpAddress);
+
+	// SessionManager init
+	SessionManager::getInstance()->init("127.0.0.1", 5555); // TODO modify dynamic serverIp, serverPort
 
 	EndDialog((INT_PTR)KResponse::LOGIN);
 }

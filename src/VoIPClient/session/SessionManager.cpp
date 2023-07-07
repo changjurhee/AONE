@@ -46,7 +46,8 @@ void SessionManager::init(const char* ip, int port) {
 	accountManager->setSessionControl(this);
 
 	std::thread sessionThread(&SessionManager::openSocket, instance);
-	sessionThread.join();
+	sessionThread.detach();
+	//sessionThread.join();
 }
 
 void SessionManager::release() {
@@ -156,6 +157,7 @@ void SessionManager::proc_recv() {
 
 // socket Open function
 void SessionManager::openSocket() {
+	std::cout << "openSocket START" << std::endl;
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa)) {
 		std::cout << "WSA error";
@@ -189,6 +191,8 @@ void SessionManager::openSocket() {
 
 	closesocket(clientSocket);
 	WSACleanup();
+
+	std::cout << "openSocket END" << std::endl;
 }
 
 int SessionManager::sendData(const char* data) {
