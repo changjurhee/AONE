@@ -1,0 +1,63 @@
+{
+    "contacts" : [
+       {
+          "cid" : "bruno",
+          "email" : "bruno@gmail.com",
+          "ipAddress" : "127.0.0.1",
+          "login" : true,
+          "myContactList" : [ "tom", "chris" ],
+          "name" : "Bruno Yoo",
+          "password" : "827ccb0eea8a706c4c34a16891f84e7b",
+          "password_answer" : "hello",
+          "password_question" : 2
+       },
+       {
+          "cid" : "tom",
+          "email" : "tom@gmail.com",
+          "ipAddress" : "127.0.0.1",
+          "login" : true,
+          "name" : "Tom cruise",
+          "password" : "827ccb0eea8a706c4c34a16891f84e7b",
+          "password_answer" : "seoul",
+          "password_question" : 1
+       },
+       {
+          "cid" : "chris",
+          "email" : "chris@gmail.com",
+          "ipAddress" : "127.0.0.1",
+          "login" : true,
+          "myContactList" : [ "joe", "bruno", "tom" ],
+          "name" : "Chris Pratt",
+          "password" : "827ccb0eea8a706c4c34a16891f84e7b",
+          "password_answer" : "seoul",
+          "password_question" : 1
+       },
+       {
+          "cid" : "joe",
+          "email" : "joe@gmail.com",
+          "ipAddress" : "127.0.0.1",
+          "login" : true,
+          "name" : "Joe Passi",
+          "password" : "827ccb0eea8a706c4c34a16891f84e7b",
+          "password_answer" : "seoul",
+          "password_question" : 1
+       },
+       {
+          "cid" : "hdmi",
+          "email" : "hdmi@gmail.com",
+          "name" : "Hdmi screen",
+          "password" : "827ccb0eea8a706c4c34a16891f84e7b",
+          "password_answer" : "seoul",
+          "password_question" : 1
+       },
+       {
+          "cid" : "gogo",
+          "email" : "gogo@gmail.com",
+          "name" : "Power Ranger",
+          "password" : "827ccb0eea8a706c4c34a16891f84e7b",
+          "password_answer" : "seoul",
+          "password_question" : 1
+       }
+    ]
+ }
+ 
