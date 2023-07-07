@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CFileView, CDockablePane)
 	ON_COMMAND(ID_EDIT_CUT, OnEditCut)
 	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
 	ON_COMMAND(ID_EDIT_CLEAR, OnEditClear)
+	ON_COMMAND(ID_NEW_FOLDER, OnNewFolder)
 	ON_WM_PAINT()
 	ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
@@ -62,8 +63,8 @@ int CFileView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_FileViewImages.Create(IDB_FILE_VIEW, 16, 0, RGB(255, 0, 255));
 	m_wndFileView.SetImageList(&m_FileViewImages, TVSIL_NORMAL);
 
-	m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_EXPLORER);
-	m_wndToolBar.LoadToolBar(IDR_EXPLORER, 0, 0, TRUE /* 잠금 */);
+	m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_SORT);
+	m_wndToolBar.LoadToolBar(IDR_SORT, 0, 0, TRUE /* 잠금 */);
 
 	OnChangeVisualStyle();
 
@@ -193,6 +194,11 @@ void CFileView::OnEditClear()
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }
 
+void CFileView::OnNewFolder()
+{
+	AfxMessageBox(_T("새 폴더..."));
+}
+
 void CFileView::OnPaint()
 {
 	CPaintDC dc(this); // 그리기를 위한 디바이스 컨텍스트입니다.
@@ -214,12 +220,36 @@ void CFileView::OnSetFocus(CWnd* pOldWnd)
 
 void CFileView::OnChangeVisualStyle()
 {
-	m_wndToolBar.CleanUpLockedImages();
-	m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_EXPLORER_24 : IDR_EXPLORER, 0, 0, TRUE /* 잠금 */);
+	//m_wndToolBar.CleanUpLockedImages();
+	//m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_EXPLORER_24 : IDR_EXPLORER, 0, 0, TRUE /* 잠금 */);
+
+	//m_FileViewImages.DeleteImageList();
+
+	//UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_FILE_VIEW_24 : IDB_FILE_VIEW;
+
+	//CBitmap bmp;
+	//if (!bmp.LoadBitmap(uiBmpId))
+	//{
+	//	TRACE(_T("비트맵을 로드할 수 없습니다. %x\n"), uiBmpId);
+	//	ASSERT(FALSE);
+	//	return;
+	//}
+
+	//BITMAP bmpObj;
+	//bmp.GetBitmap(&bmpObj);
+
+	//UINT nFlags = ILC_MASK;
+
+	//nFlags |= (theApp.m_bHiColorIcons) ? ILC_COLOR24 : ILC_COLOR4;
+
+	//m_FileViewImages.Create(16, bmpObj.bmHeight, nFlags, 0, 0);
+	//m_FileViewImages.Add(&bmp, RGB(255, 0, 255));
+
+	//m_wndFileView.SetImageList(&m_FileViewImages, TVSIL_NORMAL);
 
 	m_FileViewImages.DeleteImageList();
 
-	UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_FILE_VIEW_24 : IDB_FILE_VIEW;
+	UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_CLASS_VIEW_24 : IDB_CLASS_VIEW;
 
 	CBitmap bmp;
 	if (!bmp.LoadBitmap(uiBmpId))
@@ -237,9 +267,12 @@ void CFileView::OnChangeVisualStyle()
 	nFlags |= (theApp.m_bHiColorIcons) ? ILC_COLOR24 : ILC_COLOR4;
 
 	m_FileViewImages.Create(16, bmpObj.bmHeight, nFlags, 0, 0);
-	m_FileViewImages.Add(&bmp, RGB(255, 0, 255));
+	m_FileViewImages.Add(&bmp, RGB(255, 0, 0));
 
 	m_wndFileView.SetImageList(&m_FileViewImages, TVSIL_NORMAL);
+
+	m_wndToolBar.CleanUpLockedImages();
+	m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_SORT_24 : IDR_SORT, 0, 0, TRUE /* 잠금 */);
 }
 
 

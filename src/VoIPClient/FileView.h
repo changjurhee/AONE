@@ -49,6 +49,7 @@ protected:
 	afx_msg void OnEditClear();
 	afx_msg void OnPaint();
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
+	afx_msg void OnNewFolder();
 
 	DECLARE_MESSAGE_MAP()
 };
