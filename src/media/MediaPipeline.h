@@ -74,6 +74,7 @@ protected :
 	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements pipeline_make_tee(GstBin* parent_bin, int bin_index, int client_index);
 
+	virtual void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	SubElements make_front_device(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements make_front_udp_n(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements make_back_device(GstBin* parent_bin, int bin_index, int client_index);

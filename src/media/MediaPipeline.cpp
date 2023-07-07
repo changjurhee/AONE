@@ -203,6 +203,7 @@ SubElements MediaPipeline::make_back_udp_n(GstBin* parent_bin, int bin_index, in
 	return ret_sub_elements;
 }
 
+
 void MediaPipeline::make_bin(GstBin* parent_bin, int bin_index, int front, int back) {
 
 	SubElements front_pair = SubElements(NULL, NULL);
@@ -361,7 +362,8 @@ void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int c
 
 	SubElements adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, BASE_CLIENT_ID);
 	ret_sub_elements = connect_subElements(ret_sub_elements, adder);
-
+	
+	update_adder_parameter(parent_bin, bin_index, client_index);
 	return;
 }
 
@@ -475,7 +477,14 @@ void MediaPipeline::add_client(ContactInfo* client_info)
 
 }
 
-void MediaPipeline::remove_client(ContactInfo* client_info) {
+void MediaPipeline::remove_client(ContactInfo* client_info)
+{
+	GstState cur_state;
+	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
+	if (cur_state == GST_STATE_PLAYING) {
+		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
+	}
+
 	int client_index = get_client_index(client_info);
 	for (int bin_index = 0; bin_index < pipe_mode_list_.size(); bin_index++) {
 		std::string name = "bin_" + std::to_string(bin_index);
@@ -492,6 +501,8 @@ void MediaPipeline::remove_client(ContactInfo* client_info) {
 		}
 	}
 	disable_client_index(client_info);
+	// Pipeline replay(?)
+	gst_element_set_state(pipeline, GST_STATE_PLAYING);
 }
 
 string MediaPipeline::getLinkedElements(GstElement* element)

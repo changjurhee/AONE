@@ -97,4 +97,10 @@ SubElements AudioMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 	gst_bin_add(GST_BIN(parent_bin), audioCapsfilter);
 	gst_element_link(udpsrc_pair.second, audioCapsfilter);
 	return SubElements(udpsrc_pair.first, audioCapsfilter);
-};
+}
+
+void AudioMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)
+{
+	return;
+}
+;
