@@ -51,6 +51,8 @@ CVoIPClientDoc::CVoIPClientDoc() noexcept
 	EnableAutomation();
 
 	AfxOleLockApp();
+
+	UserLogIn();
 }
 
 CVoIPClientDoc::~CVoIPClientDoc()
@@ -65,20 +67,14 @@ BOOL CVoIPClientDoc::OnNewDocument()
 
 	// TODO: 여기에 재초기화 코드를 추가합니다.
 	// SDI 문서는 이 문서를 다시 사용합니다.
-	LOG_DEBUG("waiting something...");
 
 	return TRUE;
 }
-
-
-
 
 // CVoIPClientDoc serialization
 
 void CVoIPClientDoc::Serialize(CArchive& ar)
 {
-	LOG_DEBUG("waiting something...");
-
 	if (ar.IsStoring())
 	{
 		// TODO: 여기에 저장 코드를 추가합니다.
@@ -159,3 +155,19 @@ void CVoIPClientDoc::Dump(CDumpContext& dc) const
 
 
 // CVoIPClientDoc 명령
+
+void CVoIPClientDoc::UserLogIn()
+{
+	CAccountLoginDlg accountLoginDlg;
+	INT_PTR nRet = -1;
+	nRet = accountLoginDlg.DoModal();
+	if (IDCANCEL != nRet) {
+		if ((CAccountLoginDlg::KResponse)nRet == CAccountLoginDlg::KResponse::LOGIN) {
+			m_spUserInfo = accountLoginDlg.GetUserInfo();
+		}
+		else {
+			CManageUserAccountDlg manageUserAccountDlg;
+			manageUserAccountDlg.DoModal();
+		}
+	}
+}

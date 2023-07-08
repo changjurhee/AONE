@@ -5,12 +5,11 @@
 #include "pch.h"
 #include "framework.h"
 #include "VoIPClient.h"
-#include "AccountLoginDlg.h"
-#include "ManageUserAccountDlg.h"
 
 #include "CallView.h"
 #include "CallListView.h"
 #include "MainFrm.h"
+#include "VoIPClientDoc.h"
 
 // Session
 #include "session/SessionManager.h"
@@ -73,6 +72,8 @@ CMainFrame::~CMainFrame()
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
+	LOG_DEBUG("waiting something...");
+
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
@@ -221,6 +222,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_TEST_UPDATE_USER);
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
+
 
 	return 0;
 }
@@ -587,24 +589,8 @@ void CMainFrame::OnUpdateViewPropertiesWindow(CCmdUI* pCmdUI)
 
 void CMainFrame::OnViewTest()
 {
-	AfxGetApp()->m_pMainWnd->ShowWindow(SW_HIDE);
-	CAccountLoginDlg accountLoginDlg;
-	INT_PTR nRet = -1;
-	nRet = accountLoginDlg.DoModal();
-	if (IDCANCEL != nRet) {
-		if ((CAccountLoginDlg::KResponse)nRet == CAccountLoginDlg::KResponse::LOGIN) {
-			std::shared_ptr<CAccountLoginDlg::userInfo> spUserInfo = accountLoginDlg.GetUserInfo();
-			// @todo do something for login
-			// FIleOpen 시 state가 바뀌는데 같은 역할을 해주면 좋을 듯 함. 
-			// SetWindowText(FormatString(_T("%s"), spUserInfo->email.c_str()).data());
-			m_wndOutput.FillDebug(FormatString(_T("%s"), spUserInfo->email.c_str()).data());
-		}
-		else {
-			CManageUserAccountDlg manageUserAccountDlg;
-			manageUserAccountDlg.DoModal();
-		}
-	}
-	AfxGetApp()->m_pMainWnd->ShowWindow(SW_SHOW);
+	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
+	pDoc->UserLogIn();
 }
 
 void CMainFrame::OnUpdateTest(CCmdUI* pCmdUI)
@@ -614,23 +600,10 @@ void CMainFrame::OnUpdateTest(CCmdUI* pCmdUI)
 
 BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext)
 {
-	// 기본 클래스가 실제 작업을 수행합니다.
-	CAccountLoginDlg accountLoginDlg;
-	INT_PTR nRet = -1;
-	nRet = accountLoginDlg.DoModal();
-	if (IDCANCEL != nRet) {
-		if ((CAccountLoginDlg::KResponse)nRet == CAccountLoginDlg::KResponse::LOGIN) {
-			std::shared_ptr<CAccountLoginDlg::userInfo> spUserInfo = accountLoginDlg.GetUserInfo();
-			// @todo do something for login
-			// FIleOpen 시 state가 바뀌는데 같은 역할을 해주면 좋을 듯 함. 
-			// SetWindowText(FormatString(_T("%s"), spUserInfo->email.c_str()).data());
-		}
-		else {
-			CManageUserAccountDlg manageUserAccountDlg;
-			manageUserAccountDlg.DoModal();
-		}
-	}
+	LOG_DEBUG("waiting something...");
 
+	// 기본 클래스가 실제 작업을 수행합니다.
+	
 	if (!CFrameWndEx::LoadFrame(nIDResource, dwDefaultStyle, pParentWnd, pContext))
 	{
 		return FALSE;

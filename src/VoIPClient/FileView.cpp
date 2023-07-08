@@ -12,11 +12,39 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
+class CFileViewMenuButton : public CMFCToolBarMenuButton
+{
+	friend class CFileView;
+
+	DECLARE_SERIAL(CFileViewMenuButton)
+
+public:
+	CFileViewMenuButton(HMENU hMenu = nullptr) noexcept : CMFCToolBarMenuButton((UINT)-1, hMenu, -1)
+	{
+	}
+
+	virtual void OnDraw(CDC* pDC, const CRect& rect, CMFCToolBarImages* pImages, BOOL bHorz = TRUE,
+		BOOL bCustomizeMode = FALSE, BOOL bHighlight = FALSE, BOOL bDrawBorder = TRUE, BOOL bGrayDisabledButtons = TRUE)
+	{
+		pImages = CMFCToolBar::GetImages();
+
+		CAfxDrawState ds;
+		pImages->PrepareDrawImage(ds);
+
+		CMFCToolBarMenuButton::OnDraw(pDC, rect, pImages, bHorz, bCustomizeMode, bHighlight, bDrawBorder, bGrayDisabledButtons);
+
+		pImages->EndDrawImage(ds);
+	}
+};
+
+IMPLEMENT_SERIAL(CFileViewMenuButton, CMFCToolBarMenuButton, 1)
+
 /////////////////////////////////////////////////////////////////////////////
 // CFileView
 
 CFileView::CFileView() noexcept
 {
+	m_nCurrSort = ID_SORTING_GROUPBYTYPE;
 }
 
 CFileView::~CFileView()
@@ -37,6 +65,8 @@ BEGIN_MESSAGE_MAP(CFileView, CDockablePane)
 	ON_COMMAND(ID_NEW_FOLDER, OnNewFolder)
 	ON_WM_PAINT()
 	ON_WM_SETFOCUS()
+	ON_COMMAND_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnSort)
+	ON_UPDATE_COMMAND_UI_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnUpdateSort)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -76,12 +106,55 @@ int CFileView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// 모든 명령은 부모 프레임이 아닌 이 컨트롤을 통해 라우팅됩니다.
 	m_wndToolBar.SetRouteCommandsViaFrame(FALSE);
+	CMenu menuSort;
+	menuSort.LoadMenu(IDR_POPUP_SORT);
+
+	m_wndToolBar.ReplaceButton(ID_SORT_MENU, CFileViewMenuButton(menuSort.GetSubMenu(0)->GetSafeHmenu()));
+
+	CFileViewMenuButton* pButton = DYNAMIC_DOWNCAST(CFileViewMenuButton, m_wndToolBar.GetButton(0));
+
+	if (pButton != nullptr)
+	{
+		pButton->m_bText = FALSE;
+		pButton->m_bImage = TRUE;
+		pButton->SetImage(GetCmdMgr()->GetCmdImage(m_nCurrSort));
+		pButton->SetMessageWnd(this);
+	}
 
 	// 정적 트리 뷰 데이터를 더미 코드로 채웁니다.
 	FillFileView();
 	AdjustLayout();
 
 	return 0;
+}
+
+BOOL CFileView::PreTranslateMessage(MSG* pMsg)
+{
+	return CDockablePane::PreTranslateMessage(pMsg);
+}
+
+void CFileView::OnSort(UINT id)
+{
+	if (m_nCurrSort == id)
+	{
+		return;
+	}
+
+	m_nCurrSort = id;
+
+	CFileViewMenuButton* pButton = DYNAMIC_DOWNCAST(CFileViewMenuButton, m_wndToolBar.GetButton(0));
+
+	if (pButton != nullptr)
+	{
+		pButton->SetImage(GetCmdMgr()->GetCmdImage(id));
+		m_wndToolBar.Invalidate();
+		m_wndToolBar.UpdateWindow();
+	}
+}
+
+void CFileView::OnUpdateSort(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck(pCmdUI->m_nID == m_nCurrSort);
 }
 
 void CFileView::OnSize(UINT nType, int cx, int cy)
@@ -95,20 +168,20 @@ void CFileView::FillFileView()
 	HTREEITEM hRoot = m_wndFileView.InsertItem(_T("Contact List"), 0, 0);
 	m_wndFileView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
 
-	HTREEITEM hSrc = m_wndFileView.InsertItem(_T("홍길동"), 0, 0, hRoot);
+	HTREEITEM hSrc = m_wndFileView.InsertItem(_T("홍길동"), 1, 1, hRoot);
 
-	m_wndFileView.InsertItem(_T("길동.홍@구글.본사"), 1, 1, hSrc);
-	m_wndFileView.InsertItem(_T("홍_001"), 1, 1, hSrc);
+	m_wndFileView.InsertItem(_T("길동.홍@구글.본사"), 3, 3, hSrc);
+	m_wndFileView.InsertItem(_T("홍_001"), 3, 3, hSrc);
 
-	HTREEITEM hInc = m_wndFileView.InsertItem(_T("황진이"), 0, 0, hRoot);
+	HTREEITEM hInc = m_wndFileView.InsertItem(_T("황진이"), 1, 1, hRoot);
 
-	m_wndFileView.InsertItem(_T("진이.황@나주.관아"), 2, 2, hInc);
-	m_wndFileView.InsertItem(_T("황_002"), 2, 2, hInc);
+	m_wndFileView.InsertItem(_T("진이.황@나주.관아"), 3, 3, hInc);
+	m_wndFileView.InsertItem(_T("황_002"), 3, 3, hInc);
 
-	HTREEITEM hRes = m_wndFileView.InsertItem(_T("스티브잡스"), 0, 0, hRoot);
+	HTREEITEM hRes = m_wndFileView.InsertItem(_T("스티브잡스"), 1, 1, hRoot);
 
-	m_wndFileView.InsertItem(_T("잡스.스티브@애플.회사"), 2, 2, hRes);
-	m_wndFileView.InsertItem(_T("스티브_003"), 2, 2, hRes);
+	m_wndFileView.InsertItem(_T("잡스.스티브@애플.회사"), 3, 3, hRes);
+	m_wndFileView.InsertItem(_T("스티브_003"), 3, 3, hRes);
 
 	m_wndFileView.Expand(hRoot, TVE_EXPAND);
 	m_wndFileView.Expand(hSrc, TVE_EXPAND);

@@ -2,9 +2,10 @@
 // VoIPClientDoc.h: CVoIPClientDoc 클래스의 인터페이스
 //
 
-
 #pragma once
 
+#include "AccountLoginDlg.h"
+#include "ManageUserAccountDlg.h"
 
 class CVoIPClientDoc : public CDocument
 {
@@ -14,6 +15,7 @@ protected: // serialization에서만 만들어집니다.
 
 // 특성입니다.
 public:
+	std::shared_ptr<CAccountLoginDlg::userInfo> m_spUserInfo;
 
 // 작업입니다.
 public:
@@ -30,6 +32,9 @@ public:
 // 구현입니다.
 public:
 	virtual ~CVoIPClientDoc();
+
+	void UserLogIn();
+
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;

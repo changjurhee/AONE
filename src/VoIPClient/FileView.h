@@ -28,6 +28,7 @@ protected:
 	CViewTree m_wndFileView;
 	CImageList m_FileViewImages;
 	CFileViewToolBar m_wndToolBar;
+	UINT m_nCurrSort;
 
 protected:
 	void FillFileView();
@@ -35,6 +36,10 @@ protected:
 // 구현입니다.
 public:
 	virtual ~CFileView();
+
+	// 재정의입니다.
+public:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -50,6 +55,8 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
 	afx_msg void OnNewFolder();
+	afx_msg void OnSort(UINT id);
+	afx_msg void OnUpdateSort(CCmdUI* pCmdUI);
 
 	DECLARE_MESSAGE_MAP()
 };

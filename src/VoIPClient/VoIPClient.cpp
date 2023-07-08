@@ -193,10 +193,7 @@ BOOL CVoIPClientApp::InitInstance()
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
-	LOG_DEBUG("waiting something...");
 	m_pMainWnd->UpdateWindow();
-	LOG_DEBUG("waiting something...");
-	m_pMainWnd->SetWindowText(_T("MOOZ"));
 
 #if 0
 	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
