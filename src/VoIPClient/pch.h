@@ -42,4 +42,17 @@ static std::string FormatString(const std::string_view& rsFormat, TypeTs ... Var
 }
 #pragma warning(pop)
 
+enum class KResponse : INT_PTR {
+	LOGIN,
+	CREATE_USER,
+	UPDATE_USER,
+	RESET_PASSWORD,
+};
+
+struct userInfo {
+	tstring email;
+	tstring password;
+	tstring server_ip_num;
+};
+
 #endif //PCH_H

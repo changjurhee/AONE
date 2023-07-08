@@ -11,6 +11,9 @@
 
 #include "VoIPClientDoc.h"
 #include "VoIPClientView.h"
+#include "AccountLoginDlg.h"
+#include "ManageUserAccountDlg.h"
+
 #include "ClientMediaManager.h"
 
 #ifdef _DEBUG
@@ -190,6 +193,19 @@ BOOL CVoIPClientApp::InitInstance()
 	// 응용 프로그램이 /RegServer, /Register, /Unregserver 또는 /Unregister로 시작된 경우 FALSE를 반환합니다.
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
+
+	CAccountLoginDlg accountLoginDlg;
+	INT_PTR nRet = -1;
+	nRet = accountLoginDlg.DoModal();
+	if (IDCANCEL != nRet) {
+		if ((KResponse)nRet == KResponse::LOGIN) {
+			//m_spUserInfo = accountLoginDlg.GetUserInfo();
+		}
+		else {
+			CManageUserAccountDlg manageUserAccountDlg;
+			manageUserAccountDlg.DoModal();
+		}
+	}
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);

@@ -11,6 +11,9 @@
 #include "MainFrm.h"
 #include "VoIPClientDoc.h"
 
+#include "AccountLoginDlg.h"
+#include "ManageUserAccountDlg.h"
+
 // Session
 #include "session/SessionManager.h"
 
@@ -45,8 +48,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_VIEW_PROPERTIESWND, &CMainFrame::OnViewPropertiesWindow)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_PROPERTIESWND, &CMainFrame::OnUpdateViewPropertiesWindow)
 	ON_WM_SETTINGCHANGE()
-	ON_COMMAND(ID_TEST_LOG_IN, &CMainFrame::OnViewTest)
-	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_IN, &CMainFrame::OnUpdateTest)
+	ON_COMMAND(ID_TEST_LOG_IN, &CMainFrame::OnUserLogIn)
+	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_IN, &CMainFrame::OnUpdateUserLogIn)
 	ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
@@ -587,21 +590,34 @@ void CMainFrame::OnUpdateViewPropertiesWindow(CCmdUI* pCmdUI)
 	pCmdUI->Enable(TRUE);
 }
 
-void CMainFrame::OnViewTest()
+void CMainFrame::OnUserLogIn()
 {
+	ShowWindow(SW_HIDE);
+	CAccountLoginDlg accountLoginDlg;
+	INT_PTR nRet = -1;
+	nRet = accountLoginDlg.DoModal();
+	if (IDCANCEL != nRet) {
+		if ((KResponse)nRet == KResponse::LOGIN) {
+			//m_spUserInfo = accountLoginDlg.GetUserInfo();
+		}
+		else {
+			CManageUserAccountDlg manageUserAccountDlg;
+			manageUserAccountDlg.DoModal();
+		}
+	}
+
 	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
-	pDoc->UserLogIn();
+	SetWindowText(FormatString(_T("MOOZ %s"), pDoc->GetUser()->email.c_str()).data());
+	ShowWindow(SW_SHOW);
 }
 
-void CMainFrame::OnUpdateTest(CCmdUI* pCmdUI)
+void CMainFrame::OnUpdateUserLogIn(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(TRUE);
 }
 
 BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext)
 {
-	LOG_DEBUG("waiting something...");
-
 	// 기본 클래스가 실제 작업을 수행합니다.
 	
 	if (!CFrameWndEx::LoadFrame(nIDResource, dwDefaultStyle, pParentWnd, pContext))

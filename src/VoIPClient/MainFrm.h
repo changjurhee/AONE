@@ -79,8 +79,8 @@ protected:
 	afx_msg void OnUpdateViewCaptionBar(CCmdUI* pCmdUI);
 	afx_msg void OnOptions();
 	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
-	afx_msg void OnUpdateTest(CCmdUI* pCmdUI);
-	afx_msg void OnViewTest();
+	afx_msg void OnUpdateUserLogIn(CCmdUI* pCmdUI);
+	afx_msg void OnUserLogIn();
 	
 	DECLARE_MESSAGE_MAP()
 

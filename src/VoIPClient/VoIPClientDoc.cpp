@@ -46,13 +46,9 @@ END_INTERFACE_MAP()
 CVoIPClientDoc::CVoIPClientDoc() noexcept
 {
 	// TODO: 여기에 일회성 생성 코드를 추가합니다.
-	LOG_DEBUG("waiting something...");
-
 	EnableAutomation();
 
 	AfxOleLockApp();
-
-	UserLogIn();
 }
 
 CVoIPClientDoc::~CVoIPClientDoc()
@@ -155,19 +151,3 @@ void CVoIPClientDoc::Dump(CDumpContext& dc) const
 
 
 // CVoIPClientDoc 명령
-
-void CVoIPClientDoc::UserLogIn()
-{
-	CAccountLoginDlg accountLoginDlg;
-	INT_PTR nRet = -1;
-	nRet = accountLoginDlg.DoModal();
-	if (IDCANCEL != nRet) {
-		if ((CAccountLoginDlg::KResponse)nRet == CAccountLoginDlg::KResponse::LOGIN) {
-			m_spUserInfo = accountLoginDlg.GetUserInfo();
-		}
-		else {
-			CManageUserAccountDlg manageUserAccountDlg;
-			manageUserAccountDlg.DoModal();
-		}
-	}
-}

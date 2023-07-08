@@ -4,9 +4,6 @@
 
 #pragma once
 
-#include "AccountLoginDlg.h"
-#include "ManageUserAccountDlg.h"
-
 class CVoIPClientDoc : public CDocument
 {
 protected: // serialization에서만 만들어집니다.
@@ -15,7 +12,7 @@ protected: // serialization에서만 만들어집니다.
 
 // 특성입니다.
 public:
-	std::shared_ptr<CAccountLoginDlg::userInfo> m_spUserInfo;
+	std::shared_ptr<userInfo> m_spUserInfo;
 
 // 작업입니다.
 public:
@@ -33,7 +30,8 @@ public:
 public:
 	virtual ~CVoIPClientDoc();
 
-	void UserLogIn();
+	void SetUser(std::shared_ptr<userInfo> spUserInfo) { m_spUserInfo = spUserInfo; };
+	std::shared_ptr<userInfo> GetUser() { return m_spUserInfo;  };
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;

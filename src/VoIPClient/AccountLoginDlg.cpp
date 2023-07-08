@@ -3,9 +3,16 @@
 
 #include "pch.h"
 #include "VoIPClient.h"
+
+#include "MainFrm.h"
+#include "VoIPClientDoc.h"
+
 #include "afxdialogex.h"
 #include "AccountLoginDlg.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 // CAccountLoginDlg 대화 상자
 
@@ -42,6 +49,13 @@ END_MESSAGE_MAP()
 
 // CAccountLoginDlg 메시지 처리기
 
+CVoIPClientDoc* CAccountLoginDlg::GetDocument() const // 디버그되지 않은 버전은 인라인으로 지정됩니다.
+{
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	CVoIPClientDoc* m_pDocument = (CVoIPClientDoc*)pFrame->GetActiveDocument();
+	return (CVoIPClientDoc*)m_pDocument;
+}
+
 void CAccountLoginDlg::OnBnClickedMfcbtnLogin()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -49,14 +63,15 @@ void CAccountLoginDlg::OnBnClickedMfcbtnLogin()
 	UpdateData(TRUE);
 
 	TRACE3("%s, %s, %s\n", m_edEmailID, m_edPassword, m_wdServerIpAddress);
-	
-	/*CT2CA convertedEmail(m_edEmailID);
-	CT2CA convertedPassword(m_edPassword);
-	CT2CA convertedIpAddress(m_wdServerIpAddress);*/
 
 	spUserInfo->email = tstring(m_edEmailID);
 	spUserInfo->password = tstring(m_edPassword);
 	spUserInfo->server_ip_num = tstring(m_wdServerIpAddress);
+
+	// @todo server check 필요 
+
+	// @todo 체크 결과 정상이면, 
+	GetDocument()->SetUser(spUserInfo);
 
 	EndDialog((INT_PTR)KResponse::LOGIN);
 }
@@ -67,10 +82,6 @@ void CAccountLoginDlg::OnBnClickedMfcbtnSignIn()
 	UpdateData(TRUE);
 
 	TRACE3("%s, %s, %s\n", m_edEmailID, m_edPassword, m_wdServerIpAddress);
-
-	/*CT2CA convertedEmail(m_edEmailID);
-	CT2CA convertedPassword(m_edPassword);
-	CT2CA convertedIpAddress(m_wdServerIpAddress);*/
 
 	spUserInfo->email = tstring(m_edEmailID);
 	spUserInfo->password = tstring(m_edPassword);

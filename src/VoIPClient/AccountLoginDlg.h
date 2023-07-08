@@ -7,19 +7,6 @@ class CAccountLoginDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CAccountLoginDlg)
 
-	enum class KResponse : INT_PTR {
-		LOGIN,
-		CREATE_USER,
-		UPDATE_USER,
-		RESET_PASSWORD,
-	};
-
-	struct userInfo {
-		tstring email;
-		tstring password;
-		tstring server_ip_num;
-	};
-
 public:
 	CAccountLoginDlg(CWnd* pParent = nullptr);   // 표준 생성자입니다.
 	virtual ~CAccountLoginDlg();
@@ -28,6 +15,9 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DLG_ACCOUNT_LOGIN };
 #endif
+
+public:
+	CVoIPClientDoc* GetDocument() const;
 
 private:
 	std::shared_ptr<userInfo> spUserInfo;
