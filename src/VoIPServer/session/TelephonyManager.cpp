@@ -92,7 +92,9 @@ void TelephonyManager::onAnswer(Json::Value data) {
 	Json::Value media;
 	media["rid"] = connId;
 	media["conferenceSize"] = 2;
-	media["myIp"] = payload["myIp"].asString();
+	// TODO : IP 주소 API 확인
+	//media["myIp"] = payload["myIp"].asString();
+	media["myIp"] = sessionControl->getMyIp();;
 	ServerMediaManager::getInstance()->startCall(media);
 
 	Json::Value clientMedia;

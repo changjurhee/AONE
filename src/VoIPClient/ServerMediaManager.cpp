@@ -53,7 +53,7 @@ void ServerMediaManager::startCall(Json::Value room_creat_info)
 #if 1
 	vector<ContactInfo> contact_info_list;
 	string rid = room_creat_info["rid"].asString();
-	server_ip = room_creat_info["serverIp"].asString();
+	server_ip = room_creat_info["myIp"].asString();
 
 	OperatingInfo* operate_info = get_operate_info();
 

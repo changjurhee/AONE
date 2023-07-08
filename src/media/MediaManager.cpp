@@ -93,7 +93,7 @@ void MediaManager::end_call_with_rid(string rid)
 	}
 
 	vector<AudioMediaPipeline*> audio_piplelines = getAudioPipeLine(rid);
-	for (auto pipeline : video_piplelines) {
+	for (auto pipeline : audio_piplelines) {
 		if (pipeline == NULL) continue;
 		pipeline->end_call();
 	}
