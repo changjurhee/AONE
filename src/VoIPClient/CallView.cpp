@@ -244,7 +244,7 @@ void CCallView::OnBnClickedServerAddclient()
 
     Json::Value room_creat_info;
     room_creat_info["rid"] = string(CT2CA(server_RID));
-    room_creat_info["ip"] = string(CT2CA(server_ClientIPForAdd));
+    room_creat_info["clientIp"] = string(CT2CA(server_ClientIPForAdd));
     room_creat_info["cid"] = string(CT2CA(server_CID));
     test->addClient(room_creat_info);
 }
@@ -266,7 +266,7 @@ void CCallView::OnBnClickedServerRemoveclient()
     ServerMediaManager* test = ServerMediaManager::getInstance();
     Json::Value room_creat_info;
     room_creat_info["rid"] = string(CT2CA(server_RID));
-    room_creat_info["ip"] = string(CT2CA(server_ClientIPForAdd));
+    room_creat_info["clientIp"] = string(CT2CA(server_ClientIPForAdd));
     room_creat_info["cid"] = string(CT2CA(server_CID));
     test->removeClient(room_creat_info);
 }
