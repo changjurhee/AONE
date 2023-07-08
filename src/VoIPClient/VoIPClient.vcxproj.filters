@@ -74,6 +74,8 @@
       <Filter>media</Filter>
     </ClCompile>
     <ClCompile Include="StartDlg.cpp" />
+    <ClCompile Include="ContactRegisterDlg.cpp" />
+    <ClCompile Include="SessionRegisterDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h">
@@ -188,6 +190,8 @@
       <Filter>media</Filter>
     </ClInclude>
     <ClInclude Include="StartDlg.h" />
+    <ClInclude Include="ContactRegisterDlg.h" />
+    <ClInclude Include="SessionRegisterDlg.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\class_view.ico">
@@ -328,6 +332,16 @@
     <Image Include="res\icon2.ico" />
     <Image Include="res\homer.ico" />
     <Image Include="res\MOOZ.bmp" />
+    <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\log-in.bmp" />
+    <Image Include="res\password.bmp" />
+    <Image Include="res\sign-in.bmp" />
+    <Image Include="res\log-in-d.bmp" />
+    <Image Include="res\password-d.bmp" />
+    <Image Include="res\sign-in-d.bmp" />
+    <Image Include="res\log-in-f.bmp" />
+    <Image Include="res\password-f.bmp" />
+    <Image Include="res\sign-in-f.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="VoIPClient.reg" />

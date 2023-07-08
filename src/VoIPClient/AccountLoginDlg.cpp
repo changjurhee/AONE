@@ -35,6 +35,9 @@ void CAccountLoginDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_ED_EMAIL_ID, m_edEmailID);
 	DDX_Text(pDX, IDC_ED_PASSWORD, m_edPassword);
+	DDX_Control(pDX, IDC_MFCBTN_LOGIN, m_btnLogIn);
+	DDX_Control(pDX, IDC_MFCBTN_SIGN_IN, m_btnSignIn);
+	DDX_Control(pDX, IDC_MFCBTN_RESET_PW, m_btnResetPw);
 }
 
 
@@ -42,6 +45,7 @@ BEGIN_MESSAGE_MAP(CAccountLoginDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCBTN_LOGIN, &CAccountLoginDlg::OnBnClickedMfcbtnLogin)
 	ON_BN_CLICKED(IDC_MFCBTN_SIGN_IN, &CAccountLoginDlg::OnBnClickedMfcbtnSignIn)
 	ON_BN_CLICKED(IDC_MFCBTN_RESET_PW, &CAccountLoginDlg::OnBnClickedMfcbtnResetPw)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -96,4 +100,30 @@ void CAccountLoginDlg::OnBnClickedMfcbtnResetPw()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	EndDialog((INT_PTR)KResponse::RESET_PASSWORD);
+}
+
+HBRUSH CAccountLoginDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO:  여기서 DC의 특성을 변경합니다.
+	// TODO:  기본값이 적당하지 않으면 다른 브러시를 반환합니다.
+	return (HBRUSH)GetStockObject(WHITE_BRUSH);
+}
+
+BOOL CAccountLoginDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  여기에 추가 초기화 작업을 추가합니다.
+	m_btnLogIn.LoadBitmaps(IDB_LOG_IN, IDB_LOG_IN_D, NULL, NULL);
+	m_btnSignIn.LoadBitmaps(IDB_SIGN_IN, IDB_SIGN_IN_D, NULL, NULL);
+	m_btnResetPw.LoadBitmaps(IDB_RESET_PW, IDB_RESET_PW_D, NULL, NULL);
+
+	m_btnLogIn.SizeToContent();
+	m_btnSignIn.SizeToContent();
+	m_btnResetPw.SizeToContent();
+	
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }

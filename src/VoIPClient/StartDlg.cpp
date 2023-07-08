@@ -34,6 +34,8 @@ void CStartDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CStartDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCBTN_START, &CStartDlg::OnBnClickedMfcbtnStart)
+	ON_WM_CTLCOLOR()
+	ON_WM_NCPAINT()
 END_MESSAGE_MAP()
 
 
@@ -57,4 +59,28 @@ void CStartDlg::OnBnClickedMfcbtnStart()
 	GetDocument()->SetUser(spUserInfo);
 
 	EndDialog((INT_PTR)KResponse::START);
+}
+
+
+HBRUSH CStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO:  여기서 DC의 특성을 변경합니다.
+	// TODO:  기본값이 적당하지 않으면 다른 브러시를 반환합니다.
+	return (HBRUSH)GetStockObject(WHITE_BRUSH);
+}
+
+void CStartDlg::OnNcPaint()
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
+	// 그리기 메시지에 대해서는 CDialogEx::OnNcPaint()을(를) 호출하지 마십시오.
+	CDC* pDC = GetWindowDC();
+	CRect rect;
+	GetWindowRect(&rect);
+	rect.OffsetRect(-rect.left, -rect.top);
+
+	CBrush brush(DKGRAY_BRUSH);
+	pDC->FrameRect(&rect, &brush);
+	ReleaseDC(pDC);
 }

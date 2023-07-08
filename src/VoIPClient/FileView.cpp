@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "mainfrm.h"
+
 #include "FileView.h"
 #include "Resource.h"
 #include "VoIPClient.h"
@@ -269,7 +270,8 @@ void CFileView::OnEditClear()
 
 void CFileView::OnNewFolder()
 {
-	AfxMessageBox(_T("새 폴더..."));
+	/*CContactRegisterDlg dlg;
+	dlg.DoModal();*/
 }
 
 void CFileView::OnPaint()

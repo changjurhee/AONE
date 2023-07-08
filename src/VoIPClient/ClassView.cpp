@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "MainFrm.h"
+
 #include "ClassView.h"
 #include "Resource.h"
 #include "VoIPClient.h"
@@ -252,7 +253,7 @@ void CClassView::OnUpdateSort(CCmdUI* pCmdUI)
 
 void CClassView::OnClassAddMemberFunction()
 {
-	AfxMessageBox(_T("멤버 함수 추가..."));
+
 }
 
 void CClassView::OnClassAddMemberVariable()
@@ -272,7 +273,8 @@ void CClassView::OnClassProperties()
 
 void CClassView::OnNewFolder()
 {
-	AfxMessageBox(_T("새 폴더..."));
+	/*CSessionRegisterDlg dlg;
+	dlg.DoModal();*/
 }
 
 void CClassView::OnPaint()

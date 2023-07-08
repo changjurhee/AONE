@@ -32,7 +32,12 @@ public:
 	afx_msg void OnBnClickedMfcbtnLogin();
 	afx_msg void OnBnClickedMfcbtnSignIn();
 	afx_msg void OnBnClickedMfcbtnResetPw();
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 public:
 	std::shared_ptr<userInfo> GetUserInfo() { return spUserInfo; }
+	virtual BOOL OnInitDialog();
+	CBitmapButton m_btnLogIn;
+	CBitmapButton m_btnSignIn;
+	CBitmapButton m_btnResetPw;
 };
