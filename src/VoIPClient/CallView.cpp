@@ -113,8 +113,8 @@ void CCallView::OnBnClickedClientStartcall()
 
     Json::Value client_join_info;
     client_join_info["rid"] = "TEST_ID";
-    client_join_info["serverip"] = string(CT2CA(client_ServerIP));
-    client_join_info["myip"] = string(CT2CA(client_ClientIP));
+    client_join_info["serverIp"] = string(CT2CA(client_ServerIP));
+    client_join_info["myIp"] = string(CT2CA(client_ClientIP));
     client_join_info["videocodec"] = string(CT2CA(client_VideoCodec));
     client_join_info["audiocodec"] = string(CT2CA(client_AudioCodec));
     client_join_info["encryption_alg"] = "TEST_ID";

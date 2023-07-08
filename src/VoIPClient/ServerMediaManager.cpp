@@ -6,7 +6,6 @@ ServerMediaManager* ServerMediaManager::instance = nullptr;
 ServerMediaManager::ServerMediaManager(int max_pipeline) : MediaManager(max_pipeline) {
 	video_pipe_mode_list_.push_back(PipeMode(MODE_UDP_N, MODE_UDP_N));
 	audio_pipe_mode_list_.push_back(PipeMode(MODE_UDP_N, MODE_UDP_N));
-	sessionCallback_ = nullptr;
 	gst_init(NULL, NULL);
 
 };
@@ -25,17 +24,13 @@ void ServerMediaManager::releaseInstance() {
 	}
 }
 
-void ServerMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
-	sessionCallback_ = callback;
-	//sessionCallback_->notifyVideoQualityChanged("rid", 3);
-}
-
-void ServerMediaManager::updateClientVideoQuality(Json::Value info)
-{
+void ServerMediaManager::updateClientVideoQuality(string rid, string cid, int level) {
 	// TODO : VideoQuality 변경 로직 적용 
-	//string rid, string cid, int level
 };
 
+void ServerMediaManager::registerNotifyTargetVideoQualityCallback(void (*notifyTargetVideoQuality)(string, int)) {
+	notifyTargetVideoQuality_ = notifyTargetVideoQuality;
+};
 
 OperatingInfo* ServerMediaManager::get_operate_info(void)
 {
@@ -150,16 +145,6 @@ void ServerMediaManager::removeClient(Json::Value remove_client_info)
 	}
 #endif
 
-}
-
-Json::Value ServerMediaManager::getMediaProperty()
-{
-	Json::Value payload;
-	payload["videoCodec"] = "codec";
-	payload["audioCodec"] = "codec";
-	payload["encryption_alg"] = "alg";
-	payload["encryption_key"] = "key";
-	return payload;
 }
 
 void ServerMediaManager::endCall(Json::Value room_remove_info)
