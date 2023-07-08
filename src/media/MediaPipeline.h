@@ -78,7 +78,7 @@ protected :
 	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements pipeline_make_tee(GstBin* parent_bin, int bin_index, int client_index);
 
-	void MediaPipeline::unref_element(GstElement* current_element);
+	void MediaPipeline::unref_element(GstBin* parent_bin, GstElement* current_element);
 	virtual void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	SubElements make_front_device(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements make_front_udp_n(GstBin* parent_bin, int bin_index, int client_index);
@@ -89,7 +89,7 @@ protected :
 	void remove_client_in_front(GstBin* parent_bin, int bin_index, int client_index);
 	void remove_client_in_back(GstBin* parent_bin, int bin_index, int client_index);
 	void make_bin(GstBin* parent_bin, int bin_index, int front, int back);
-	int get_client_index(ContactInfo* client_info);
+	int get_client_index(ContactInfo* client_info, bool new_client);
 	void disable_client_index(ContactInfo* client_info);
 	void logPipelineElements(GstElement* element, int level);
 	vector<GstElement*> get_elements_list(element_type etype);

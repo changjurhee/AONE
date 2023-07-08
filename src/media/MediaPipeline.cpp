@@ -338,17 +338,20 @@ void MediaPipeline::end_call()
 	g_main_loop_quit(mainLoop_);
 }
 
-int MediaPipeline::get_client_index(ContactInfo* client_info)
+int MediaPipeline::get_client_index(ContactInfo* client_info, bool new_client)
 {
 	string cid = client_info->cid;
 	int client_id = 0;
 	if (client_id_list_.find(cid) == client_id_list_.end()) {
+		if (!new_client) return -1;
 		client_id = client_id_list_.size();
 		client_id_list_[cid] = make_pair(client_id, true);
 		contact_info_list_[client_id] = *client_info;
 	} else if (client_id_list_[cid].second) {
+		if (new_client) return -1;
 		client_id = client_id_list_[cid].first;
 	} else {
+		if (!new_client) return -1;
 		client_id = client_id_list_[cid].first;
 		client_id_list_[cid].second = true;
 	}
@@ -406,12 +409,13 @@ void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int cl
 	return;
 }
 
-void MediaPipeline::unref_element(GstElement* element)
+void MediaPipeline::unref_element(GstBin* parent_bin, GstElement* element)
 {
-#if 0
+#if 1
+	gst_bin_remove(GST_BIN(parent_bin), element);
 	//TODO : 동작 확인 필요
-	while (GST_OBJECT_REFCOUNT(GST_OBJECT(element)) != 0)
-		gst_object_unref(element);
+	//while (GST_OBJECT_REFCOUNT(GST_OBJECT(element)) != 0)
+	//	gst_object_unref(element);
 #endif
 }
 
@@ -431,7 +435,7 @@ void MediaPipeline::remove_client_in_front(GstBin* parent_bin, int bin_index, in
 		gst_element_unlink(current_element, linkedElement);
 		gst_object_unref(srcPad);
 		gst_object_unref(linkedPad);
-		unref_element(current_element);
+		unref_element(parent_bin, current_element);
 		current_name = gst_element_get_name(linkedElement);
 	}
 }
@@ -452,7 +456,7 @@ void MediaPipeline::remove_client_in_back(GstBin* parent_bin, int bin_index, int
 		gst_element_unlink(current_element, linkedElement);
 		gst_object_unref(sinkPad);
 		gst_object_unref(linkedPad);
-		unref_element(current_element);
+		unref_element(parent_bin, current_element);
 		current_name = gst_element_get_name(linkedElement);
 	}
 }
@@ -481,14 +485,15 @@ void MediaPipeline::add_client(ContactInfo* client_info)
 	if (check_pipeline(client_info))
 		return;
 
+	int client_index = get_client_index(client_info, true);
+	if (client_index < 0) return;
 
 	GstState cur_state;
 	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
-	if (cur_state == GST_STATE_PLAYING) {
-		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
+	if (cur_state != GST_STATE_NULL) {
+		gst_element_set_state(pipeline, GST_STATE_NULL);
 	}
 
-	int client_index = get_client_index(client_info);
 	for (int index = 0; index < pipe_mode_list_.size(); index++) {
 		std::string name = "bin_"+std::to_string(index);
 		GstBin *bin = GST_BIN(gst_bin_get_by_name(GST_BIN(pipeline), name.c_str()));
@@ -504,7 +509,9 @@ void MediaPipeline::add_client(ContactInfo* client_info)
 		}
 	}
 	// Pipeline replay(?)
-	gst_element_set_state(pipeline, GST_STATE_PLAYING);
+	if (cur_state != GST_STATE_PLAYING) {
+		gst_element_set_state(pipeline, GST_STATE_PLAYING);
+	}
 	logPipelineElements(pipeline, 0);
 
 }
@@ -513,11 +520,13 @@ void MediaPipeline::remove_client(ContactInfo* client_info)
 {
 	GstState cur_state;
 	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
-	if (cur_state == GST_STATE_PLAYING) {
+	int client_index = get_client_index(client_info, false);
+	if (client_index < 0) return;
+
+	if (cur_state != GST_STATE_NULL) {
 		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
 	}
 
-	int client_index = get_client_index(client_info);
 	for (int bin_index = 0; bin_index < pipe_mode_list_.size(); bin_index++) {
 		std::string name = "bin_" + std::to_string(bin_index);
 		GstBin* bin = GST_BIN(gst_bin_get_by_name(GST_BIN(pipeline), name.c_str()));
@@ -534,7 +543,9 @@ void MediaPipeline::remove_client(ContactInfo* client_info)
 	}
 	disable_client_index(client_info);
 	// Pipeline replay(?)
-	gst_element_set_state(pipeline, GST_STATE_PLAYING);
+	if (cur_state != GST_STATE_PLAYING) {
+		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
+	}
 }
 
 string MediaPipeline::getLinkedElements(GstElement* element)

@@ -30,7 +30,8 @@ void ServerMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
 	//sessionCallback_->notifyVideoQualityChanged("rid", 3);
 }
 
-void ServerMediaManager::updateClientVideoQuality(Json::Value info) {
+void ServerMediaManager::updateClientVideoQuality(Json::Value info)
+{
 	// TODO : VideoQuality 변경 로직 적용 
 	//string rid, string cid, int level
 };
@@ -159,11 +160,6 @@ Json::Value ServerMediaManager::getMediaProperty()
 	payload["encryption_alg"] = "alg";
 	payload["encryption_key"] = "key";
 	return payload;
-}
-
-void ServerMediaManager::notifyVideoQualityChanged(std::string rid, int quality)
-{
-	
 }
 
 void ServerMediaManager::endCall(Json::Value room_remove_info)

@@ -5,7 +5,8 @@
 #include "../media/AudioMediaPipeline.h"
 #include "session/ISessionMediaCallback.h"
 
-class ServerMediaManager : public MediaManager, public IServerMediaManager, public ISessionMediaCallback {
+//class ServerMediaManager : public MediaManager, public IServerMediaManager, public ISessionMediaCallback {
+class ServerMediaManager : public MediaManager, public IServerMediaManager {
 private:
 	static ServerMediaManager* instance;
 	vector<PipeMode> video_pipe_mode_list_;
@@ -16,14 +17,13 @@ private:
 	string server_ip;
 	ISessionMediaCallback* sessionCallback_;
 public:
-	void setSessionCallback(ISessionMediaCallback* callback);
 	void updateClientVideoQuality(Json::Value info) override;
 	void startCall(Json::Value room_creat_info);
 	void endCall(Json::Value room_remove_info) override;
 	void addClient(Json::Value add_client_info) override;
 	void removeClient(Json::Value remove_client_info) override;
 	Json::Value getMediaProperty() override;
-	void notifyVideoQualityChanged(std::string rid, int quality) override;
+	void setSessionCallback(ISessionMediaCallback* callback);
 	static ServerMediaManager* getInstance();
 	static void releaseInstance();
 };
