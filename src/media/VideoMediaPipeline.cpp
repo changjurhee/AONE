@@ -18,15 +18,14 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 	int videoHeight;
 	int videoBitRate;
 
+	unset_pipe_block_flag(BLOCK_VIODE_STOP);
 	// Set video resolution & bitrate
 	switch(video_quality_index){
 	default:
 	case 0:
 		// Stop pipeline for stop video transmit
-		gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
-		if (cur_state != GST_STATE_NULL) {
-			GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
-		}
+		set_pipe_block_flag(BLOCK_VIODE_STOP);
+		stop_state_pipeline(true);
 		return;
 		break;
 	case 1:
@@ -42,12 +41,17 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 	case 3:
 		videoWidth = 480;
 		videoHeight = 360;
-		videoBitRate = 500;
+		videoBitRate = 200;
 		break;
 	case 4:
 		videoWidth = 640;
 		videoHeight = 480;
 		videoBitRate = 500;
+		break;
+	case 5:
+		videoWidth = 640;
+		videoHeight = 480;
+		videoBitRate = 1000;
 		break;
 	}
 
@@ -61,10 +65,7 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 	}
 
 	// Stop pipeline
-	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
-	if (cur_state != GST_STATE_NULL) {
-		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
-	}
+	stop_state_pipeline(true);
 
 	// Set the video resolution using capsfilter
 	GstCaps* capsRescale = gst_caps_new_simple("video/x-raw",
@@ -89,10 +90,7 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 	g_object_set(encodeElements, "bitrate", videoBitRate, NULL);
 
 	// Start pipeline
-	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
-	if (cur_state != GST_STATE_PLAYING) {
-		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
-	}
+	stop_state_pipeline(false);
 }
 
 SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) {

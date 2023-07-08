@@ -14,6 +14,7 @@ MediaPipeline::MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list)
 
 	bus_watch_id_ = 0;
 	timer_id_ = 0;
+	pipe_block_flag_ = 0;
 
 	OperatingInfo* operate_info_ptr = new OperatingInfo();
 	operate_info_ = *operate_info_ptr;
@@ -101,8 +102,10 @@ vector<GstElement*> MediaPipeline::get_elements_list(element_type etype)
 
 		auto iter = client_id_list_.begin();
 		while (iter != client_id_list_.end()) {
-			if (!iter->second.second)
+			if (!iter->second.second) {
+				++iter;
 				continue;
+			}
 			int client_index = iter->second.first;
 			string name = get_elements_name(etype, bin_index, client_index);
 			GstElement* element = gst_bin_get_by_name(bin, name.c_str());
@@ -287,9 +290,6 @@ void MediaPipeline::pipeline_run() {
 		gst_bin_add(GST_BIN(pipeline), bin);	
 	}
 
-	start_pipeline_ = true;
-	add_waiting_client();
-
 	LOG_INFO("Setting handler on bus");
 	GstBus* bus = gst_element_get_bus(pipeline);
 	gst_bus_set_sync_handler(bus, BusSyncHandlerCallback, (gpointer)this, NULL);
@@ -299,7 +299,11 @@ void MediaPipeline::pipeline_run() {
 	LOG_INFO("Setting timer (500 ms)");
 	g_timeout_add(500, (GSourceFunc)TimerTask, (gpointer)this);
 
-    // Pipeline execution
+	g_timeout_add(100, (GSourceFunc)messageTask, (gpointer)this);
+
+	start_pipeline_ = true;
+	add_waiting_client();
+	// Pipeline execution
 	LOG_INFO("Setting pipeline to PLAYING");
     GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
     if (ret == GST_STATE_CHANGE_FAILURE)
@@ -329,6 +333,7 @@ void MediaPipeline::makePipeline(vector<ContactInfo> &contact_info_list, Operati
 
 	pipeline_thread_ = std::thread(&MediaPipeline::pipeline_run, this);
 }
+
 
 void MediaPipeline::end_call()
 {
@@ -472,28 +477,20 @@ void MediaPipeline::add_waiting_client(void)
 	}
 }
 
-bool MediaPipeline::check_pipeline(ContactInfo* client_info)
+void MediaPipeline::request_add_client(ContactInfo* client_info)
 {
-	if (start_pipeline_)
-		return false;
+	message_mutex_.lock();
+	client_info->new_client = true;
 	client_queue_.push(*client_info);
-	return true;
+	message_mutex_.unlock();
 }
 
 void MediaPipeline::add_client(ContactInfo* client_info)
 {
-	if (check_pipeline(client_info))
-		return;
-
 	int client_index = get_client_index(client_info, true);
 	if (client_index < 0) return;
 
-	GstState cur_state;
-	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
-	if (cur_state != GST_STATE_NULL) {
-		gst_element_set_state(pipeline, GST_STATE_NULL);
-	}
-
+	stop_state_pipeline(true);
 	for (int index = 0; index < pipe_mode_list_.size(); index++) {
 		std::string name = "bin_"+std::to_string(index);
 		GstBin *bin = GST_BIN(gst_bin_get_by_name(GST_BIN(pipeline), name.c_str()));
@@ -509,24 +506,27 @@ void MediaPipeline::add_client(ContactInfo* client_info)
 		}
 	}
 	// Pipeline replay(?)
-	if (cur_state != GST_STATE_PLAYING) {
-		gst_element_set_state(pipeline, GST_STATE_PLAYING);
-	}
+	stop_state_pipeline(false);
 	logPipelineElements(pipeline, 0);
 
 }
 
-void MediaPipeline::remove_client(ContactInfo* client_info)
+void MediaPipeline::request_remove_client(ContactInfo* client_info)
+{
+	message_mutex_.lock();
+	client_info->new_client = false;
+	client_queue_.push(*client_info);
+	message_mutex_.unlock();
+}
+
+void MediaPipeline::remove_client(ContactInfo * client_info)
 {
 	GstState cur_state;
 	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
 	int client_index = get_client_index(client_info, false);
 	if (client_index < 0) return;
 
-	if (cur_state != GST_STATE_NULL) {
-		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
-	}
-
+	stop_state_pipeline(true);
 	for (int bin_index = 0; bin_index < pipe_mode_list_.size(); bin_index++) {
 		std::string name = "bin_" + std::to_string(bin_index);
 		GstBin* bin = GST_BIN(gst_bin_get_by_name(GST_BIN(pipeline), name.c_str()));
@@ -543,9 +543,14 @@ void MediaPipeline::remove_client(ContactInfo* client_info)
 	}
 	disable_client_index(client_info);
 	// Pipeline replay(?)
-	if (cur_state != GST_STATE_PLAYING) {
-		GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
-	}
+	stop_state_pipeline(false);
+}
+
+void MediaPipeline::requestSetVideoQuality(VideoQualityInfo* vq_info)
+{
+	message_mutex_.lock();
+	video_quality_queue_.push(*vq_info);
+	message_mutex_.unlock();
 }
 
 string MediaPipeline::getLinkedElements(GstElement* element)
@@ -636,6 +641,82 @@ GstBusSyncReply MediaPipeline::BusSyncHandler(GstBus* bus, GstMessage* message, 
 	return GST_BUS_PASS;
 }
 bool MediaPipeline::BusHandler(GstBus* bus, GstMessage* message, gpointer data) {
+
+	return true;
+}
+
+
+void MediaPipeline::set_pipe_block_flag(pipe_block_flag flag_type)
+{
+	pipe_block_flag_ |= 1 << (flag_type);
+}
+
+void MediaPipeline::unset_pipe_block_flag(pipe_block_flag flag_type)
+{
+	message_mutex_.lock();
+	pipe_block_flag_ &= ~(1 << (flag_type));
+	message_mutex_.unlock();
+}
+
+void MediaPipeline::stop_state_pipeline(bool stop)
+{
+	GstState cur_state;
+	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
+	if (stop) {
+		if (pipe_block_flag_ && cur_state != GST_STATE_NULL) {
+			GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
+		}
+	}
+	else {
+		if (!pipe_block_flag_ && cur_state != GST_STATE_PLAYING) {
+			GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
+		}
+	}
+}
+
+void MediaPipeline::checkMessageQueue(void) {
+	bool queue_empty;
+
+	if (!start_pipeline_) return;
+
+	set_pipe_block_flag(BLOCK_MONITOR);
+	while (true) {
+		ContactInfo client_info;
+		bool success = message_mutex_.try_lock();
+		if (!success) break;
+		queue_empty = client_queue_.empty();
+		if (!queue_empty) {
+			client_info = client_queue_.front();
+			client_queue_.pop();
+		}
+		message_mutex_.unlock();
+		if (queue_empty) break;
+		if (client_info.new_client) {
+			add_client(&client_info);
+		}
+		else {
+			remove_client(&client_info);
+		}
+	}
+	while (true) {
+		VideoQualityInfo vq_info;
+		bool success = message_mutex_.try_lock();
+		if (!success) break;
+		queue_empty = video_quality_queue_.empty();
+		if (!queue_empty) {
+			vq_info = video_quality_queue_.front();
+			video_quality_queue_.pop();
+		}
+		message_mutex_.unlock();
+		if (queue_empty) break;
+		setVideoQuality(vq_info.video_quality_index);
+	}
+	unset_pipe_block_flag(BLOCK_MONITOR);
+}
+
+bool MediaPipeline::messageTask(gpointer data) 
+{
+	static_cast<MediaPipeline*>(data)->checkMessageQueue();
 
 	return true;
 }

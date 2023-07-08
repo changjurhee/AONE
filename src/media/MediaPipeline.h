@@ -7,6 +7,7 @@
 #include <gst/gst.h>
 #include <queue>
 #include <map>
+#include <mutex>
 using namespace std;
 
 #define BASE_CLIENT_ID 99
@@ -17,6 +18,12 @@ enum pipe_topology_mode {
 	MODE_UDP_N,
 	MODE_UDP_REMOVE_ME,
 	MODE_MAX
+};
+
+enum pipe_block_flag {
+    BLOCK_MONITOR,
+	BLOCK_VIODE_STOP,
+	BLOCK_MAX
 };
 
 enum element_type {
@@ -39,6 +46,12 @@ enum element_type {
 	TYPE_MAX
 };
 
+struct VideoQualityInfo
+{
+	int video_quality_index;
+	bool enable_recover_timer;
+};
+
 typedef pair<GstElement*, GstElement*> SubElements;
 typedef pair<int, int> PipeMode;
 typedef pair<int, bool> CIDInfo;
@@ -47,6 +60,7 @@ typedef unsigned long long handleptr;
 class MediaPipeline
 {
 protected :
+	std::mutex message_mutex_;
 	string rid_;
 	int media_mode_;
 	int send_input_mode_;
@@ -61,7 +75,9 @@ protected :
 	handleptr view_handler_;
 	GstElement* pipeline;
 	queue<ContactInfo> client_queue_;
+	queue<VideoQualityInfo> video_quality_queue_;
 	bool start_pipeline_;
+	int pipe_block_flag_;
 	GMainLoop* mainLoop_;
 	virtual SubElements pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) = 0;
@@ -97,17 +113,21 @@ protected :
 	SubElements connect_subElements(SubElements front, SubElements back);
 	string get_elements_name(element_type etype, int bin_index, int client_index);
 	SubElements get_elements_by_name(GstBin* parent_bin, element_type etype, int bin_index, int client_index);
-	bool check_pipeline(ContactInfo* client_info);
 	void add_waiting_client(void);
 	void enable_debugging(void);
 public:
 	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list);
 	void makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info, handleptr handler);
 	void pipeline_run();
+	void request_add_client(ContactInfo* client_info);
+	void request_remove_client(ContactInfo* client_info);
 	void add_client(ContactInfo* client_info);
 	void remove_client(ContactInfo* client_info);
+	void requestSetVideoQuality(VideoQualityInfo* vq_info);
 	virtual void setVideoQuality(int video_quality_index) = 0;
-	
+	void set_pipe_block_flag(pipe_block_flag flag_type);
+	void unset_pipe_block_flag(pipe_block_flag flag_type);
+	void stop_state_pipeline(bool stop);
 	void end_call();
 
 private:
@@ -124,7 +144,8 @@ private:
 	}
 	GstBusSyncReply BusSyncHandler(GstBus* bus, GstMessage* message, gpointer data);
 	bool BusHandler(GstBus* bus, GstMessage* message, gpointer data);
-
+	static bool messageTask(gpointer data);
+	void checkMessageQueue(void);
 	static bool TimerTask(gpointer data);
 	void ReadAndNotifyRtpStats();
 

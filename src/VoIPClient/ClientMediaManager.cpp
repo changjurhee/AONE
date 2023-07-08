@@ -35,9 +35,12 @@ void ClientMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
 void ClientMediaManager::setVideoQuality(int video_quality_index)
 {
 	vector<VideoMediaPipeline*> pipelines = getVideoPipeLine(DEFAULT_CLIENT_RID);
+	struct VideoQualityInfo vq_info;
+	vq_info.enable_recover_timer = false;
+	vq_info.video_quality_index = video_quality_index;
 	for (auto pipeline : pipelines) {
 		if (pipeline == NULL) continue;
-		pipeline->setVideoQuality(video_quality_index);
+		pipeline->requestSetVideoQuality(&vq_info);
 	}	
 };
 
