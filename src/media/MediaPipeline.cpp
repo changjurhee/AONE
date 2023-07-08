@@ -736,9 +736,9 @@ void MediaPipeline::ReadAndNotifyRtpStats() {
 			gst_structure_get_uint64(s, "num-lost", &lost);
 			gst_structure_get_uint64(s, "num-late", &late);
 			gst_structure_get_uint64(s, "avg-jitter", &avg_jitter);
-#if 0
+
 			LOG_OBJ_DEBUG() << gst_element_get_name(elem) << ": lost " << lost << ", late " << late
 				<< ", avg_jitter " << avg_jitter/1000 << " us" << std::endl;
-#endif
+
 		});
 }
