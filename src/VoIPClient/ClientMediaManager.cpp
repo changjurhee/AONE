@@ -90,7 +90,7 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
 		pipeline->request_add_client(&contact_info_list[0]);
-		while(view_handler_ == 0);
+		//while(view_handler_ == 0);
 		pipeline->makePipeline(contact_info_list, *operate_info, view_handler_);
 	}
 
