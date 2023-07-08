@@ -97,6 +97,9 @@
     <ClCompile Include="CommandLineInterface.cpp">
       <Filter>Session</Filter>
     </ClCompile>
+    <ClCompile Include="..\media\media_types.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h">
@@ -227,6 +230,12 @@
     </ClInclude>
     <ClInclude Include="CommandLineInterface.h">
       <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\pipeline_monitorable.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\media_types.h">
+      <Filter>media</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,8 @@
 #include <vector>
 #include "../json/json.h"
 
+namespace media {
+
 struct IServerMediaManager {
 public:
 	virtual void updateClientVideoQuality(Json::Value info) = 0;
@@ -12,3 +14,5 @@ public:
 	virtual void removeClient(Json::Value remove_client_info) = 0;
 	virtual Json::Value getMediaProperty() = 0;
 };
+
+} // namespace media

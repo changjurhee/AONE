@@ -203,9 +203,9 @@ BOOL CVoIPClientApp::InitInstance()
 
 #if 1
 	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
-	ClientMediaManager* client = ClientMediaManager::getInstance();
+	media::ClientMediaManager* client = media::ClientMediaManager::getInstance();
 	client->setSessionCallback(CallsManager::getInstance());
-	ServerMediaManager* server = ServerMediaManager::getInstance();
+	media::ServerMediaManager* server = media::ServerMediaManager::getInstance();
 
 	//Json::Value client_join_info;
 	//client_join_info["rid"] = "TEST_ID";

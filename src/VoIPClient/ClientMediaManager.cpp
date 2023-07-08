@@ -1,6 +1,8 @@
 #include "ClientMediaManager.h"
 #include "../common/debug.h"
 
+namespace media {
+
 ClientMediaManager* ClientMediaManager::instance = nullptr;
 
 ClientMediaManager::ClientMediaManager(int max_pipeline) : MediaManager(max_pipeline) {
@@ -79,10 +81,10 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 	contact_info_list.push_back(*contact_info);
 
 	Pipelines pipelines;
-	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_sink_pipe_mode_list_));
-	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_src_pipe_mode_list_));
-	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_sink_pipe_mode_list_));
-	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_src_pipe_mode_list_));
+	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_sink_pipe_mode_list_, nullptr));
+	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_src_pipe_mode_list_, this));
+	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_sink_pipe_mode_list_, this));
+	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_src_pipe_mode_list_, nullptr));
 
 	pipelineMap_.insert(make_pair(rid, pipelines));
 
@@ -112,3 +114,5 @@ void ClientMediaManager::setViewHandler(handleptr view_handler)
 void ClientMediaManager::endCall(Json::Value client_join_info) {
 	return MediaManager::end_call_with_rid(DEFAULT_CLIENT_RID);
 }
+
+} // namespace media

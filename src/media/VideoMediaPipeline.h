@@ -7,6 +7,8 @@
 #define H_264_TUNE_FASTCODE     (0x00000002)
 #define H_264_TUNE_ZEROLATENCY  (0x00000004)
 
+namespace media {
+
 class VideoMediaPipeline: public MediaPipeline
 {
 	SubElements pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) override;
@@ -24,10 +26,11 @@ class VideoMediaPipeline: public MediaPipeline
 
 	void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) override;
 public:
-	VideoMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list);
+	VideoMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb);
 	void setVideoQuality(int video_quality_index) override;
 	//void makePipeline(vector<ContactInfo*> contact_info_list, OperatingInfo* operate_info);
 	//void add_client(ContactInfo* client_info):
 	//void remove_client(ContactInfo* client_info);
 };
 
+} // namespace media

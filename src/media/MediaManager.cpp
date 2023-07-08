@@ -1,6 +1,17 @@
 #include "MediaManager.h"
 //#include <winsock2.h> 
 
+#include "common/logger.h"
+
+namespace media {
+
+VideoPresetType MediaManager::ShouldChangeVideoQuality(const VideoPresetType& current_preset,
+	const PipelineMonitorable::RtpStats& stats) {
+	// TODO: Check if changing is needed
+	LOG_OBJ_DEBUG() << "currrnet_bitrate " << current_preset.bitrate << std::endl;
+	return current_preset;
+}
+
 MediaManager::MediaManager(int max_pipeline) {
 	max_pipleline_ = max_pipeline;
 	// TODO: codec/encryption 관련 등록 기능 추가
@@ -99,3 +110,20 @@ void MediaManager::end_call_with_rid(string rid)
 	}
 	pipelineMap_.erase(rid);
 }
+
+void MediaManager::OnRtpStats(const VideoPresetType& current_preset, const PipelineMonitorable::RtpStats& stats) {
+	LOG_DEBUG("IN");
+
+	VideoPresetType next_preset = ShouldChangeVideoQuality(current_preset, stats);
+	if (next_preset.level != current_preset.level) {
+		LOG_OBJ_INFO() << "Need to change video quality! current " << static_cast<int>(current_preset.level)
+			<< " to " << static_cast<int>(next_preset.level) << std::endl;
+		// TODO: Notify sesstion mgr of changing needed!
+	}
+}
+
+void MediaManager::OnAudioBuffer(const AudioBuffer& buffer) {
+	LOG_DEBUG("IN");
+}
+
+} // namespace media

@@ -198,7 +198,7 @@ BOOL CVoIPServerApp::InitInstance()
 	// SessionManager create and init
 	SessionManager::getInstance()->init();
 
-	ServerMediaManager* server = ServerMediaManager::getInstance();
+	media::ServerMediaManager* server = media::ServerMediaManager::getInstance();
 
 	return TRUE;
 }
