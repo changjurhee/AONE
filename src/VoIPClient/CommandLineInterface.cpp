@@ -170,7 +170,7 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 			}
 			break;
 
-		case 4: //RESET PW
+		case 5: //RESET PW
 			std::cout << "RESET PWORD" << std::endl;
 			std::cout << "cid : ";
 			getline(std::cin >> std::ws, id);
@@ -224,6 +224,27 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 			getline(std::cin >> std::ws, input);
 			accountManager->deleteContact(input);
 			break;
+		case 20: // GET CALL_STATE
+		{
+			Call* call = callsManager->getCall();
+			int state = call == nullptr ? 8 : call->getCallState();
+			if (state == 1) {
+				std::cout << "STATE_DIALING" << std::endl;
+			}
+			else if (state == 2) {
+				std::cout << "STATE_RINGING" << std::endl;
+			}
+			else if (state == 4) {
+				std::cout << "STATE_ACTIVE" << std::endl;
+			}
+			else if (state == 7) {
+				std::cout << "STATE_DISCONNECTED" << std::endl;
+			}
+			else if (state == 8) {
+				std::cout << "STATE_IDLE" << std::endl;
+			}
+			break;
+		}
 		case 21: // ANSWER CALL
 			std::cout << "ANSWER CALL" << std::endl;
 			callsManager->answerCall();
