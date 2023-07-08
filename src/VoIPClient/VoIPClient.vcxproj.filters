@@ -73,6 +73,7 @@
     <ClCompile Include="..\media\litevad.cpp">
       <Filter>media</Filter>
     </ClCompile>
+    <ClCompile Include="StartDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h">
@@ -186,6 +187,7 @@
     <ClInclude Include="..\media\litevad.h">
       <Filter>media</Filter>
     </ClInclude>
+    <ClInclude Include="StartDlg.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\class_view.ico">
@@ -325,6 +327,7 @@
     <Image Include="res\icons8-homer-simpson-480.png" />
     <Image Include="res\icon2.ico" />
     <Image Include="res\homer.ico" />
+    <Image Include="res\MOOZ.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="VoIPClient.reg" />

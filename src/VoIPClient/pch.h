@@ -47,6 +47,7 @@ enum class KResponse : INT_PTR {
 	CREATE_USER,
 	UPDATE_USER,
 	RESET_PASSWORD,
+	START,
 };
 
 struct userInfo {

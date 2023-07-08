@@ -235,6 +235,7 @@
     <ClInclude Include="session\ICallsManager.h" />
     <ClInclude Include="session\SessionControl.h" />
     <ClInclude Include="session\SessionManager.h" />
+    <ClInclude Include="StartDlg.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ViewTree.h" />
     <ClInclude Include="VoIPClient.h" />
@@ -271,6 +272,7 @@
     <ClCompile Include="session\Call.cpp" />
     <ClCompile Include="session\CallsManager.cpp" />
     <ClCompile Include="session\SessionManager.cpp" />
+    <ClCompile Include="StartDlg.cpp" />
     <ClCompile Include="ViewTree.cpp" />
     <ClCompile Include="VoIPClient.cpp" />
     <ClCompile Include="VoIPClientDoc.cpp" />
@@ -317,6 +319,7 @@
     <Image Include="res\login_95461_64x64.ico" />
     <Image Include="res\menuimages.bmp" />
     <Image Include="res\menuimages_hc.bmp" />
+    <Image Include="res\MOOZ.bmp" />
     <Image Include="res\nav_large.bmp" />
     <Image Include="res\nav_large_hc.bmp" />
     <Image Include="res\output_wnd.ico" />

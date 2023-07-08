@@ -11,6 +11,7 @@
 
 #include "VoIPClientDoc.h"
 #include "VoIPClientView.h"
+#include "StartDlg.h"
 #include "AccountLoginDlg.h"
 #include "ManageUserAccountDlg.h"
 
@@ -196,6 +197,28 @@ BOOL CVoIPClientApp::InitInstance()
 
 	m_pMainWnd->ShowWindow(SW_HIDE);
 
+	CStartDlg startDlg;
+	startDlg.DoModal();
+
+	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)((CMainFrame*)AfxGetMainWnd())->GetActiveDocument();
+	tstring wsip_server = pDoc->GetUser()->server_ip_num;
+	std::string sip_server;
+	sip_server.assign(wsip_server.begin(), wsip_server.end());
+
+#if 0
+	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
+	ClientMediaManager test = ClientMediaManager(1);
+	ContactInfo contact_info;
+	OperatingInfo operate_info;
+	contact_info.dest_ip = sip_server; // "127.0.0.1";
+	contact_info.dest_video_port = 5001;
+	contact_info.dest_audio_port = 5002;
+	contact_info.org_video_port = 5001;
+	contact_info.org_audio_port = 5002;
+
+	test.startCall(contact_info, operate_info);
+#endif
+
 	// User Log In.
 	((CMainFrame*)AfxGetMainWnd())->UserLogIn();
 
@@ -203,19 +226,6 @@ BOOL CVoIPClientApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 	m_pMainWnd->UpdateWindow();
 
-#if 0
-	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
-	ClientMediaManager test = ClientMediaManager(1);
-	ContactInfo contact_info;
-	OperatingInfo operate_info;
-	contact_info.dest_ip = "127.0.0.1";
-	contact_info.dest_video_port=5001;
-	contact_info.dest_audio_port = 5002;
-	contact_info.org_video_port = 5001;
-	contact_info.org_audio_port = 5002;
-
-	test.startCall(contact_info, operate_info);
-#endif
 	return TRUE;
 }
 

@@ -49,6 +49,7 @@ CVoIPClientDoc::CVoIPClientDoc() noexcept
 	EnableAutomation();
 
 	AfxOleLockApp();
+	m_spUserInfo = std::shared_ptr<userInfo>(new userInfo);
 
 	IsCurrentUser = FALSE;
 }

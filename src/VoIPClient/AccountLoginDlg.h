@@ -23,7 +23,6 @@ private:
 	std::shared_ptr<userInfo> spUserInfo;
 	CString m_edEmailID;
 	CString m_edPassword;
-	CString m_wdServerIpAddress;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
