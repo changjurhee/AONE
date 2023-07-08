@@ -7,6 +7,7 @@ struct ContactInfo {
 	int dest_audio_port;
 	int org_video_port;
 	int org_audio_port;
+	bool new_client;
 };
 
 struct OperatingInfo {
