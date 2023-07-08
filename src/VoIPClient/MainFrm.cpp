@@ -596,21 +596,7 @@ void CMainFrame::OnUpdateViewPropertiesWindow(CCmdUI* pCmdUI)
 void CMainFrame::OnUserLogIn()
 {
 	ShowWindow(SW_HIDE);
-	CAccountLoginDlg accountLoginDlg;
-	INT_PTR nRet = -1;
-	nRet = accountLoginDlg.DoModal();
-	if (IDCANCEL != nRet) {
-		if ((KResponse)nRet == KResponse::LOGIN) {
-			//m_spUserInfo = accountLoginDlg.GetUserInfo();
-		}
-		else {
-			CManageUserAccountDlg manageUserAccountDlg;
-			manageUserAccountDlg.DoModal();
-		}
-	}
-
-	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
-	SetWindowText(FormatString(_T("MOOZ %s"), pDoc->GetUser()->email.c_str()).data());
+	UserLogIn();
 	ShowWindow(SW_SHOW);
 }
 
@@ -623,6 +609,18 @@ void CMainFrame::OnUpdateUserLogIn(CCmdUI* pCmdUI)
 void CMainFrame::OnUserLogOut()
 {
 	ShowWindow(SW_HIDE);
+	UserLogIn();
+	ShowWindow(SW_SHOW);
+}
+
+void CMainFrame::OnUpdateUserLogOut(CCmdUI* pCmdUI)
+{
+	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
+	pCmdUI->Enable(pDoc->IsCurrentUser);
+}
+
+void CMainFrame::UserLogIn()
+{
 	CAccountLoginDlg accountLoginDlg;
 	INT_PTR nRet = -1;
 	nRet = accountLoginDlg.DoModal();
@@ -638,15 +636,7 @@ void CMainFrame::OnUserLogOut()
 
 	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
 	SetWindowText(FormatString(_T("MOOZ %s"), pDoc->GetUser()->email.c_str()).data());
-	ShowWindow(SW_SHOW);
 }
-
-void CMainFrame::OnUpdateUserLogOut(CCmdUI* pCmdUI)
-{
-	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
-	pCmdUI->Enable(pDoc->IsCurrentUser);
-}
-
 
 BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext)
 {

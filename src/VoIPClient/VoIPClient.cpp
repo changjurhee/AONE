@@ -194,18 +194,10 @@ BOOL CVoIPClientApp::InitInstance()
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 
-	CAccountLoginDlg accountLoginDlg;
-	INT_PTR nRet = -1;
-	nRet = accountLoginDlg.DoModal();
-	if (IDCANCEL != nRet) {
-		if ((KResponse)nRet == KResponse::LOGIN) {
-			//m_spUserInfo = accountLoginDlg.GetUserInfo();
-		}
-		else {
-			CManageUserAccountDlg manageUserAccountDlg;
-			manageUserAccountDlg.DoModal();
-		}
-	}
+	m_pMainWnd->ShowWindow(SW_HIDE);
+
+	// User Log In.
+	((CMainFrame*)AfxGetMainWnd())->UserLogIn();
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
