@@ -46,4 +46,5 @@ public:
 
 public:
 	std::shared_ptr<userInfo> GetUserInfo() { return spUserInfo; }
+	void RunCommandLine();
 };

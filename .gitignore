@@ -493,5 +493,5 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 ~
 
-src/VoIPServer/conferences.db
-src/VoIPServer/contacts.db
+# session server db file
+src/VoIPServer/*.db

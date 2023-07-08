@@ -7,7 +7,9 @@
 #include "AccountLoginDlg.h"
 
 // Session
+#include <thread>
 #include "session/SessionManager.h"
+#include "CommandLineInterface.h"
 
 // CAccountLoginDlg 대화 상자
 
@@ -60,8 +62,13 @@ void CAccountLoginDlg::OnBnClickedMfcbtnLogin()
 	spUserInfo->password = tstring(m_edPassword);
 	spUserInfo->server_ip_num = tstring(m_wdServerIpAddress);
 
+	
+	// For TEST CommandLineInterface
+	// TODO Modify
 	// SessionManager init
-	SessionManager::getInstance()->init("127.0.0.1", 5555); // TODO modify dynamic serverIp, serverPort
+	// SessionManager::getInstance()->init(serverIp.c_str(), serverPort); // TODO modify dynamic serverIp, serverPort
+	std::thread commandline(&CAccountLoginDlg::RunCommandLine, this);
+	commandline.detach();
 
 	EndDialog((INT_PTR)KResponse::LOGIN);
 }
@@ -93,4 +100,23 @@ void CAccountLoginDlg::OnBnClickedMfcbtnResetPw()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	EndDialog((INT_PTR)KResponse::RESET_PASSWORD);
+}
+
+void CAccountLoginDlg::RunCommandLine()
+{
+	SessionManager* sessionManager = SessionManager::getInstance();
+	AccountManager* accountManager = AccountManager::getInstance();
+	CallsManager* callsManager = CallsManager::getInstance();
+
+	// Get server information
+	std::string serverIp;
+	int serverPort;
+	CommandLineInterface* cli = CommandLineInterface::getInstance();
+	cli->getServerInfo(&serverIp, &serverPort);
+
+	// SessionManager init
+	SessionManager::getInstance()->init(serverIp.c_str(), serverPort);
+
+	// Start CLI
+	cli->startCli(accountManager, callsManager);
 }

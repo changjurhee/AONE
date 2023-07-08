@@ -36,7 +36,7 @@ void SessionManager::releaseInstance() {
 }
 
 void SessionManager::init(const char* ip, int port) {
-	getMyIp();
+	
 	if (strlen(ip) > 0) {
 		strcpy_s(serverIP, sizeof(serverIP), ip); // dynamic ip
 	}
@@ -47,8 +47,8 @@ void SessionManager::init(const char* ip, int port) {
 	callsManager->setSessionControl(this);
 	accountManager->setSessionControl(this);
 
-	std::thread sessionThread(&SessionManager::openSocket, instance);
-	sessionThread.join();
+	std::thread sessionThread(&SessionManager::openSocket, this);
+	sessionThread.detach();
 }
 
 void SessionManager::release() {
@@ -81,7 +81,7 @@ void SessionManager::proc_recv() {
 
 	Json::Value root;
 	Json::Reader reader;
-	
+	getMyIp();
 
 	char buf[PACKET_SIZE];
 	Json::Reader jsonReader;
@@ -141,6 +141,7 @@ void SessionManager::proc_recv() {
 				break;
 			case 208: // 208 : JOIN_CONFERENCE
 				msgStr = "JOIN_CONFERENCE";
+				payloads["serverIp"] = serverIP;
 				payloads["myIp"] = myIp;
 				callsManager->onJoinConferenceResult(payloads);
 				break;
@@ -150,11 +151,13 @@ void SessionManager::proc_recv() {
 				break;
 			case 301: // 301 : OUTGOING_CALL_RESULT
 				msgStr = "OUTGOING_CALL_RESULT";
+				payloads["serverIp"] = serverIP;
 				payloads["myIp"] = myIp;
 				callsManager->onOutgoingCallResult(payloads);
 				break;
 			case 302: // 302 : INCOMING_CALL
 				msgStr = "INCOMING_CALL";
+				payloads["serverIp"] = serverIP;
 				callsManager->onIncomingCall(payloads);
 				break;
 			case 303: // 303 : INCOMING_CALL_RESULT

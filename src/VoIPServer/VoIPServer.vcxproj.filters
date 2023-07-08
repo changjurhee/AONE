@@ -96,9 +96,6 @@
     <ClInclude Include="session\TelephonyManager.h">
       <Filter>Session</Filter>
     </ClInclude>
-    <ClInclude Include="DumpMediaManager.h">
-      <Filter>Session</Filter>
-    </ClInclude>
     <ClInclude Include="session\ISessionMediaCallback.h">
       <Filter>Session</Filter>
     </ClInclude>
@@ -183,9 +180,6 @@
       <Filter>Session</Filter>
     </ClCompile>
     <ClCompile Include="session\TelephonyManager.cpp">
-      <Filter>Session</Filter>
-    </ClCompile>
-    <ClCompile Include="DumpMediaManager.cpp">
       <Filter>Session</Filter>
     </ClCompile>
     <ClCompile Include="..\media\AudioMediaPipeline.cpp">

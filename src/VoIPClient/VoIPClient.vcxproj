@@ -220,7 +220,7 @@
     <ClInclude Include="CallView.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="ClientMediaManager.h" />
-    <ClInclude Include="DumpMediaManager.h" />
+    <ClInclude Include="CommandLineInterface.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IClientMediaManager.h" />
@@ -264,7 +264,7 @@
     <ClCompile Include="CallView.cpp" />
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="ClientMediaManager.cpp" />
-    <ClCompile Include="DumpMediaManager.cpp" />
+    <ClCompile Include="CommandLineInterface.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="ManageUserAccountDlg.cpp" />
