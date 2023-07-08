@@ -7,6 +7,7 @@
 #include "ISessionMediaCallback.h"
 #include "Connection.h"
 #include "ConferenceDb.h"
+#include "ContactDb.h"
 #include "../../json/json.h"
 
 class TelephonyManager : public ITelephonyManager, public ISessionMediaCallback {
@@ -17,6 +18,7 @@ private:
 
 	SessionControl* sessionControl;
 	ConferenceDb* conferenceDb; // Conference Database
+	ContactDb* contactDb;
 
 	TelephonyManager();
 
@@ -25,11 +27,14 @@ public:
 	static void releaseInstance();
 
 	void release();
+	void initializeConnections();
+	string generateConnectionId();
 	void onAnswer(Json::Value data);
 	void onReject(Json::Value data);
 	int joinableConference(Json::Value data);
 	void removeConference(std::string connId);
 	void manageConferenceLifetime(std::string connId);
+	void logConnections();
 
 	// Listener
 	void setSessionControl(SessionControl* control) override;

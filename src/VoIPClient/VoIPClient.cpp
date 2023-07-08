@@ -14,7 +14,6 @@
 #include "ClientMediaManager.h"
 #include "ServerMediaManager.h"
 #include "common/logger.h"
-#include "session/CallsManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -22,6 +21,8 @@
 
 // Session
 #include "session/SessionManager.h"
+#include "session/CallsManager.h"
+#include "session/AccountManager.h"
 
 // CVoIPClientApp
 
@@ -197,6 +198,8 @@ BOOL CVoIPClientApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 	m_pMainWnd->UpdateWindow();
 	
+	// SessionManager create
+	SessionManager::getInstance();
 
 #if 1
 	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
@@ -225,6 +228,9 @@ int CVoIPClientApp::ExitInstance()
 
 	// Session clear
 	SessionManager::getInstance()->releaseInstance();
+	CallsManager::getInstance()->releaseInstance();
+	AccountManager::getInstance()->releaseInstance();
+
 	return CWinAppEx::ExitInstance();
 }
 

@@ -19,6 +19,8 @@
 
 // Session
 #include "session/SessionManager.h"
+#include "session/TelephonyManager.h"
+#include "session/AccountManager.h"
 
 // CVoIPServerApp
 
@@ -126,9 +128,6 @@ BOOL CVoIPServerApp::InitInstance()
 
 	InitTooltipManager();
 
-	// SessionManager init
-	SessionManager::getInstance()->init();
-
 	CMFCToolTipInfo ttParams;
 	ttParams.m_bVislManagerTheme = TRUE;
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
@@ -196,6 +195,9 @@ BOOL CVoIPServerApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 	m_pMainWnd->UpdateWindow();
 
+	// SessionManager create and init
+	SessionManager::getInstance()->init();
+
 	ServerMediaManager* server = ServerMediaManager::getInstance();
 
 	return TRUE;
@@ -208,6 +210,8 @@ int CVoIPServerApp::ExitInstance()
 
 	// Session clear
 	SessionManager::releaseInstance();
+	TelephonyManager::releaseInstance();
+	AccountManager::releaseInstance();
 
 	return CWinAppEx::ExitInstance();
 }

@@ -35,9 +35,12 @@ void ClientMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
 void ClientMediaManager::setVideoQuality(int video_quality_index)
 {
 	vector<VideoMediaPipeline*> pipelines = getVideoPipeLine(DEFAULT_CLIENT_RID);
+	struct VideoQualityInfo vq_info;
+	vq_info.enable_recover_timer = false;
+	vq_info.video_quality_index = video_quality_index;
 	for (auto pipeline : pipelines) {
 		if (pipeline == NULL) continue;
-		pipeline->setVideoQuality(video_quality_index);
+		pipeline->requestSetVideoQuality(&vq_info);
 	}	
 };
 
@@ -86,7 +89,7 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
-		pipeline->add_client(&contact_info_list[0]);
+		pipeline->request_add_client(&contact_info_list[0]);
 		while(view_handler_ == 0);
 		pipeline->makePipeline(contact_info_list, *operate_info, view_handler_);
 	}

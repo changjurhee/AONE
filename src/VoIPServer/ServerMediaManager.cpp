@@ -30,7 +30,8 @@ void ServerMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
 	//sessionCallback_->notifyVideoQualityChanged("rid", 3);
 }
 
-void ServerMediaManager::updateClientVideoQuality(Json::Value info) {
+void ServerMediaManager::updateClientVideoQuality(Json::Value info)
+{
 	// TODO : VideoQuality 변경 로직 적용 
 	//string rid, string cid, int level
 };
@@ -112,7 +113,7 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
 		client_info = get_contact_info(add_client_info, false);
-		pipeline->add_client(client_info);
+		pipeline->request_add_client(client_info);
 	}
 
 #if 0
@@ -121,7 +122,7 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
 		client_info = get_contact_info(add_client_info, false);
-		pipeline->add_client(contact_info_list, operate_info);
+		pipeline->request_add_client(contact_info_list, operate_info);
 	}
 #endif
 }
@@ -136,7 +137,7 @@ void ServerMediaManager::removeClient(Json::Value remove_client_info)
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
 		client_info = get_contact_info(remove_client_info, true);
-		pipeline->remove_client(client_info);
+		pipeline->request_remove_client(client_info);
 	}
 
 #if 0
@@ -145,7 +146,7 @@ void ServerMediaManager::removeClient(Json::Value remove_client_info)
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
 		client_info = get_contact_info(remove_client_info, true);
-		pipeline->remove_client(contact_info_list, operate_info);
+		pipeline->request_remove_client(contact_info_list, operate_info);
 	}
 #endif
 
@@ -159,11 +160,6 @@ Json::Value ServerMediaManager::getMediaProperty()
 	payload["encryption_alg"] = "alg";
 	payload["encryption_key"] = "key";
 	return payload;
-}
-
-void ServerMediaManager::notifyVideoQualityChanged(std::string rid, int quality)
-{
-	
 }
 
 void ServerMediaManager::endCall(Json::Value room_remove_info)
