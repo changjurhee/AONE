@@ -302,7 +302,6 @@ void MediaPipeline::pipeline_run() {
 	g_timeout_add(100, (GSourceFunc)messageTask, (gpointer)this);
 
 	start_pipeline_ = true;
-	add_waiting_client();
 	// Pipeline execution
 	LOG_INFO("Setting pipeline to PLAYING");
     GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
@@ -463,17 +462,6 @@ void MediaPipeline::remove_client_in_back(GstBin* parent_bin, int bin_index, int
 		gst_object_unref(linkedPad);
 		unref_element(parent_bin, current_element);
 		current_name = gst_element_get_name(linkedElement);
-	}
-}
-
-void MediaPipeline::add_waiting_client(void)
-{
-	while (!client_queue_.empty())
-	{
-		ContactInfo client_info = client_queue_.front();
-
-		add_client(&client_info);
-		client_queue_.pop();
 	}
 }
 
