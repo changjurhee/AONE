@@ -23,7 +23,7 @@ struct VideoPresetType {
 	VideoPresetLevel level;
 	int width;
 	int height;
-	int bitrate;
+	int bitrate; // kbps
 };
 
 extern const std::map<VideoPresetLevel, VideoPresetType> kVideoPresets;
