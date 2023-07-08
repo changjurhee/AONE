@@ -3,8 +3,8 @@
 #include <chrono>
 #include <string>
 //MD5
-//#include "../../openssl/md5.h"
-//#include "../../openssl/evp.h"
+#include "../../openssl/md5.h"
+#include "../../openssl/evp.h"
 #include <iomanip>
 
 #include "AccountManager.h"
@@ -32,7 +32,6 @@ void AccountManager::releaseInstance() {
 }
 
 std::string AccountManager::md5(std::string& data) {
-#if 0
 	EVP_MD_CTX* mdctx;
 	const EVP_MD* md;
 	unsigned char md_value[EVP_MAX_MD_SIZE];
@@ -54,9 +53,6 @@ std::string AccountManager::md5(std::string& data) {
 	EVP_MD_CTX_free(mdctx);
 
 	return ss.str();
-#else
-	return data;
-#endif
 }
 
 bool AccountManager::isSubstring(const std::string& source, const std::string& target)
