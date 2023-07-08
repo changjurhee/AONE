@@ -49,7 +49,7 @@ END_MESSAGE_MAP()
 
 // CAccountLoginDlg 메시지 처리기
 
-CVoIPClientDoc* CAccountLoginDlg::GetDocument() const // 디버그되지 않은 버전은 인라인으로 지정됩니다.
+CVoIPClientDoc* CAccountLoginDlg::GetDocument() const 
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	CVoIPClientDoc* m_pDocument = (CVoIPClientDoc*)pFrame->GetActiveDocument();
