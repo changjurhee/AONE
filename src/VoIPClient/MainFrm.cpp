@@ -50,6 +50,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_WM_SETTINGCHANGE()
 	ON_COMMAND(ID_TEST_LOG_IN, &CMainFrame::OnUserLogIn)
 	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_IN, &CMainFrame::OnUpdateUserLogIn)
+	ON_COMMAND(ID_TEST_LOG_OUT, &CMainFrame::OnUserLogOut)
+	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_OUT, &CMainFrame::OnUpdateUserLogOut)
 	ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
@@ -221,6 +223,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// @ test menu
 	lstBasicCommands.AddTail(ID_TEST_LOG_IN);
+	lstBasicCommands.AddTail(ID_TEST_LOG_OUT);
 	lstBasicCommands.AddTail(ID_TEST_CREATE_USER);
 	lstBasicCommands.AddTail(ID_TEST_UPDATE_USER);
 
@@ -613,8 +616,37 @@ void CMainFrame::OnUserLogIn()
 
 void CMainFrame::OnUpdateUserLogIn(CCmdUI* pCmdUI)
 {
-	pCmdUI->Enable(TRUE);
+	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
+	pCmdUI->Enable(!pDoc->IsCurrentUser);
 }
+
+void CMainFrame::OnUserLogOut()
+{
+	ShowWindow(SW_HIDE);
+	CAccountLoginDlg accountLoginDlg;
+	INT_PTR nRet = -1;
+	nRet = accountLoginDlg.DoModal();
+	if (IDCANCEL != nRet) {
+		if ((KResponse)nRet == KResponse::LOGIN) {
+			//m_spUserInfo = accountLoginDlg.GetUserInfo();
+		}
+		else {
+			CManageUserAccountDlg manageUserAccountDlg;
+			manageUserAccountDlg.DoModal();
+		}
+	}
+
+	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
+	SetWindowText(FormatString(_T("MOOZ %s"), pDoc->GetUser()->email.c_str()).data());
+	ShowWindow(SW_SHOW);
+}
+
+void CMainFrame::OnUpdateUserLogOut(CCmdUI* pCmdUI)
+{
+	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
+	pCmdUI->Enable(pDoc->IsCurrentUser);
+}
+
 
 BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext)
 {

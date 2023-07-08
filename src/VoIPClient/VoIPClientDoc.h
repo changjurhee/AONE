@@ -13,6 +13,7 @@ protected: // serialization에서만 만들어집니다.
 // 특성입니다.
 public:
 	std::shared_ptr<userInfo> m_spUserInfo;
+	BOOL IsCurrentUser;
 
 // 작업입니다.
 public:

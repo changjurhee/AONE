@@ -81,7 +81,9 @@ protected:
 	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 	afx_msg void OnUpdateUserLogIn(CCmdUI* pCmdUI);
 	afx_msg void OnUserLogIn();
-	
+	afx_msg void OnUpdateUserLogOut(CCmdUI* pCmdUI);
+	afx_msg void OnUserLogOut();
+
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();

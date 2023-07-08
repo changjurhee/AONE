@@ -49,6 +49,8 @@ CVoIPClientDoc::CVoIPClientDoc() noexcept
 	EnableAutomation();
 
 	AfxOleLockApp();
+
+	IsCurrentUser = FALSE;
 }
 
 CVoIPClientDoc::~CVoIPClientDoc()

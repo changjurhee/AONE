@@ -72,6 +72,7 @@ void CAccountLoginDlg::OnBnClickedMfcbtnLogin()
 
 	// @todo 체크 결과 정상이면, 
 	GetDocument()->SetUser(spUserInfo);
+	GetDocument()->IsCurrentUser = TRUE;
 
 	EndDialog((INT_PTR)KResponse::LOGIN);
 }
