@@ -5,6 +5,7 @@
 #include "../media/AudioMediaPipeline.h"
 #include "session/ISessionMediaCallback.h"
 
+namespace media {
 //class ServerMediaManager : public MediaManager, public IServerMediaManager, public ISessionMediaCallback {
 class ServerMediaManager : public MediaManager, public IServerMediaManager {
 private:
@@ -28,3 +29,4 @@ public:
 	static void releaseInstance();
 };
 
+} // namespace media

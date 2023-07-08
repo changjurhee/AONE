@@ -7,6 +7,9 @@
 
 #define DEFAULT_CLIENT_CID "0"
 #define DEFAULT_CLIENT_RID "0"
+
+namespace media {
+
 class ClientMediaManager : public MediaManager, public IClientMediaManager {
 private:
 	static ClientMediaManager* instance;
@@ -30,3 +33,4 @@ public:
 	static void releaseInstance();
 };
 
+} // namespace media

@@ -7,6 +7,7 @@
 #include "ClientMediaManager.h"
 #include "ServerMediaManager.h"
 
+using namespace media;
 
 // CCallView
 

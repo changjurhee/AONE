@@ -1,6 +1,7 @@
 #pragma once
 #include "call_info.h"
 #include "../common/debug.h"
+#include "pipeline_monitorable.h"
 
 #include<vector>
 #include<thread>
@@ -57,7 +58,9 @@ typedef pair<int, int> PipeMode;
 typedef pair<int, bool> CIDInfo;
 typedef unsigned long long handleptr;
 
-class MediaPipeline
+namespace media {
+
+class MediaPipeline : public PipelineMonitorable
 {
 protected :
 	std::mutex message_mutex_;
@@ -116,7 +119,7 @@ protected :
 	void add_waiting_client(void);
 	void enable_debugging(void);
 public:
-	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list);
+	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb);
 	void makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info, handleptr handler);
 	void pipeline_run();
 	void request_add_client(ContactInfo* client_info);
@@ -151,3 +154,4 @@ private:
 
 };
 
+} // namespace media

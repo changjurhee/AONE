@@ -1,6 +1,9 @@
 #include "AudioMediaPipeline.h"
 
-AudioMediaPipeline::AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list) : MediaPipeline(rid, pipe_mode_list) {};
+namespace media {
+
+AudioMediaPipeline::AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb) :
+	MediaPipeline(rid, pipe_mode_list, monitor_cb) {};
 
 SubElements AudioMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index)
 {
@@ -106,4 +109,5 @@ void AudioMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_inde
 {
 	return;
 }
-;
+
+} // namespace media

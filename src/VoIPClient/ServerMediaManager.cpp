@@ -1,6 +1,8 @@
 #include "ServerMediaManager.h"
 #include "../common/debug.h"
 
+namespace media {
+
 ServerMediaManager* ServerMediaManager::instance = nullptr;
 
 ServerMediaManager::ServerMediaManager(int max_pipeline) : MediaManager(max_pipeline) {
@@ -58,8 +60,8 @@ void ServerMediaManager::startCall(Json::Value room_creat_info)
 	OperatingInfo* operate_info = get_operate_info();
 
 	Pipelines pipelines;
-	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_pipe_mode_list_));
-	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_pipe_mode_list_));
+	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_pipe_mode_list_, this));
+	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_pipe_mode_list_, nullptr));
 
 	pipelineMap_.insert(make_pair(rid, pipelines));
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
@@ -129,7 +131,7 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 
 void ServerMediaManager::removeClient(Json::Value remove_client_info)
 {
-  	//TODO : connect pipleline
+	//TODO : connect pipleline
 	string rid = remove_client_info["rid"].asString();
 	ContactInfo* client_info;
 
@@ -167,3 +169,5 @@ void ServerMediaManager::endCall(Json::Value room_remove_info)
 	string rid = room_remove_info["rid"].asString();
 	return end_call_with_rid(rid);
 };
+
+} // namespace media

@@ -2,6 +2,8 @@
 #include "MediaPipeline.h"
 #include <vector>
 
+namespace media {
+
 class AudioMediaPipeline: public MediaPipeline
 {
 protected:
@@ -20,10 +22,11 @@ protected:
 
 	void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) override;
 public:
-	AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list);
+	AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb);
 	//void makePipeline(std::vector<ContactInfo*> contact_info_list, OperatingInfo* operate_info);
 	void setVideoQuality(int video_quality_index) override;
 	//void add_client(ContactInfo* client_info);
 	//void remove_client(ContactInfo* client_info);
 };
 
+} // namespace media

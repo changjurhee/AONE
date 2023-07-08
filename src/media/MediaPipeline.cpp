@@ -6,7 +6,11 @@
 
 #include "common/logger.h"
 
-MediaPipeline::MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list) {
+namespace media {
+
+MediaPipeline::MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb) :
+	PipelineMonitorable(monitor_cb) {
+
 	rid_ = rid;
 	pipe_mode_list_ = pipe_mode_list;
 	start_pipeline_ = false;
@@ -722,7 +726,9 @@ bool MediaPipeline::messageTask(gpointer data)
 }
 
 bool MediaPipeline::TimerTask(gpointer data) {
-	static_cast<MediaPipeline*>(data)->ReadAndNotifyRtpStats();
+	MediaPipeline* pipeline = static_cast<MediaPipeline*>(data);
+
+	pipeline->ReadAndNotifyRtpStats();
 
 	return true;
 }
@@ -744,14 +750,21 @@ void MediaPipeline::ReadAndNotifyRtpStats() {
 
 			if (!elem) return;
 
-			guint64 lost, late, avg_jitter;
+			RtpStats stats;
 			GstStructure* s;
 			g_object_get(elem, "stats", &s, NULL);
-			gst_structure_get_uint64(s, "num-lost", &lost);
-			gst_structure_get_uint64(s, "num-late", &late);
-			gst_structure_get_uint64(s, "avg-jitter", &avg_jitter);
+			gst_structure_get_uint64(s, "num-lost", &stats.num_lost);
+			gst_structure_get_uint64(s, "num-late", &stats.num_late);
+			gst_structure_get_uint64(s, "avg-jitter", &stats.avg_jitter_us);
+			stats.avg_jitter_us = stats.avg_jitter_us / 1000;
 
-			LOG_OBJ_DEBUG() << gst_element_get_name(elem) << ": lost " << lost << ", late " << late
-				<< ", avg_jitter " << avg_jitter/1000 << " us" << std::endl;
+			LOG_OBJ_DEBUG() << gst_element_get_name(elem) << ": lost " << stats.num_lost << ", late "
+				<< stats.num_late << ", avg_jitter " << stats.avg_jitter_us << " us" << std::endl;
+
+			VideoPresetType current_preset;
+			if (monitor_cb_)
+				monitor_cb_->OnRtpStats(current_preset, stats);
 		});
 }
+
+} // namespace media

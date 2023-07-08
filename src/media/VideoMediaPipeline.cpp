@@ -1,7 +1,10 @@
 #include "VideoMediaPipeline.h"
 #include <gst/video/videooverlay.h>
 
-VideoMediaPipeline::VideoMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list) : MediaPipeline(rid, pipe_mode_list) {
+namespace media {
+
+VideoMediaPipeline::VideoMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb) :
+	MediaPipeline(rid, pipe_mode_list, monitor_cb) {
 
 }
 
@@ -239,3 +242,5 @@ void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_inde
 
 	gst_object_unref(linkedPad);
 };
+
+} // namespace media
