@@ -54,6 +54,13 @@ void TelephonyManager::initializeConnections()
 		std::string connId = dbConference["rid"].asString();
 		std::thread room(&TelephonyManager::manageConferenceLifetime, instance, connId);
 		room.detach();
+
+		Connection conn = connectionMap[connId];
+		Json::Value media;
+		media["rid"] = connId;
+		media["conferenceSize"] = conn.getConferenceList().size();
+		media["myIp"] = sessionControl->getMyIp();
+		ServerMediaManager::getInstance()->startCall(media);
 	}
 }
 
@@ -82,11 +89,14 @@ void TelephonyManager::onAnswer(Json::Value data) {
 	Json::Value payload = ServerMediaManager::getInstance()->getMediaProperty();
 	payload["rid"] = connId;
 	payload["result"] = 1;
+	payload["result_detail"] = data["result_detail"].asString();
 
 	Json::Value media;
 	media["rid"] = connId;
 	media["conferenceSize"] = 2;
-	media["myIp"] = payload["myIp"].asString();
+	// TODO : IP 주소 API 확인
+	//media["myIp"] = payload["myIp"].asString();
+	media["myIp"] = sessionControl->getMyIp();;
 	ServerMediaManager::getInstance()->startCall(media);
 
 	Json::Value clientMedia;
@@ -125,7 +135,9 @@ void TelephonyManager::onReject(Json::Value data) {
 	Json::Value payload;
 	payload["rid"] = connId;
 	payload["result"] = 2;
+	payload["result_detail"] = data["result_detail"].asString();
 	payload["cause"] = cause;
+	payload["cause_detail"] = data["cause_detail"].asString();
 
 	Connection conn = connectionMap[connId];
 	std::list<std::string> participants = conn.getParticipants();
@@ -259,7 +271,9 @@ void TelephonyManager::handleOutgoingCallNoUser(Json::Value data) {
 	Json::Value payload;
 	payload["rid"] = "UNKNOWN";
 	payload["result"] = 2;
+	payload["result_detail"] = "FAIL";
 	payload["cause"] = 3;
+	payload["cause_detail"] = "UNREACHABLE";
 
 	sessionControl->sendData(301, payload, from);
 
@@ -375,12 +389,15 @@ void TelephonyManager::handleJoinConference(Json::Value data) {
 
 	int joinable = joinableConference(data);
 	Json::Value payloadFail;
+	payloadFail["result"] = 2;
+	payloadFail["result_detail"] = "FAIL";
 
 	if (joinable == 1) {
 		std::cout << "handleJoinConference()/NO_ROOM/from[" << from << "]/connId[" << connId << endl;
 		logConnections();
-		payloadFail["result"] = 2;
+
 		payloadFail["cause"] = 1;
+		payloadFail["cause_detail"] = "NO ROOM";
 		sessionControl->sendData(208, payloadFail, from);
 		return;
 	}
@@ -388,8 +405,8 @@ void TelephonyManager::handleJoinConference(Json::Value data) {
 		std::cout << "handleJoinConference()/NO_TIME/from[" << from << "]/connId[" << connId << endl;
 		logConnections();
 
-		payloadFail["result"] = 2;
 		payloadFail["cause"] = 2;
+		payloadFail["cause_detail"] = "NOT STARTED";
 		sessionControl->sendData(208, payloadFail, from);
 		return;
 	}
@@ -397,8 +414,8 @@ void TelephonyManager::handleJoinConference(Json::Value data) {
 		std::cout << "handleJoinConference()/UNINVITED/from[" << from << "]/connId[" << connId << endl;
 		logConnections();
 
-		payloadFail["result"] = 2;
 		payloadFail["cause"] = 3;
+		payloadFail["cause_detail"] = "UNINVITED";
 		sessionControl->sendData(208, payloadFail, from);
 		return;
 	}
@@ -407,6 +424,7 @@ void TelephonyManager::handleJoinConference(Json::Value data) {
 
 	Json::Value payload = ServerMediaManager::getInstance()->getMediaProperty();
 	payload["result"] = 1;
+	payload["result_detail"] = "SUCCESS";
 	payload["rid"] = connId;
 	sessionControl->sendData(208, payload, from);
 
@@ -440,6 +458,7 @@ void TelephonyManager::handleExitConference(Json::Value data) {
 
 	Json::Value payload;
 	payload["result"] = 1;
+	payload["result_detail"] = "SUCCESS";
 	sessionControl->sendData(209, payload, from);
 
 	Json::Value media;

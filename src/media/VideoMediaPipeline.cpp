@@ -91,9 +91,6 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 
 	// Set the video bitrate
 	g_object_set(encodeElements, "bitrate", videoBitRate, NULL);
-
-	// Start pipeline
-	stop_state_pipeline(false);
 }
 
 SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) {

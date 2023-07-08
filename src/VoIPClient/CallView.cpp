@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CCallView, CFormView)
     ON_BN_DOUBLECLICKED(IDC_Server_EndCall, &CCallView::OnBnDoubleclickedServerEndcall)
     ON_BN_CLICKED(IDC_Server_AddClient, &CCallView::OnBnClickedServerAddclient)
     ON_BN_CLICKED(IDC_Server_RemoveClient, &CCallView::OnBnClickedServerRemoveclient)
+    ON_BN_CLICKED(IDC_SET_HANDLER, &CCallView::OnBnClickedSetHandler)
 END_MESSAGE_MAP()
 
 
@@ -114,10 +115,10 @@ void CCallView::OnBnClickedClientStartcall()
 
     Json::Value client_join_info;
     client_join_info["rid"] = "TEST_ID";
-    client_join_info["serverip"] = string(CT2CA(client_ServerIP));
-    client_join_info["myip"] = string(CT2CA(client_ClientIP));
-    client_join_info["videocodec"] = string(CT2CA(client_VideoCodec));
-    client_join_info["audiocodec"] = string(CT2CA(client_AudioCodec));
+    client_join_info["serverIp"] = string(CT2CA(client_ServerIP));
+    client_join_info["myIp"] = string(CT2CA(client_ClientIP));
+    client_join_info["videoCodec"] = string(CT2CA(client_VideoCodec));
+    client_join_info["audioCodec"] = string(CT2CA(client_AudioCodec));
     client_join_info["encryption_alg"] = "TEST_ID";
     client_join_info["encryption_key"] = "TEST_ID";
     test->setViewHandler((handleptr)mDisplayBox.GetSafeHwnd());
@@ -190,11 +191,11 @@ void CCallView::OnBnClickedServerStartcall()
 
     Json::Value room_creat_info;
     room_creat_info["rid"] = string(CT2CA(server_RIDForStart));
-    room_creat_info["serverip"] = string(CT2CA(server_ServerIP));
-    //room_creat_info["serverip"] = string(CT2CA(server_AudioCodec));
-    room_creat_info["participantsCount"] = string(CT2CA(server_MaxClients));
-    room_creat_info["videocodec"] = string(CT2CA(server_VideoCodec));
-    room_creat_info["audiocodec"] = string(CT2CA(server_AudioCodec));
+    room_creat_info["myIp"] = string(CT2CA(server_ServerIP));
+    //room_creat_info["myIp"] = string(CT2CA(server_AudioCodec));
+    room_creat_info["conferenceSize"] = string(CT2CA(server_MaxClients));
+    //room_creat_info["videocodec"] = string(CT2CA(server_VideoCodec));
+    //room_creat_info["audiocodec"] = string(CT2CA(server_AudioCodec));
 
     test->startCall(room_creat_info);
 }
@@ -245,7 +246,7 @@ void CCallView::OnBnClickedServerAddclient()
 
     Json::Value room_creat_info;
     room_creat_info["rid"] = string(CT2CA(server_RID));
-    room_creat_info["ip"] = string(CT2CA(server_ClientIPForAdd));
+    room_creat_info["clientIp"] = string(CT2CA(server_ClientIPForAdd));
     room_creat_info["cid"] = string(CT2CA(server_CID));
     test->addClient(room_creat_info);
 }
@@ -267,7 +268,16 @@ void CCallView::OnBnClickedServerRemoveclient()
     ServerMediaManager* test = ServerMediaManager::getInstance();
     Json::Value room_creat_info;
     room_creat_info["rid"] = string(CT2CA(server_RID));
-    room_creat_info["ip"] = string(CT2CA(server_ClientIPForAdd));
+    room_creat_info["clientIp"] = string(CT2CA(server_ClientIPForAdd));
     room_creat_info["cid"] = string(CT2CA(server_CID));
     test->removeClient(room_creat_info);
+}
+
+
+void CCallView::OnBnClickedSetHandler()
+{
+    // TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+    ClientMediaManager* test = ClientMediaManager::getInstance();
+    test->setViewHandler((handleptr)mDisplayBox.GetSafeHwnd());
+
 }

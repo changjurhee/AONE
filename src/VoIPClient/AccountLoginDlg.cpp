@@ -112,9 +112,10 @@ void CAccountLoginDlg::RunCommandLine()
 	std::string serverIp;
 	int serverPort;
 	CommandLineInterface* cli = CommandLineInterface::getInstance();
-	cli->getServerInfo(&serverIp, &serverPort);
+	cli->getServerInfo(serverIp, serverPort);
 
 	// SessionManager init
+	std::cout << "kks " << serverIp << ":" << serverPort << std::endl;
 	SessionManager::getInstance()->init(serverIp.c_str(), serverPort);
 
 	// Start CLI

@@ -33,6 +33,10 @@ void CallsManager::releaseInstance() {
 	}
 }
 
+Call* CallsManager::getCall() {
+	return call;
+}
+
 void CallsManager::startOutgoingCall(std::string to) {
 	if (sessionControl == nullptr) {
 		std::cerr << "Not register sessionControl" << std::endl;
@@ -75,6 +79,7 @@ void CallsManager::answerCall() {
 	Json::Value payload;
 	payload["rid"] = call->getCallId();
 	payload["result"] = 1;
+	payload["result_detail"] = "ANSWER";
 	sessionControl->sendData(302, payload);
 }
 
@@ -94,7 +99,9 @@ void CallsManager::rejectCall() {
 	Json::Value payload;
 	payload["rid"] = call->getCallId();
 	payload["result"] = 2;
-	payload["cuase"] = 1;
+	payload["result_detail"] = "REJECT";
+	payload["cause"] = 1;
+	payload["cause_detail"] = "REJECTED";
 	sessionControl->sendData(302, payload);
 }
 
@@ -227,7 +234,9 @@ void CallsManager::onIncomingCall(Json::Value data) {
 		Json::Value payload;
 		payload["rid"] = connId;
 		payload["result"] = 2;
+		payload["result_detail"] = "REJECT";
 		payload["cause"] = 2;
+		payload["cause_detail"] = "BUSY";
 		sessionControl->sendData(302, payload);
 		return;
 	}

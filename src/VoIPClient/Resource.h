@@ -163,6 +163,7 @@
 #define IDC_Server_RIDForAdd            1033
 #define IDC_Server_ClientIP             1034
 #define IDC_Server_CID                  1035
+#define IDC_SET_HANDLER                 1036
 #define IDC_DISPLAY                     1037
 #define ID_TEST_32771                   32771
 #define ID_TEST_32772                   32772

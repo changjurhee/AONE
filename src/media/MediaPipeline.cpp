@@ -306,7 +306,6 @@ void MediaPipeline::pipeline_run() {
 	g_timeout_add(100, (GSourceFunc)messageTask, (gpointer)this);
 
 	start_pipeline_ = true;
-	add_waiting_client();
 	// Pipeline execution
 	LOG_INFO("Setting pipeline to PLAYING");
     GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
@@ -470,17 +469,6 @@ void MediaPipeline::remove_client_in_back(GstBin* parent_bin, int bin_index, int
 	}
 }
 
-void MediaPipeline::add_waiting_client(void)
-{
-	while (!client_queue_.empty())
-	{
-		ContactInfo client_info = client_queue_.front();
-
-		add_client(&client_info);
-		client_queue_.pop();
-	}
-}
-
 void MediaPipeline::request_add_client(ContactInfo* client_info)
 {
 	message_mutex_.lock();
@@ -509,8 +497,6 @@ void MediaPipeline::add_client(ContactInfo* client_info)
 			add_client_in_back(bin, index, client_index);
 		}
 	}
-	// Pipeline replay(?)
-	stop_state_pipeline(false);
 	logPipelineElements(pipeline, 0);
 
 }
@@ -546,8 +532,6 @@ void MediaPipeline::remove_client(ContactInfo * client_info)
 		}
 	}
 	disable_client_index(client_info);
-	// Pipeline replay(?)
-	stop_state_pipeline(false);
 }
 
 void MediaPipeline::requestSetVideoQuality(VideoQualityInfo* vq_info)
@@ -715,7 +699,9 @@ void MediaPipeline::checkMessageQueue(void) {
 		if (queue_empty) break;
 		setVideoQuality(vq_info.video_quality_index);
 	}
+
 	unset_pipe_block_flag(BLOCK_MONITOR);
+	stop_state_pipeline(false);
 }
 
 bool MediaPipeline::messageTask(gpointer data) 

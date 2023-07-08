@@ -37,19 +37,18 @@ CommandLineInterface* CommandLineInterface::getInstance() {
 	return instance;
 }
 
-void CommandLineInterface::getServerInfo( string* ip, int* port)
+void CommandLineInterface::getServerInfo(string& ip, int& port)
 {
 	cout << "======================================================" << endl;
 	cout << "Get Server Info " << std::endl;
 	cout << "======================================================" << endl;
 	std::string serverIp, serverPort;
 	std::cout << "Input serverIP(127.0.0.1): ";
-	getline(std::cin, serverIp);
+	getline(std::cin, ip);
 	std::cout << "input serverPort(5555): ";
 	getline(std::cin, serverPort);
-	int portInt = serverPort.length() > 0 ? std::stoi(serverPort) : 0;	
-	ip = &serverIp;
-	port = &portInt;
+	int portInt = serverPort.length() > 0 ? std::stoi(serverPort) : 5555;
+	port = portInt;
 }
 
 void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager* callsManager)
@@ -65,21 +64,25 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 		cout << " 1. REGISTER CONTACT" << endl;
 		cout << " 2. LOG IN" << endl;
 		cout << " 3. LOG OUT" << endl;
-		cout << " 5. RESET PWORD" << endl;
-		cout << "50. UPDATE MY CONTACT" << endl;
-		cout << " 6. GET ALL CONTACT" << endl;
-		cout << " 7. GET MY CONTACT LIST FOR UI" << endl;
-		cout << " 8. SERCH CONTACT FOR UI" << endl;
-		cout << " 9. ADD CONTACT IN MYCONTACTLIST" << endl;
-		cout << "10. DELETE CONTACT FROM MYCONTACTLIST" << endl << endl;
-		cout << "11. ANSWER CALL " << endl;
-		cout << "12. OUTGOING CALL " << endl;
-		cout << "13. REJECT CALL " << endl;
-		cout << "14. DISCONNECT CALL " << endl << endl;
-		cout << "15. GET MY CONFERENCES " << endl;
-		cout << "16. CREATE CONFERENCE " << endl;
-		cout << "17. JOIN CONFERENCE " << endl;
-		cout << "18. EXIT_CONFERENCE " << endl << endl;
+		cout << " 5. RESET PWORD" << endl << endl;
+
+		cout << " 10. UPDATE MY CONTACT" << endl;
+		cout << " 11. GET ALL CONTACT" << endl;
+		cout << " 12. GET MY CONTACT LIST FOR UI" << endl;
+		cout << " 13. SERCH CONTACT FOR UI" << endl;
+		cout << " 14. ADD CONTACT IN MYCONTACTLIST" << endl;
+		cout << " 15. DELETE CONTACT FROM MYCONTACTLIST" << endl << endl;
+
+		cout << " 20. GET CALL_STATE" << endl;
+		cout << " 21. ANSWER CALL " << endl;
+		cout << " 22. OUTGOING CALL " << endl;
+		cout << " 23. REJECT CALL " << endl;
+		cout << " 24. DISCONNECT CALL " << endl << endl;
+
+		cout << " 30. GET MY CONFERENCES " << endl;
+		cout << " 31. CREATE CONFERENCE " << endl;
+		cout << " 32. JOIN CONFERENCE " << endl;
+		cout << " 33. EXIT_CONFERENCE " << endl << endl;
 		cout << " << MY DATA (" << getMyIpAddress() << ") >> " << endl;
 		
 		if (accountManager->myCid.empty()) {
@@ -179,7 +182,7 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 			getline(std::cin >> std::ws, pwdAnswer);
 			accountManager->resetPassword(id, newpw, std::stoi(pwdQuestion), pwdAnswer);
 			break;
-		case 50: // UPDATE MY CONTACT
+		case 10: // UPDATE MY CONTACT
 			if (!accountManager->myCid.empty()) {
 				std::cout << "email : ";
 				getline(std::cin >> std::ws, email);
@@ -188,19 +191,19 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 				accountManager->updateMyContact(accountManager->myCid, email, name);
 			}
 			break;
-		case 6: //GET ALL CONTACTLIST FROM SERVER
+		case 11: //GET ALL CONTACTLIST FROM SERVER
 			std::cout << "GET ALL CONTACT" << std::endl;
 			accountManager->getAllContact();
 			break;
 
-		case 7://GETMYCONTACTLIST FOR UI
+		case 12://GETMYCONTACTLIST FOR UI
 			std::cout << "GET MY CONTACT LIST FOR UI" << std::endl;
 			list = accountManager->getMyContactList();
 			for (auto& myContact : list) {
 				std::cout << "contact : " << myContact.cid << ", " << myContact.email << ", " << myContact.name << std::endl;
 			}
 			break;
-		case 8://SERCHCONTACT FOR UI
+		case 13://SERCHCONTACT FOR UI
 			std::cout << "SEARCH CONTACT FOR UI" << std::endl;
 			std::cout << "Keyword : ";
 			getline(std::cin >> std::ws, input);
@@ -209,23 +212,44 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 				std::cout << myContact.cid << ", " << myContact.email << ", " << myContact.name << std::endl;
 			}
 			break;
-		case 9://ADDCONTACT IN MYCONTACTLIST
+		case 14://ADDCONTACT IN MYCONTACTLIST
 			std::cout << "ADD CONTACT IN MYCONTACTLIST" << std::endl;
 			std::cout << "cid : ";
 			getline(std::cin >> std::ws, input);
 			accountManager->addContact(input);
 			break;
-		case 10://DELETECONTACT IN MYCONTACTLIST
+		case 15://DELETECONTACT IN MYCONTACTLIST
 			std::cout << "DELETE CONTACT FROM MYCONTACTLIST" << std::endl;
 			std::cout << "cid : ";
 			getline(std::cin >> std::ws, input);
 			accountManager->deleteContact(input);
 			break;
-		case 11: // ANSWER CALL
+		case 20: // GET CALL_STATE
+		{
+			Call* call = callsManager->getCall();
+			int state = call == nullptr ? 8 : call->getCallState();
+			if (state == 1) {
+				std::cout << "STATE_DIALING" << std::endl;
+			}
+			else if (state == 2) {
+				std::cout << "STATE_RINGING" << std::endl;
+			}
+			else if (state == 4) {
+				std::cout << "STATE_ACTIVE" << std::endl;
+			}
+			else if (state == 7) {
+				std::cout << "STATE_DISCONNECTED" << std::endl;
+			}
+			else if (state == 8) {
+				std::cout << "STATE_IDLE" << std::endl;
+			}
+			break;
+		}
+		case 21: // ANSWER CALL
 			std::cout << "ANSWER CALL" << std::endl;
 			callsManager->answerCall();
 			break;
-		case 12: // OUTGOING CALL
+		case 22: // OUTGOING CALL
 			{
 				std::cout << "OUTGOING CALL" << std::endl;
 				std::cout << "cid : ";
@@ -235,26 +259,31 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 				callsManager->startOutgoingCall(targetCid);
 				break;
 			}
-		case 13: // REJECT CALL
+		case 23: // REJECT CALL
 			std::cout << "REJECT CALL" << std::endl;
 			callsManager->rejectCall();
 			break;
-		case 14: // DISCONNECT CALL
+		case 24: // DISCONNECT CALL
 			std::cout << "DISCONNECT CALL" << std::endl;
 			callsManager->disconnectCall();
 			break;
-		case 15: // GET MY CONFERENCES 
+		case 30: // GET MY CONFERENCES 
 			std::cout << "GET MY CONFERENCES" << std::endl;
 			accountManager->getAllConference(accountManager->myCid);
 			break;
-		case 16: // CREATE CONFERENCE 
+		case 31: // CREATE CONFERENCE 
 			{
 				std::cout << "CREATE CONFERENCE" << std::endl;
 				string input;
 				long time, duration;
-				std::cout << "Time : ";
+				std::cout << "Time (0: NOW): ";
 				getline(std::cin >> std::ws, input);
 				time = stol(input);
+				if (time == 0) {
+					std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+					std::chrono::system_clock::duration duration = now.time_since_epoch();
+					time = std::chrono::duration_cast<std::chrono::seconds>(duration).count();
+				}
 				std::cout << "Duration : ";
 				getline(std::cin >> std::ws, input);
 				duration = stol(input);
@@ -272,16 +301,16 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 				accountManager->createConference(time, duration, participants);
 				break;
 			}
-		case 17: // JOIN CONFERENCE
+		case 32: // JOIN CONFERENCE
 			std::cout << "JOIN CONFERENCE" << std::endl;
 			std::cout << "rid : ";
 			getline(std::cin >> std::ws, inputID);
 			callsManager->joinConference(inputID);
 			break;
-		case 18: // EXIT CONFERENCE
+		case 33: // EXIT CONFERENCE
 			std::cout << "EXIT CONFERENCE" << std::endl;
 			std::cout << "rid : ";
-			getline(std::cin >> std::ws, inputID);
+			inputID = accountManager->myCid;
 			callsManager->exitConference(inputID);
 			// TODO 
 			break;

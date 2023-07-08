@@ -50,6 +50,7 @@ ContactInfo* ClientMediaManager::get_contact_info(Json::Value client_join_info)
 {
 	ContactInfo *contact_info = new ContactInfo;
 	contact_info->dest_ip = client_join_info["serverIp"].asString();
+	contact_info->cid = DEFAULT_CLIENT_CID;
 //	string my_ip = get_ip_address();
 	// TODO : json 문구 확인하기
 	string my_ip = client_join_info["myIp"].asString();
@@ -92,7 +93,7 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
 		pipeline->request_add_client(&contact_info_list[0]);
-		while(view_handler_ == 0);
+		//while(view_handler_ == 0);
 		pipeline->makePipeline(contact_info_list, *operate_info, view_handler_);
 	}
 

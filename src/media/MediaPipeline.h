@@ -116,7 +116,6 @@ protected :
 	SubElements connect_subElements(SubElements front, SubElements back);
 	string get_elements_name(element_type etype, int bin_index, int client_index);
 	SubElements get_elements_by_name(GstBin* parent_bin, element_type etype, int bin_index, int client_index);
-	void add_waiting_client(void);
 	void enable_debugging(void);
 public:
 	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb);

@@ -115,7 +115,7 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
 		client_info = get_contact_info(add_client_info, false);
-		pipeline->add_client(client_info);
+		pipeline->request_add_client(client_info);
 	}
 
 #if 0
@@ -124,7 +124,7 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
 		client_info = get_contact_info(add_client_info, false);
-		pipeline->add_client(contact_info_list, operate_info);
+		pipeline->request_add_client(contact_info_list, operate_info);
 	}
 #endif
 }
@@ -139,7 +139,7 @@ void ServerMediaManager::removeClient(Json::Value remove_client_info)
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
 		client_info = get_contact_info(remove_client_info, true);
-		pipeline->remove_client(client_info);
+		pipeline->request_remove_client(client_info);
 	}
 
 #if 0
@@ -148,7 +148,7 @@ void ServerMediaManager::removeClient(Json::Value remove_client_info)
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
 		client_info = get_contact_info(remove_client_info, true);
-		pipeline->remove_client(contact_info_list, operate_info);
+		pipeline->request_remove_client(contact_info_list, operate_info);
 	}
 #endif
 
