@@ -101,7 +101,7 @@ SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, i
 
 SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_OUTPUT_DEVICE, bin_index, client_index);
-#if 1
+#if 0
 	GstElement* element = gst_element_factory_make("autovideosink", name.c_str());
 #else
 	GstElement* element = gst_element_factory_make("d3dvideosink", name.c_str());

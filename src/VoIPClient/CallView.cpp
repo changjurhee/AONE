@@ -115,8 +115,8 @@ void CCallView::OnBnClickedClientStartcall()
     client_join_info["rid"] = "TEST_ID";
     client_join_info["serverIp"] = string(CT2CA(client_ServerIP));
     client_join_info["myIp"] = string(CT2CA(client_ClientIP));
-    client_join_info["videocodec"] = string(CT2CA(client_VideoCodec));
-    client_join_info["audiocodec"] = string(CT2CA(client_AudioCodec));
+    client_join_info["videoCodec"] = string(CT2CA(client_VideoCodec));
+    client_join_info["audioCodec"] = string(CT2CA(client_AudioCodec));
     client_join_info["encryption_alg"] = "TEST_ID";
     client_join_info["encryption_key"] = "TEST_ID";
     test->setViewHandler((handleptr)mDisplayBox.GetSafeHwnd());
@@ -189,11 +189,11 @@ void CCallView::OnBnClickedServerStartcall()
 
     Json::Value room_creat_info;
     room_creat_info["rid"] = string(CT2CA(server_RIDForStart));
-    room_creat_info["serverip"] = string(CT2CA(server_ServerIP));
+    room_creat_info["serverIp"] = string(CT2CA(server_ServerIP));
     //room_creat_info["serverip"] = string(CT2CA(server_AudioCodec));
-    room_creat_info["participantsCount"] = string(CT2CA(server_MaxClients));
-    room_creat_info["videocodec"] = string(CT2CA(server_VideoCodec));
-    room_creat_info["audiocodec"] = string(CT2CA(server_AudioCodec));
+    room_creat_info["conferenceSize"] = string(CT2CA(server_MaxClients));
+    //room_creat_info["videocodec"] = string(CT2CA(server_VideoCodec));
+    //room_creat_info["audiocodec"] = string(CT2CA(server_AudioCodec));
 
     test->startCall(room_creat_info);
 }
