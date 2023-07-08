@@ -15,8 +15,6 @@
 #include "StartDlg.h"
 #include "AccountLoginDlg.h"
 #include "ManageUserAccountDlg.h"
-#include "SessionRegisterDlg.h"
-#include "ContactRegisterDlg.h"
 
 #include "ClientMediaManager.h"
 

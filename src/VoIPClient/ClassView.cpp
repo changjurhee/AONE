@@ -273,8 +273,8 @@ void CClassView::OnClassProperties()
 
 void CClassView::OnNewFolder()
 {
-	/*CSessionRegisterDlg dlg;
-	dlg.DoModal();*/
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	pFrame->AddContactList();
 }
 
 void CClassView::OnPaint()

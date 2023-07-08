@@ -13,6 +13,8 @@
 
 #include "AccountLoginDlg.h"
 #include "ManageUserAccountDlg.h"
+#include "SessionRegisterDlg.h"
+#include "ContactRegisterDlg.h"
 
 // Session
 #include "session/SessionManager.h"
@@ -637,6 +639,19 @@ void CMainFrame::UserLogIn()
 	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
 	SetWindowText(FormatString(_T("MOOZ %s"), pDoc->GetUser()->email.c_str()).data());
 }
+
+void CMainFrame::AddSessionList()
+{
+	CSessionRegisterDlg dlg;
+	dlg.DoModal();
+}
+
+void CMainFrame::AddContactList()
+{
+	CContactRegisterDlg dlg;
+	dlg.DoModal();
+}
+
 
 BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext)
 {

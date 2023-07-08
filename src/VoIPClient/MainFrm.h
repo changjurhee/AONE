@@ -32,6 +32,8 @@ public:
 // 작업입니다.
 public:
 	void UserLogIn();
+	void AddSessionList();
+	void AddContactList();
 
 // 재정의입니다.
 public:

@@ -270,8 +270,8 @@ void CFileView::OnEditClear()
 
 void CFileView::OnNewFolder()
 {
-	/*CContactRegisterDlg dlg;
-	dlg.DoModal();*/
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	pFrame->AddSessionList();
 }
 
 void CFileView::OnPaint()
