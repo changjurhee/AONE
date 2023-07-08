@@ -276,9 +276,14 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 				std::cout << "CREATE CONFERENCE" << std::endl;
 				string input;
 				long time, duration;
-				std::cout << "Time : ";
+				std::cout << "Time (0: NOW): ";
 				getline(std::cin >> std::ws, input);
 				time = stol(input);
+				if (time == 0) {
+					std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+					std::chrono::system_clock::duration duration = now.time_since_epoch();
+					time = std::chrono::duration_cast<std::chrono::seconds>(duration).count();
+				}
 				std::cout << "Duration : ";
 				getline(std::cin >> std::ws, input);
 				duration = stol(input);
@@ -305,7 +310,7 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 		case 33: // EXIT CONFERENCE
 			std::cout << "EXIT CONFERENCE" << std::endl;
 			std::cout << "rid : ";
-			getline(std::cin >> std::ws, inputID);
+			inputID = accountManager->myCid;
 			callsManager->exitConference(inputID);
 			// TODO 
 			break;
