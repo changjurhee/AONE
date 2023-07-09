@@ -19,6 +19,7 @@ SubElements AudioMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bi
 {
 	std::string name = get_elements_name(TYPE_RESCALE, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("audioresample", name.c_str());
+	gst_bin_add(GST_BIN(parent_bin), element);
 
 	return SubElements(element, element);
 };
@@ -92,7 +93,7 @@ SubElements AudioMediaPipeline::pipeline_make_udp_sink(GstBin* parent_bin, int b
 };
 
 SubElements AudioMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bin_index, int client_index) {
-	SubElements udpsrc_pair = MediaPipeline::pipeline_make_udp_src_with_port(parent_bin, bin_index, client_index, contact_info_list_[client_index].org_video_port);
+	SubElements udpsrc_pair = MediaPipeline::pipeline_make_udp_src_with_port(parent_bin, bin_index, client_index, contact_info_list_[client_index].org_audio_port);
 
 	std::string name = get_elements_name(TYPE_UDP_CAPS, bin_index, client_index);
 	GstElement* audioCapsfilter = gst_element_factory_make("capsfilter", name.c_str());

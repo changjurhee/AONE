@@ -97,12 +97,13 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 		pipeline->makePipeline(contact_info_list, *operate_info, view_handler_);
 	}
 
-#if 0
+#if 1
 	// TODO : audio 미동작
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
-		pipeline->makePipeline(contact_info_list, operate_info);
+		pipeline->request_add_client(&contact_info_list[0]);
+		pipeline->makePipeline(contact_info_list, *operate_info, NULL);
 	}
 #endif 
 }
