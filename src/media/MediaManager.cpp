@@ -8,7 +8,7 @@ namespace media {
 VideoPresetType MediaManager::ShouldChangeVideoQuality(const VideoPresetType& current_preset,
 	const PipelineMonitorable::RtpStats& stats) {
 	// TODO: Check if changing is needed
-	LOG_OBJ_DEBUG() << "currrnet_bitrate " << current_preset.bitrate << std::endl;
+	LOG_OBJ_LOG() << "currrnet_bitrate " << current_preset.bitrate << std::endl;
 	return current_preset;
 }
 
@@ -112,7 +112,7 @@ void MediaManager::end_call_with_rid(string rid)
 }
 
 void MediaManager::OnRtpStats(const VideoPresetType& current_preset, const PipelineMonitorable::RtpStats& stats) {
-	LOG_DEBUG("IN");
+	LOG_LOG("IN");
 
 	VideoPresetType next_preset = ShouldChangeVideoQuality(current_preset, stats);
 	if (next_preset.level != current_preset.level) {
