@@ -300,7 +300,8 @@ void CClassView::OnChangeVisualStyle()
 {
 	m_ClassViewImages.DeleteImageList();
 
-	UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_CLASS_VIEW_24 : IDB_CLASS_VIEW;
+	UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_PAGES_SMALL_HC : IDB_PAGES_SMALL;
+	//UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_NAVIGATION_LARGE_HC : IDB_NAVIGATION_LARGE;
 
 	CBitmap bmp;
 	if (!bmp.LoadBitmap(uiBmpId))

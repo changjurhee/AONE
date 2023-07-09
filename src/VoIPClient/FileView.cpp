@@ -166,23 +166,23 @@ void CFileView::OnSize(UINT nType, int cx, int cy)
 
 void CFileView::FillFileView()
 {
-	HTREEITEM hRoot = m_wndFileView.InsertItem(_T("Contact List"), 0, 0);
+	HTREEITEM hRoot = m_wndFileView.InsertItem(_T("Contact List"), 2, 2);
 	m_wndFileView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
 
 	HTREEITEM hSrc = m_wndFileView.InsertItem(_T("홍길동"), 1, 1, hRoot);
 
-	m_wndFileView.InsertItem(_T("길동.홍@구글.본사"), 3, 3, hSrc);
+	m_wndFileView.InsertItem(_T("길동.홍@구글.본사"), 0, 0, hSrc);
 	m_wndFileView.InsertItem(_T("홍_001"), 3, 3, hSrc);
 
 	HTREEITEM hInc = m_wndFileView.InsertItem(_T("황진이"), 1, 1, hRoot);
 
 	m_wndFileView.InsertItem(_T("진이.황@나주.관아"), 3, 3, hInc);
-	m_wndFileView.InsertItem(_T("황_002"), 3, 3, hInc);
+	m_wndFileView.InsertItem(_T("황_002"), 0, 0, hInc);
 
 	HTREEITEM hRes = m_wndFileView.InsertItem(_T("스티브잡스"), 1, 1, hRoot);
 
 	m_wndFileView.InsertItem(_T("잡스.스티브@애플.회사"), 3, 3, hRes);
-	m_wndFileView.InsertItem(_T("스티브_003"), 3, 3, hRes);
+	m_wndFileView.InsertItem(_T("스티브_003"), 0, 0, hRes);
 
 	m_wndFileView.Expand(hRoot, TVE_EXPAND);
 	m_wndFileView.Expand(hSrc, TVE_EXPAND);
@@ -324,7 +324,8 @@ void CFileView::OnChangeVisualStyle()
 
 	m_FileViewImages.DeleteImageList();
 
-	UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_CLASS_VIEW_24 : IDB_CLASS_VIEW;
+	UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_PAGES_SMALL_HC : IDB_PAGES_SMALL;
+	//UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_NAVIGATION_LARGE_HC : IDB_NAVIGATION_LARGE;
 
 	CBitmap bmp;
 	if (!bmp.LoadBitmap(uiBmpId))
