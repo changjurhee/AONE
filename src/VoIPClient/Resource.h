@@ -160,8 +160,18 @@
 #define IDC_BMP_MOOZ                    1013
 #define IDC_MFCBTN_START                1015
 #define IDC_COMBO1                      1016
-#define IDC_EDIT2                       1018
 #define IDC_CB_PASSWORD_QUESTION        1019
+#define IDC_ED_SEARCH_NAME              1020
+#define IDC_MFCBTN_SEARCH               1021
+#define IDC_LIST3                       1022
+#define IDC_LIST4                       1023
+#define IDC_DP_DATE                     1024
+#define IDC_MFCBTN_RIGHT                1025
+#define IDC_MFCBTN_LEFT                 1026
+#define IDC_LIST2                       1026
+#define IDC_LT_CONTACT_NAMES            1026
+#define IDC_DP_TIME_START               1027
+#define IDC_DP_TIME_END                 1028
 #define ID_TEST_32771                   32771
 #define ID_TEST_32772                   32772
 #define ID_TEST_LOG_IN                  32773
@@ -176,9 +186,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        363
+#define _APS_NEXT_RESOURCE_VALUE        365
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_CONTROL_VALUE         1027
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

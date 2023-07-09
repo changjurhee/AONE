@@ -274,7 +274,7 @@ void CSessionView::OnClassProperties()
 void CSessionView::OnNewFolder()
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	pFrame->AddContactList();
+	pFrame->AddSessionList();
 }
 
 void CSessionView::OnPaint()

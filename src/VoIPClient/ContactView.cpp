@@ -271,7 +271,7 @@ void CContactView::OnEditClear()
 void CContactView::OnNewFolder()
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	pFrame->AddSessionList();
+	pFrame->AddContactList();
 }
 
 void CContactView::OnPaint()
@@ -295,37 +295,9 @@ void CContactView::OnSetFocus(CWnd* pOldWnd)
 
 void CContactView::OnChangeVisualStyle()
 {
-	//m_wndToolBar.CleanUpLockedImages();
-	//m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_EXPLORER_24 : IDR_EXPLORER, 0, 0, TRUE /* 잠금 */);
-
-	//m_ContactViewImages.DeleteImageList();
-
-	//UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_FILE_VIEW_24 : IDB_FILE_VIEW;
-
-	//CBitmap bmp;
-	//if (!bmp.LoadBitmap(uiBmpId))
-	//{
-	//	TRACE(_T("비트맵을 로드할 수 없습니다. %x\n"), uiBmpId);
-	//	ASSERT(FALSE);
-	//	return;
-	//}
-
-	//BITMAP bmpObj;
-	//bmp.GetBitmap(&bmpObj);
-
-	//UINT nFlags = ILC_MASK;
-
-	//nFlags |= (theApp.m_bHiColorIcons) ? ILC_COLOR24 : ILC_COLOR4;
-
-	//m_ContactViewImages.Create(16, bmpObj.bmHeight, nFlags, 0, 0);
-	//m_ContactViewImages.Add(&bmp, RGB(255, 0, 255));
-
-	//m_wndContactView.SetImageList(&m_ContactViewImages, TVSIL_NORMAL);
-
 	m_ContactViewImages.DeleteImageList();
 
 	UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_PAGES_SMALL_HC : IDB_PAGES_SMALL;
-	//UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_NAVIGATION_LARGE_HC : IDB_NAVIGATION_LARGE;
 
 	CBitmap bmp;
 	if (!bmp.LoadBitmap(uiBmpId))
@@ -350,5 +322,3 @@ void CContactView::OnChangeVisualStyle()
 	m_wndToolBar.CleanUpLockedImages();
 	m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_SORT_24 : IDR_SORT, 0, 0, TRUE /* 잠금 */);
 }
-
-
