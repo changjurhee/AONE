@@ -16,6 +16,7 @@
 
 #include "common/logger.h"
 
+std::ofstream Logger::null_stream = std::ofstream("/dev/null");
 std::shared_ptr<Logger> Logger::loggerInstance = std::shared_ptr<Logger>(new Logger());
 
 
@@ -67,42 +68,49 @@ std::shared_ptr<Logger> Logger::GetInstance() {
 * @param message: Log Message
 * @param messageLevel: Log Level, LogLevel::LL_DEBUG by default
 */
-void Logger::Log(std::string codeFile, std::string func, int codeLine, std::string message, LogLevel messageLevel, bool newline) {
+bool Logger::Log(std::string codeFile, std::string func, int codeLine, std::string message, LogLevel messageLevel, bool newline) {
 	std::lock_guard<std::mutex> lock(mtx_);
-	if (messageLevel <= logLevel) {
-		std::string logType;
-		//Set Log Level Name
-		switch (messageLevel) {
-		case LogLevel::LL_DEBUG:
-			logType = "DEBUG:\t";
-			break;
-		case LogLevel::LL_INFO:
-			logType = "INFO:\t";
-			break;
-		case LogLevel::LL_WARN:
-			logType = "WARN:\t";
-			break;
-		case LogLevel::LL_ERROR:
-			logType = "ERROR:\t";
-			break;
-		default:
-			logType = "NONE:\t";
-			break;
-		}
+	if (messageLevel > logLevel)
+		return false;
 
-		std::size_t found = codeFile.find_last_of("\\");
-		codeFile = codeFile.substr(found + 1);
-		codeFile += "(" + std::to_string(codeLine) + "):" + func + "() ";
-		message = logType + codeFile + message;
-
-		LogMessage(message, newline);
+	std::string logType;
+	//Set Log Level Name
+	switch (messageLevel) {
+	case LogLevel::LL_LOG:
+		logType = "LOG:\t";
+		break;
+	case LogLevel::LL_DEBUG:
+		logType = "DEBUG:\t";
+		break;
+	case LogLevel::LL_INFO:
+		logType = "INFO:\t";
+		break;
+	case LogLevel::LL_WARN:
+		logType = "WARN:\t";
+		break;
+	case LogLevel::LL_ERROR:
+		logType = "ERROR:\t";
+		break;
+	default:
+		logType = "NONE:\t";
+		break;
 	}
+
+	std::size_t found = codeFile.find_last_of("\\");
+	codeFile = codeFile.substr(found + 1);
+	codeFile += "(" + std::to_string(codeLine) + "):" + func + "() ";
+	message = logType + codeFile + message;
+
+	LogMessage(message, newline);
+
+	return true;
 }
 
 std::ostream& Logger::LogObj(std::string codeFile, std::string func, int codeLine, std::string message, LogLevel messageLevel = LogLevel::LL_DEBUG) {
-	Log(codeFile, func, codeLine, message, messageLevel, false);
-
-	return std::cout;
+	if (Log(codeFile, func, codeLine, message, messageLevel, false))
+		return std::cout;
+	else
+		return null_stream;
 }
 
 /**
@@ -112,6 +120,9 @@ std::ostream& Logger::LogObj(std::string codeFile, std::string func, int codeLin
 */
 LogLevel Logger::GetLogLevel(const std::string& logLevel) {
 	std::lock_guard<std::mutex> lock(mtx_);
+	if (logLevel == "LOG") {
+		return LogLevel::LL_LOG;
+	}
 	if (logLevel == "DEBUG") {
 		return LogLevel::LL_DEBUG;
 	}
