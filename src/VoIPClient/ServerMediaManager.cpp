@@ -34,7 +34,7 @@ void ServerMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
 
 void ServerMediaManager::updateClientVideoQuality(Json::Value info)
 {
-	// TODO : VideoQuality 변경 로직 적용 
+	// TODO : VideoQuality 변경 로직 적용
 	//string rid, string cid, int level
 };
 
@@ -77,7 +77,7 @@ void ServerMediaManager::startCall(Json::Value room_creat_info)
 		if (pipeline == NULL) continue;
 		pipeline->makePipeline(contact_info_list, operate_info);
 	}
-#endif 
+#endif
 }
 
 //
@@ -94,7 +94,7 @@ ContactInfo* ServerMediaManager::get_contact_info(Json::Value add_client_info, b
 	contact_info->cid = add_client_info["cid"].asString();
 
 	if (is_remove) return contact_info;
-	contact_info->dest_ip = add_client_info["clientIp"].asString();
+	contact_info->dest_ip = split(add_client_info["clientIp"].asString(), ':')[0];
 	string my_ip = server_ip;
 	contact_info->dest_video_port = get_port_number(my_ip, "video");
 	contact_info->dest_audio_port = get_port_number(my_ip, "audio");

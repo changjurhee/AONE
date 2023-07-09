@@ -34,7 +34,7 @@ void ServerMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
 
 void ServerMediaManager::updateClientVideoQuality(Json::Value info)
 {
-	// TODO : VideoQuality 변경 로직 적용 
+	// TODO : VideoQuality 변경 로직 적용
 	//string rid, string cid, int level
 };
 
@@ -61,7 +61,7 @@ void ServerMediaManager::startCall(Json::Value room_creat_info)
 
 	Pipelines pipelines;
 	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_pipe_mode_list_, this));
-	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_pipe_mode_list_, this));
+	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_pipe_mode_list_, nullptr));
 
 	pipelineMap_.insert(make_pair(rid, pipelines));
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
@@ -77,7 +77,7 @@ void ServerMediaManager::startCall(Json::Value room_creat_info)
 		if (pipeline == NULL) continue;
 		pipeline->makePipeline(contact_info_list, operate_info);
 	}
-#endif 
+#endif
 }
 
 //
@@ -131,7 +131,7 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 
 void ServerMediaManager::removeClient(Json::Value remove_client_info)
 {
-  	//TODO : connect pipleline
+	//TODO : connect pipleline
 	string rid = remove_client_info["rid"].asString();
 	ContactInfo* client_info;
 

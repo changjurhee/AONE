@@ -34,7 +34,7 @@ SubElements MediaPipeline::connect_subElements(SubElements front, SubElements ba
 
 string MediaPipeline::get_elements_name(element_type etype, int bin_index, int client_index) {
 	string name;
-	switch (etype) 
+	switch (etype)
 	{
 		case TYPE_INPUT_DEVICE :
 			name = "input_device_" + std::to_string(bin_index) + "_" + std::to_string(client_index);;
@@ -159,8 +159,8 @@ SubElements MediaPipeline::pipeline_make_udp_sink_with_port(GstBin* parent_bin, 
 	g_printerr(("host " + host + " port : " + std::to_string(port)+"\n").c_str());
 	g_object_set(element, "host", host.c_str(), "port", port, "sync", FALSE, "processing-deadline", 0, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
-	
-	return SubElements(element, element); 
+
+	return SubElements(element, element);
 };
 
 SubElements MediaPipeline::pipeline_make_udp_src_with_port(GstBin* parent_bin, int bin_index, int client_index, int port) {
@@ -169,7 +169,7 @@ SubElements MediaPipeline::pipeline_make_udp_src_with_port(GstBin* parent_bin, i
 	g_object_set(element, "port", port, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
 
-	return SubElements(element, element); 
+	return SubElements(element, element);
 };
 
 SubElements MediaPipeline::make_front_device(GstBin* parent_bin, int bin_index, int client_index) {
@@ -287,14 +287,14 @@ void MediaPipeline::enable_debugging(void)
 	//}
 }
 
-void MediaPipeline::pipeline_run() {	
+void MediaPipeline::pipeline_run() {
 	g_printerr("pipeline : Start!!!.\n");
 	pipeline = gst_pipeline_new("pipeline");
 	for (int index = 0; index < pipe_mode_list_.size(); index++) {
 		std::string name = "bin_"+std::to_string(index);
 		GstElement *bin = gst_bin_new(name.c_str());
 		make_bin(GST_BIN(bin), index, pipe_mode_list_[index].first, pipe_mode_list_[index].second);
-		gst_bin_add(GST_BIN(pipeline), bin);	
+		gst_bin_add(GST_BIN(pipeline), bin);
 	}
 
 	LOG_INFO("Setting handler on bus");
@@ -399,7 +399,7 @@ void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int c
 
 	SubElements adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, BASE_CLIENT_ID);
 	ret_sub_elements = connect_subElements(ret_sub_elements, adder);
-	
+
 	update_adder_parameter(parent_bin, bin_index, client_index);
 	return;
 }
@@ -707,7 +707,7 @@ void MediaPipeline::checkMessageQueue(void) {
 	stop_state_pipeline(false);
 }
 
-bool MediaPipeline::messageTask(gpointer data) 
+bool MediaPipeline::messageTask(gpointer data)
 {
 	static_cast<MediaPipeline*>(data)->checkMessageQueue();
 

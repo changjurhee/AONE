@@ -43,7 +43,7 @@ void ClientMediaManager::setVideoQuality(int video_quality_index)
 	for (auto pipeline : pipelines) {
 		if (pipeline == NULL) continue;
 		pipeline->requestSetVideoQuality(&vq_info);
-	}	
+	}
 };
 
 ContactInfo* ClientMediaManager::get_contact_info(Json::Value client_join_info)
@@ -75,7 +75,7 @@ OperatingInfo* ClientMediaManager::get_operate_info(Json::Value client_join_info
 void ClientMediaManager::startCall(Json::Value client_join_info)
 {
 	string rid = DEFAULT_CLIENT_RID;
-	vector<ContactInfo> contact_info_list; 
+	vector<ContactInfo> contact_info_list;
 	ContactInfo* contact_info = get_contact_info(client_join_info);
 	OperatingInfo* operate_info = get_operate_info(client_join_info);
 
@@ -105,7 +105,7 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 		pipeline->request_add_client(&contact_info_list[0]);
 		pipeline->makePipeline(contact_info_list, *operate_info, NULL);
 	}
-#endif 
+#endif
 }
 
 void ClientMediaManager::setViewHandler(handleptr view_handler)

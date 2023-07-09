@@ -108,7 +108,7 @@ SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, i
 		NULL);
 	g_object_set(caps_element, "caps", caps, NULL);
 	gst_caps_unref(caps);
-	
+
 	gst_bin_add(GST_BIN(parent_bin), input_element);
 	gst_bin_add(GST_BIN(parent_bin), caps_element);
 	gst_element_link(input_element, caps_element);
@@ -167,7 +167,7 @@ SubElements VideoMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int b
 	std::string encoding_name = get_elements_name(TYPE_ENCODING, bin_index, client_index);
     GstElement* encoding_element = gst_element_factory_make("x264enc", encoding_name.c_str());
 	// TODO : 파라메터 추가검토
-	  g_object_set(encoding_element, 
+	  g_object_set(encoding_element,
 		"tune", H_264_TUNE_ZEROLATENCY,
 		"key-int-max", 30,
 		"bitrate", kVideoPresets.at(VideoPresetLevel::kVideoPreset5).bitrate

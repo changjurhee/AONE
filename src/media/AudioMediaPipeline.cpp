@@ -42,7 +42,7 @@ SubElements AudioMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, 
 
 SubElements AudioMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_CONVERT, bin_index, client_index);
-	GstElement* element = gst_element_factory_make("audioconvert", name.c_str());	
+	GstElement* element = gst_element_factory_make("audioconvert", name.c_str());
 	gst_bin_add(GST_BIN(parent_bin), element);
 	return SubElements(element, element);
 };

@@ -1,5 +1,5 @@
 #include "MediaManager.h"
-//#include <winsock2.h> 
+//#include <winsock2.h>
 
 #include "common/logger.h"
 
@@ -91,7 +91,7 @@ vector<AudioMediaPipeline*> MediaManager::getAudioPipeLine(string rid) {
 	if (pipelineMap_.find(rid) == pipelineMap_.end()) {
 		debug_log("유효하지 않는 call입니다.");
 		return null_vector;
-	}	
+	}
 	return pipelineMap_[rid].audio_pipelines;
 }
 
