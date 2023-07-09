@@ -13,12 +13,6 @@
     <ClCompile Include="CallView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ClassView.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="FileView.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="MainFrm.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -76,6 +70,8 @@
     <ClCompile Include="StartDlg.cpp" />
     <ClCompile Include="ContactRegisterDlg.cpp" />
     <ClCompile Include="SessionRegisterDlg.cpp" />
+    <ClCompile Include="ContactView.cpp" />
+    <ClCompile Include="SessionView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h">
@@ -88,12 +84,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CallView.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ClassView.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FileView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
@@ -192,6 +182,8 @@
     <ClInclude Include="StartDlg.h" />
     <ClInclude Include="ContactRegisterDlg.h" />
     <ClInclude Include="SessionRegisterDlg.h" />
+    <ClInclude Include="ContactView.h" />
+    <ClInclude Include="SessionView.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\class_view.ico">

@@ -3,7 +3,7 @@
 #include "framework.h"
 #include "mainfrm.h"
 
-#include "FileView.h"
+#include "ContactView.h"
 #include "Resource.h"
 #include "VoIPClient.h"
 
@@ -13,14 +13,14 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-class CFileViewMenuButton : public CMFCToolBarMenuButton
+class CContactViewMenuButton : public CMFCToolBarMenuButton
 {
-	friend class CFileView;
+	friend class CContactView;
 
-	DECLARE_SERIAL(CFileViewMenuButton)
+	DECLARE_SERIAL(CContactViewMenuButton)
 
 public:
-	CFileViewMenuButton(HMENU hMenu = nullptr) noexcept : CMFCToolBarMenuButton((UINT)-1, hMenu, -1)
+	CContactViewMenuButton(HMENU hMenu = nullptr) noexcept : CMFCToolBarMenuButton((UINT)-1, hMenu, -1)
 	{
 	}
 
@@ -38,21 +38,21 @@ public:
 	}
 };
 
-IMPLEMENT_SERIAL(CFileViewMenuButton, CMFCToolBarMenuButton, 1)
+IMPLEMENT_SERIAL(CContactViewMenuButton, CMFCToolBarMenuButton, 1)
 
 /////////////////////////////////////////////////////////////////////////////
-// CFileView
+// CContactView
 
-CFileView::CFileView() noexcept
+CContactView::CContactView() noexcept
 {
 	m_nCurrSort = ID_SORTING_GROUPBYTYPE;
 }
 
-CFileView::~CFileView()
+CContactView::~CContactView()
 {
 }
 
-BEGIN_MESSAGE_MAP(CFileView, CDockablePane)
+BEGIN_MESSAGE_MAP(CContactView, CDockablePane)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_WM_CONTEXTMENU()
@@ -73,7 +73,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CWorkspaceBar 메시지 처리기
 
-int CFileView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int CContactView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CDockablePane::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -84,15 +84,15 @@ int CFileView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// 뷰를 만듭니다.
 	const DWORD dwViewStyle = WS_OVERLAPPED | WS_VISIBLE | TVS_HASLINES | TVS_LINESATROOT | TVS_HASBUTTONS;
 
-	if (!m_wndFileView.Create(dwViewStyle, rectDummy, this, 4))
+	if (!m_wndContactView.Create(dwViewStyle, rectDummy, this, 4))
 	{
 		TRACE0("파일 뷰를 만들지 못했습니다.\n");
 		return -1;      // 만들지 못했습니다.
 	}
 
 	// 뷰 이미지를 로드합니다.
-	m_FileViewImages.Create(IDB_FILE_VIEW, 16, 0, RGB(255, 0, 255));
-	m_wndFileView.SetImageList(&m_FileViewImages, TVSIL_NORMAL);
+	m_ContactViewImages.Create(IDB_FILE_VIEW, 16, 0, RGB(255, 0, 255));
+	m_wndContactView.SetImageList(&m_ContactViewImages, TVSIL_NORMAL);
 
 	m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_SORT);
 	m_wndToolBar.LoadToolBar(IDR_SORT, 0, 0, TRUE /* 잠금 */);
@@ -110,9 +110,9 @@ int CFileView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CMenu menuSort;
 	menuSort.LoadMenu(IDR_POPUP_SORT);
 
-	m_wndToolBar.ReplaceButton(ID_SORT_MENU, CFileViewMenuButton(menuSort.GetSubMenu(0)->GetSafeHmenu()));
+	m_wndToolBar.ReplaceButton(ID_SORT_MENU, CContactViewMenuButton(menuSort.GetSubMenu(0)->GetSafeHmenu()));
 
-	CFileViewMenuButton* pButton = DYNAMIC_DOWNCAST(CFileViewMenuButton, m_wndToolBar.GetButton(0));
+	CContactViewMenuButton* pButton = DYNAMIC_DOWNCAST(CContactViewMenuButton, m_wndToolBar.GetButton(0));
 
 	if (pButton != nullptr)
 	{
@@ -123,18 +123,18 @@ int CFileView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	// 정적 트리 뷰 데이터를 더미 코드로 채웁니다.
-	FillFileView();
+	FillContactView();
 	AdjustLayout();
 
 	return 0;
 }
 
-BOOL CFileView::PreTranslateMessage(MSG* pMsg)
+BOOL CContactView::PreTranslateMessage(MSG* pMsg)
 {
 	return CDockablePane::PreTranslateMessage(pMsg);
 }
 
-void CFileView::OnSort(UINT id)
+void CContactView::OnSort(UINT id)
 {
 	if (m_nCurrSort == id)
 	{
@@ -143,7 +143,7 @@ void CFileView::OnSort(UINT id)
 
 	m_nCurrSort = id;
 
-	CFileViewMenuButton* pButton = DYNAMIC_DOWNCAST(CFileViewMenuButton, m_wndToolBar.GetButton(0));
+	CContactViewMenuButton* pButton = DYNAMIC_DOWNCAST(CContactViewMenuButton, m_wndToolBar.GetButton(0));
 
 	if (pButton != nullptr)
 	{
@@ -153,45 +153,45 @@ void CFileView::OnSort(UINT id)
 	}
 }
 
-void CFileView::OnUpdateSort(CCmdUI* pCmdUI)
+void CContactView::OnUpdateSort(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(pCmdUI->m_nID == m_nCurrSort);
 }
 
-void CFileView::OnSize(UINT nType, int cx, int cy)
+void CContactView::OnSize(UINT nType, int cx, int cy)
 {
 	CDockablePane::OnSize(nType, cx, cy);
 	AdjustLayout();
 }
 
-void CFileView::FillFileView()
+void CContactView::FillContactView()
 {
-	HTREEITEM hRoot = m_wndFileView.InsertItem(_T("Contact List"), 2, 2);
-	m_wndFileView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
+	HTREEITEM hRoot = m_wndContactView.InsertItem(_T("Contact List"), 2, 2);
+	m_wndContactView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
 
-	HTREEITEM hSrc = m_wndFileView.InsertItem(_T("홍길동"), 1, 1, hRoot);
+	HTREEITEM hSrc = m_wndContactView.InsertItem(_T("홍길동"), 1, 1, hRoot);
 
-	m_wndFileView.InsertItem(_T("길동.홍@구글.본사"), 0, 0, hSrc);
-	m_wndFileView.InsertItem(_T("홍_001"), 3, 3, hSrc);
+	m_wndContactView.InsertItem(_T("길동.홍@구글.본사"), 0, 0, hSrc);
+	m_wndContactView.InsertItem(_T("홍_001"), 3, 3, hSrc);
 
-	HTREEITEM hInc = m_wndFileView.InsertItem(_T("황진이"), 1, 1, hRoot);
+	HTREEITEM hInc = m_wndContactView.InsertItem(_T("황진이"), 1, 1, hRoot);
 
-	m_wndFileView.InsertItem(_T("진이.황@나주.관아"), 3, 3, hInc);
-	m_wndFileView.InsertItem(_T("황_002"), 0, 0, hInc);
+	m_wndContactView.InsertItem(_T("진이.황@나주.관아"), 3, 3, hInc);
+	m_wndContactView.InsertItem(_T("황_002"), 0, 0, hInc);
 
-	HTREEITEM hRes = m_wndFileView.InsertItem(_T("스티브잡스"), 1, 1, hRoot);
+	HTREEITEM hRes = m_wndContactView.InsertItem(_T("스티브잡스"), 1, 1, hRoot);
 
-	m_wndFileView.InsertItem(_T("잡스.스티브@애플.회사"), 3, 3, hRes);
-	m_wndFileView.InsertItem(_T("스티브_003"), 0, 0, hRes);
+	m_wndContactView.InsertItem(_T("잡스.스티브@애플.회사"), 3, 3, hRes);
+	m_wndContactView.InsertItem(_T("스티브_003"), 0, 0, hRes);
 
-	m_wndFileView.Expand(hRoot, TVE_EXPAND);
-	m_wndFileView.Expand(hSrc, TVE_EXPAND);
-	m_wndFileView.Expand(hInc, TVE_EXPAND);
+	m_wndContactView.Expand(hRoot, TVE_EXPAND);
+	m_wndContactView.Expand(hSrc, TVE_EXPAND);
+	m_wndContactView.Expand(hInc, TVE_EXPAND);
 }
 
-void CFileView::OnContextMenu(CWnd* pWnd, CPoint point)
+void CContactView::OnContextMenu(CWnd* pWnd, CPoint point)
 {
-	CTreeCtrl* pWndTree = (CTreeCtrl*) &m_wndFileView;
+	CTreeCtrl* pWndTree = (CTreeCtrl*) &m_wndContactView;
 	ASSERT_VALID(pWndTree);
 
 	if (pWnd != pWndTree)
@@ -218,7 +218,7 @@ void CFileView::OnContextMenu(CWnd* pWnd, CPoint point)
 	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EXPLORER, point.x, point.y, this, TRUE);
 }
 
-void CFileView::AdjustLayout()
+void CContactView::AdjustLayout()
 {
 	if (GetSafeHwnd() == nullptr)
 	{
@@ -231,74 +231,74 @@ void CFileView::AdjustLayout()
 	int cyTlb = m_wndToolBar.CalcFixedLayout(FALSE, TRUE).cy;
 
 	m_wndToolBar.SetWindowPos(nullptr, rectClient.left, rectClient.top, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
-	m_wndFileView.SetWindowPos(nullptr, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
+	m_wndContactView.SetWindowPos(nullptr, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
-void CFileView::OnProperties()
+void CContactView::OnProperties()
 {
 }
 
-void CFileView::OnFileOpen()
-{
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-}
-
-void CFileView::OnFileOpenWith()
+void CContactView::OnFileOpen()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }
 
-void CFileView::OnDummyCompile()
+void CContactView::OnFileOpenWith()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }
 
-void CFileView::OnEditCut()
+void CContactView::OnDummyCompile()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }
 
-void CFileView::OnEditCopy()
+void CContactView::OnEditCut()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }
 
-void CFileView::OnEditClear()
+void CContactView::OnEditCopy()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }
 
-void CFileView::OnNewFolder()
+void CContactView::OnEditClear()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+}
+
+void CContactView::OnNewFolder()
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	pFrame->AddSessionList();
 }
 
-void CFileView::OnPaint()
+void CContactView::OnPaint()
 {
 	CPaintDC dc(this); // 그리기를 위한 디바이스 컨텍스트입니다.
 
 	CRect rectTree;
-	m_wndFileView.GetWindowRect(rectTree);
+	m_wndContactView.GetWindowRect(rectTree);
 	ScreenToClient(rectTree);
 
 	rectTree.InflateRect(1, 1);
 	dc.Draw3dRect(rectTree, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
 }
 
-void CFileView::OnSetFocus(CWnd* pOldWnd)
+void CContactView::OnSetFocus(CWnd* pOldWnd)
 {
 	CDockablePane::OnSetFocus(pOldWnd);
 
-	m_wndFileView.SetFocus();
+	m_wndContactView.SetFocus();
 }
 
-void CFileView::OnChangeVisualStyle()
+void CContactView::OnChangeVisualStyle()
 {
 	//m_wndToolBar.CleanUpLockedImages();
 	//m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_EXPLORER_24 : IDR_EXPLORER, 0, 0, TRUE /* 잠금 */);
 
-	//m_FileViewImages.DeleteImageList();
+	//m_ContactViewImages.DeleteImageList();
 
 	//UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_FILE_VIEW_24 : IDB_FILE_VIEW;
 
@@ -317,12 +317,12 @@ void CFileView::OnChangeVisualStyle()
 
 	//nFlags |= (theApp.m_bHiColorIcons) ? ILC_COLOR24 : ILC_COLOR4;
 
-	//m_FileViewImages.Create(16, bmpObj.bmHeight, nFlags, 0, 0);
-	//m_FileViewImages.Add(&bmp, RGB(255, 0, 255));
+	//m_ContactViewImages.Create(16, bmpObj.bmHeight, nFlags, 0, 0);
+	//m_ContactViewImages.Add(&bmp, RGB(255, 0, 255));
 
-	//m_wndFileView.SetImageList(&m_FileViewImages, TVSIL_NORMAL);
+	//m_wndContactView.SetImageList(&m_ContactViewImages, TVSIL_NORMAL);
 
-	m_FileViewImages.DeleteImageList();
+	m_ContactViewImages.DeleteImageList();
 
 	UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_PAGES_SMALL_HC : IDB_PAGES_SMALL;
 	//UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_NAVIGATION_LARGE_HC : IDB_NAVIGATION_LARGE;
@@ -342,10 +342,10 @@ void CFileView::OnChangeVisualStyle()
 
 	nFlags |= (theApp.m_bHiColorIcons) ? ILC_COLOR24 : ILC_COLOR4;
 
-	m_FileViewImages.Create(16, bmpObj.bmHeight, nFlags, 0, 0);
-	m_FileViewImages.Add(&bmp, RGB(255, 0, 0));
+	m_ContactViewImages.Create(16, bmpObj.bmHeight, nFlags, 0, 0);
+	m_ContactViewImages.Add(&bmp, RGB(255, 0, 0));
 
-	m_wndFileView.SetImageList(&m_FileViewImages, TVSIL_NORMAL);
+	m_wndContactView.SetImageList(&m_ContactViewImages, TVSIL_NORMAL);
 
 	m_wndToolBar.CleanUpLockedImages();
 	m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_SORT_24 : IDR_SORT, 0, 0, TRUE /* 잠금 */);

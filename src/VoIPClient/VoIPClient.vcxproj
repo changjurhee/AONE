@@ -216,10 +216,9 @@
     <ClInclude Include="calendarbar.h" />
     <ClInclude Include="CallListView.h" />
     <ClInclude Include="CallView.h" />
-    <ClInclude Include="ClassView.h" />
     <ClInclude Include="ClientMediaManager.h" />
     <ClInclude Include="ContactRegisterDlg.h" />
-    <ClInclude Include="FileView.h" />
+    <ClInclude Include="ContactView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IClientMediaManager.h" />
     <ClInclude Include="MainFrm.h" />
@@ -229,6 +228,7 @@
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SessionRegisterDlg.h" />
+    <ClInclude Include="SessionView.h" />
     <ClInclude Include="session\AccountManager.h" />
     <ClInclude Include="session\Call.h" />
     <ClInclude Include="session\CallsManager.h" />
@@ -257,10 +257,9 @@
     <ClCompile Include="calendarbar.cpp" />
     <ClCompile Include="CallListView.cpp" />
     <ClCompile Include="CallView.cpp" />
-    <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="ClientMediaManager.cpp" />
     <ClCompile Include="ContactRegisterDlg.cpp" />
-    <ClCompile Include="FileView.cpp" />
+    <ClCompile Include="ContactView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="ManageUserAccountDlg.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
@@ -272,6 +271,7 @@
     </ClCompile>
     <ClCompile Include="PropertiesWnd.cpp" />
     <ClCompile Include="SessionRegisterDlg.cpp" />
+    <ClCompile Include="SessionView.cpp" />
     <ClCompile Include="session\AccountManager.cpp" />
     <ClCompile Include="session\Call.cpp" />
     <ClCompile Include="session\CallsManager.cpp" />

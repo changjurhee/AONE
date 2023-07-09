@@ -13,22 +13,22 @@ class CClassToolBar : public CMFCToolBar
 	virtual BOOL AllowShowOnList() const { return FALSE; }
 };
 
-class CClassView : public CDockablePane
+class CSessionView : public CDockablePane
 {
 public:
-	CClassView() noexcept;
-	virtual ~CClassView();
+	CSessionView() noexcept;
+	virtual ~CSessionView();
 
 	void AdjustLayout();
 	void OnChangeVisualStyle();
 
 protected:
 	CClassToolBar m_wndToolBar;
-	CViewTree m_wndClassView;
-	CImageList m_ClassViewImages;
+	CViewTree m_wndSessionView;
+	CImageList m_SessionViewImages;
 	UINT m_nCurrSort;
 
-	void FillClassView();
+	void FillSessionView();
 
 // 재정의입니다.
 public:

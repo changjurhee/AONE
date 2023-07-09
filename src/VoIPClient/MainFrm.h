@@ -3,8 +3,8 @@
 //
 
 #pragma once
-#include "FileView.h"
-#include "ClassView.h"
+#include "ContactView.h"
+#include "SessionView.h"
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
 #include "CalendarBar.h"
@@ -54,8 +54,8 @@ protected:  // 컨트롤 모음이 포함된 멤버입니다.
 	CMFCToolBar       m_wndToolBar;
 	CMFCStatusBar     m_wndStatusBar;
 	CMFCToolBarImages m_UserImages;
-	CFileView         m_wndFileView;
-	CClassView        m_wndClassView;
+	CContactView         m_wndContactView;
+	CSessionView        m_wndSessionView;
 	COutputWnd        m_wndOutput;
 	CPropertiesWnd    m_wndProperties;
 	COutlookBar       m_wndNavigationBar;

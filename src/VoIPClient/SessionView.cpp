@@ -3,18 +3,18 @@
 #include "framework.h"
 #include "MainFrm.h"
 
-#include "ClassView.h"
+#include "SessionView.h"
 #include "Resource.h"
 #include "VoIPClient.h"
 
-class CClassViewMenuButton : public CMFCToolBarMenuButton
+class CSessionViewMenuButton : public CMFCToolBarMenuButton
 {
-	friend class CClassView;
+	friend class CSessionView;
 
-	DECLARE_SERIAL(CClassViewMenuButton)
+	DECLARE_SERIAL(CSessionViewMenuButton)
 
 public:
-	CClassViewMenuButton(HMENU hMenu = nullptr) noexcept : CMFCToolBarMenuButton((UINT)-1, hMenu, -1)
+	CSessionViewMenuButton(HMENU hMenu = nullptr) noexcept : CMFCToolBarMenuButton((UINT)-1, hMenu, -1)
 	{
 	}
 
@@ -32,22 +32,22 @@ public:
 	}
 };
 
-IMPLEMENT_SERIAL(CClassViewMenuButton, CMFCToolBarMenuButton, 1)
+IMPLEMENT_SERIAL(CSessionViewMenuButton, CMFCToolBarMenuButton, 1)
 
 //////////////////////////////////////////////////////////////////////
 // 생성/소멸
 //////////////////////////////////////////////////////////////////////
 
-CClassView::CClassView() noexcept
+CSessionView::CSessionView() noexcept
 {
 	m_nCurrSort = ID_SORTING_GROUPBYTYPE;
 }
 
-CClassView::~CClassView()
+CSessionView::~CSessionView()
 {
 }
 
-BEGIN_MESSAGE_MAP(CClassView, CDockablePane)
+BEGIN_MESSAGE_MAP(CSessionView, CDockablePane)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_WM_CONTEXTMENU()
@@ -63,9 +63,9 @@ BEGIN_MESSAGE_MAP(CClassView, CDockablePane)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CClassView 메시지 처리기
+// CSessionView 메시지 처리기
 
-int CClassView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int CSessionView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CDockablePane::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -76,7 +76,7 @@ int CClassView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// 뷰를 만듭니다.
 	const DWORD dwViewStyle = WS_OVERLAPPED | WS_VISIBLE | TVS_HASLINES | TVS_LINESATROOT | TVS_HASBUTTONS | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
-	if (!m_wndClassView.Create(dwViewStyle, rectDummy, this, 2))
+	if (!m_wndSessionView.Create(dwViewStyle, rectDummy, this, 2))
 	{
 		TRACE0("클래스 뷰를 만들지 못했습니다.\n");
 		return -1;      // 만들지 못했습니다.
@@ -99,9 +99,9 @@ int CClassView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CMenu menuSort;
 	menuSort.LoadMenu(IDR_POPUP_SORT);
 
-	m_wndToolBar.ReplaceButton(ID_SORT_MENU, CClassViewMenuButton(menuSort.GetSubMenu(0)->GetSafeHmenu()));
+	m_wndToolBar.ReplaceButton(ID_SORT_MENU, CSessionViewMenuButton(menuSort.GetSubMenu(0)->GetSafeHmenu()));
 
-	CClassViewMenuButton* pButton =  DYNAMIC_DOWNCAST(CClassViewMenuButton, m_wndToolBar.GetButton(0));
+	CSessionViewMenuButton* pButton =  DYNAMIC_DOWNCAST(CSessionViewMenuButton, m_wndToolBar.GetButton(0));
 
 	if (pButton != nullptr)
 	{
@@ -112,58 +112,58 @@ int CClassView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	// 정적 트리 뷰 데이터를 더미 코드로 채웁니다.
-	FillClassView();
+	FillSessionView();
 
 	return 0;
 }
 
-void CClassView::OnSize(UINT nType, int cx, int cy)
+void CSessionView::OnSize(UINT nType, int cx, int cy)
 {
 	CDockablePane::OnSize(nType, cx, cy);
 	AdjustLayout();
 }
 
-void CClassView::FillClassView()
+void CSessionView::FillSessionView()
 {
-	HTREEITEM hRoot = m_wndClassView.InsertItem(_T("FakeApp 클래스"), 0, 0);
-	m_wndClassView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
+	HTREEITEM hRoot = m_wndSessionView.InsertItem(_T("FakeApp 클래스"), 0, 0);
+	m_wndSessionView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
 
-	HTREEITEM hClass = m_wndClassView.InsertItem(_T("CFakeAboutDlg"), 1, 1, hRoot);
-	m_wndClassView.InsertItem(_T("CFakeAboutDlg()"), 3, 3, hClass);
+	HTREEITEM hClass = m_wndSessionView.InsertItem(_T("CFakeAboutDlg"), 1, 1, hRoot);
+	m_wndSessionView.InsertItem(_T("CFakeAboutDlg()"), 3, 3, hClass);
 
-	m_wndClassView.Expand(hRoot, TVE_EXPAND);
+	m_wndSessionView.Expand(hRoot, TVE_EXPAND);
 
-	hClass = m_wndClassView.InsertItem(_T("CFakeApp"), 1, 1, hRoot);
-	m_wndClassView.InsertItem(_T("CFakeApp()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("InitInstance()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("OnAppAbout()"), 3, 3, hClass);
+	hClass = m_wndSessionView.InsertItem(_T("CFakeApp"), 1, 1, hRoot);
+	m_wndSessionView.InsertItem(_T("CFakeApp()"), 3, 3, hClass);
+	m_wndSessionView.InsertItem(_T("InitInstance()"), 3, 3, hClass);
+	m_wndSessionView.InsertItem(_T("OnAppAbout()"), 3, 3, hClass);
 
-	hClass = m_wndClassView.InsertItem(_T("CFakeAppDoc"), 1, 1, hRoot);
-	m_wndClassView.InsertItem(_T("CFakeAppDoc()"), 4, 4, hClass);
-	m_wndClassView.InsertItem(_T("~CFakeAppDoc()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("OnNewDocument()"), 3, 3, hClass);
+	hClass = m_wndSessionView.InsertItem(_T("CFakeAppDoc"), 1, 1, hRoot);
+	m_wndSessionView.InsertItem(_T("CFakeAppDoc()"), 4, 4, hClass);
+	m_wndSessionView.InsertItem(_T("~CFakeAppDoc()"), 3, 3, hClass);
+	m_wndSessionView.InsertItem(_T("OnNewDocument()"), 3, 3, hClass);
 
-	hClass = m_wndClassView.InsertItem(_T("CFakeAppView"), 1, 1, hRoot);
-	m_wndClassView.InsertItem(_T("CFakeAppView()"), 4, 4, hClass);
-	m_wndClassView.InsertItem(_T("~CFakeAppView()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("GetDocument()"), 3, 3, hClass);
-	m_wndClassView.Expand(hClass, TVE_EXPAND);
+	hClass = m_wndSessionView.InsertItem(_T("CFakeAppView"), 1, 1, hRoot);
+	m_wndSessionView.InsertItem(_T("CFakeAppView()"), 4, 4, hClass);
+	m_wndSessionView.InsertItem(_T("~CFakeAppView()"), 3, 3, hClass);
+	m_wndSessionView.InsertItem(_T("GetDocument()"), 3, 3, hClass);
+	m_wndSessionView.Expand(hClass, TVE_EXPAND);
 
-	hClass = m_wndClassView.InsertItem(_T("CFakeAppFrame"), 1, 1, hRoot);
-	m_wndClassView.InsertItem(_T("CFakeAppFrame()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("~CFakeAppFrame()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("m_wndMenuBar"), 6, 6, hClass);
-	m_wndClassView.InsertItem(_T("m_wndToolBar"), 6, 6, hClass);
-	m_wndClassView.InsertItem(_T("m_wndStatusBar"), 6, 6, hClass);
+	hClass = m_wndSessionView.InsertItem(_T("CFakeAppFrame"), 1, 1, hRoot);
+	m_wndSessionView.InsertItem(_T("CFakeAppFrame()"), 3, 3, hClass);
+	m_wndSessionView.InsertItem(_T("~CFakeAppFrame()"), 3, 3, hClass);
+	m_wndSessionView.InsertItem(_T("m_wndMenuBar"), 6, 6, hClass);
+	m_wndSessionView.InsertItem(_T("m_wndToolBar"), 6, 6, hClass);
+	m_wndSessionView.InsertItem(_T("m_wndStatusBar"), 6, 6, hClass);
 
-	hClass = m_wndClassView.InsertItem(_T("Globals"), 2, 2, hRoot);
-	m_wndClassView.InsertItem(_T("theFakeApp"), 5, 5, hClass);
-	m_wndClassView.Expand(hClass, TVE_EXPAND);
+	hClass = m_wndSessionView.InsertItem(_T("Globals"), 2, 2, hRoot);
+	m_wndSessionView.InsertItem(_T("theFakeApp"), 5, 5, hClass);
+	m_wndSessionView.Expand(hClass, TVE_EXPAND);
 }
 
-void CClassView::OnContextMenu(CWnd* pWnd, CPoint point)
+void CSessionView::OnContextMenu(CWnd* pWnd, CPoint point)
 {
-	CTreeCtrl* pWndTree = (CTreeCtrl*)&m_wndClassView;
+	CTreeCtrl* pWndTree = (CTreeCtrl*)&m_wndSessionView;
 	ASSERT_VALID(pWndTree);
 
 	if (pWnd != pWndTree)
@@ -206,7 +206,7 @@ void CClassView::OnContextMenu(CWnd* pWnd, CPoint point)
 	}*/
 }
 
-void CClassView::AdjustLayout()
+void CSessionView::AdjustLayout()
 {
 	if (GetSafeHwnd() == nullptr)
 	{
@@ -219,15 +219,15 @@ void CClassView::AdjustLayout()
 	int cyTlb = m_wndToolBar.CalcFixedLayout(FALSE, TRUE).cy;
 
 	m_wndToolBar.SetWindowPos(nullptr, rectClient.left, rectClient.top, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
-	m_wndClassView.SetWindowPos(nullptr, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
+	m_wndSessionView.SetWindowPos(nullptr, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
-BOOL CClassView::PreTranslateMessage(MSG* pMsg)
+BOOL CSessionView::PreTranslateMessage(MSG* pMsg)
 {
 	return CDockablePane::PreTranslateMessage(pMsg);
 }
 
-void CClassView::OnSort(UINT id)
+void CSessionView::OnSort(UINT id)
 {
 	if (m_nCurrSort == id)
 	{
@@ -236,7 +236,7 @@ void CClassView::OnSort(UINT id)
 
 	m_nCurrSort = id;
 
-	CClassViewMenuButton* pButton =  DYNAMIC_DOWNCAST(CClassViewMenuButton, m_wndToolBar.GetButton(0));
+	CSessionViewMenuButton* pButton =  DYNAMIC_DOWNCAST(CSessionViewMenuButton, m_wndToolBar.GetButton(0));
 
 	if (pButton != nullptr)
 	{
@@ -246,59 +246,59 @@ void CClassView::OnSort(UINT id)
 	}
 }
 
-void CClassView::OnUpdateSort(CCmdUI* pCmdUI)
+void CSessionView::OnUpdateSort(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(pCmdUI->m_nID == m_nCurrSort);
 }
 
-void CClassView::OnClassAddMemberFunction()
+void CSessionView::OnClassAddMemberFunction()
 {
 
 }
 
-void CClassView::OnClassAddMemberVariable()
-{
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-}
-
-void CClassView::OnClassDefinition()
+void CSessionView::OnClassAddMemberVariable()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }
 
-void CClassView::OnClassProperties()
+void CSessionView::OnClassDefinition()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }
 
-void CClassView::OnNewFolder()
+void CSessionView::OnClassProperties()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+}
+
+void CSessionView::OnNewFolder()
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	pFrame->AddContactList();
 }
 
-void CClassView::OnPaint()
+void CSessionView::OnPaint()
 {
 	CPaintDC dc(this); // 그리기를 위한 디바이스 컨텍스트입니다.
 
 	CRect rectTree;
-	m_wndClassView.GetWindowRect(rectTree);
+	m_wndSessionView.GetWindowRect(rectTree);
 	ScreenToClient(rectTree);
 
 	rectTree.InflateRect(1, 1);
 	dc.Draw3dRect(rectTree, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
 }
 
-void CClassView::OnSetFocus(CWnd* pOldWnd)
+void CSessionView::OnSetFocus(CWnd* pOldWnd)
 {
 	CDockablePane::OnSetFocus(pOldWnd);
 
-	m_wndClassView.SetFocus();
+	m_wndSessionView.SetFocus();
 }
 
-void CClassView::OnChangeVisualStyle()
+void CSessionView::OnChangeVisualStyle()
 {
-	m_ClassViewImages.DeleteImageList();
+	m_SessionViewImages.DeleteImageList();
 
 	UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_PAGES_SMALL_HC : IDB_PAGES_SMALL;
 	//UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_NAVIGATION_LARGE_HC : IDB_NAVIGATION_LARGE;
@@ -318,10 +318,10 @@ void CClassView::OnChangeVisualStyle()
 
 	nFlags |= (theApp.m_bHiColorIcons) ? ILC_COLOR24 : ILC_COLOR4;
 
-	m_ClassViewImages.Create(16, bmpObj.bmHeight, nFlags, 0, 0);
-	m_ClassViewImages.Add(&bmp, RGB(255, 0, 0));
+	m_SessionViewImages.Create(16, bmpObj.bmHeight, nFlags, 0, 0);
+	m_SessionViewImages.Add(&bmp, RGB(255, 0, 0));
 
-	m_wndClassView.SetImageList(&m_ClassViewImages, TVSIL_NORMAL);
+	m_wndSessionView.SetImageList(&m_SessionViewImages, TVSIL_NORMAL);
 
 	m_wndToolBar.CleanUpLockedImages();
 	m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_SORT_24 : IDR_SORT, 0, 0, TRUE /* 잠금 */);

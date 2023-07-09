@@ -3,7 +3,7 @@
 
 #include "ViewTree.h"
 
-class CFileViewToolBar : public CMFCToolBar
+class CContactViewToolBar : public CMFCToolBar
 {
 	virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
 	{
@@ -13,11 +13,11 @@ class CFileViewToolBar : public CMFCToolBar
 	virtual BOOL AllowShowOnList() const { return FALSE; }
 };
 
-class CFileView : public CDockablePane
+class CContactView : public CDockablePane
 {
 // 생성입니다.
 public:
-	CFileView() noexcept;
+	CContactView() noexcept;
 
 	void AdjustLayout();
 	void OnChangeVisualStyle();
@@ -25,17 +25,17 @@ public:
 // 특성입니다.
 protected:
 
-	CViewTree m_wndFileView;
-	CImageList m_FileViewImages;
-	CFileViewToolBar m_wndToolBar;
+	CViewTree m_wndContactView;
+	CImageList m_ContactViewImages;
+	CContactViewToolBar m_wndToolBar;
 	UINT m_nCurrSort;
 
 protected:
-	void FillFileView();
+	void FillContactView();
 
 // 구현입니다.
 public:
-	virtual ~CFileView();
+	virtual ~CContactView();
 
 	// 재정의입니다.
 public:
