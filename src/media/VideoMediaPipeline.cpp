@@ -32,29 +32,29 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 		return;
 		break;
 	case 1:
-		videoWidth = 320;
-		videoHeight = 240;
-		videoBitRate = 60;
+		videoWidth = kVideoPresets.at(VideoPresetLevel::kVideoPreset1).width;
+		videoHeight = kVideoPresets.at(VideoPresetLevel::kVideoPreset1).height;
+		videoBitRate = kVideoPresets.at(VideoPresetLevel::kVideoPreset1).bitrate;
 		break;
 	case 2:
-		videoWidth = 320;
-		videoHeight = 240;
-		videoBitRate = 120;
+		videoWidth = kVideoPresets.at(VideoPresetLevel::kVideoPreset2).width;
+		videoHeight = kVideoPresets.at(VideoPresetLevel::kVideoPreset2).height;
+		videoBitRate = kVideoPresets.at(VideoPresetLevel::kVideoPreset2).bitrate;
 		break;
 	case 3:
-		videoWidth = 480;
-		videoHeight = 360;
-		videoBitRate = 200;
+		videoWidth = kVideoPresets.at(VideoPresetLevel::kVideoPreset3).width;
+		videoHeight = kVideoPresets.at(VideoPresetLevel::kVideoPreset3).height;
+		videoBitRate = kVideoPresets.at(VideoPresetLevel::kVideoPreset3).bitrate;
 		break;
 	case 4:
-		videoWidth = 640;
-		videoHeight = 480;
-		videoBitRate = 500;
+		videoWidth = kVideoPresets.at(VideoPresetLevel::kVideoPreset4).width;
+		videoHeight = kVideoPresets.at(VideoPresetLevel::kVideoPreset4).height;
+		videoBitRate = kVideoPresets.at(VideoPresetLevel::kVideoPreset4).bitrate;
 		break;
 	case 5:
-		videoWidth = 640;
-		videoHeight = 480;
-		videoBitRate = 1000;
+		videoWidth = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width;
+		videoHeight = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height;
+		videoBitRate = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).bitrate;
 		break;
 	}
 
@@ -102,8 +102,8 @@ SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, i
 	GstElement* caps_element = gst_element_factory_make("capsfilter", caps_name.c_str());
 
 	GstCaps* caps = gst_caps_new_simple("video/x-raw",
-		"width", G_TYPE_INT, 640,
-		"height", G_TYPE_INT, 480,
+		"width", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width,
+		"height", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height,
 		"framerate", GST_TYPE_FRACTION, 30, 1,
 		NULL);
 	g_object_set(caps_element, "caps", caps, NULL);
@@ -151,8 +151,8 @@ SubElements VideoMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bi
     // Set the video resolution using capsfilter
 	// TODO : level에 따른 해상도 적용
     GstCaps* caps = gst_caps_new_simple("video/x-raw",
-        "width", G_TYPE_INT, 680,
-        "height", G_TYPE_INT, 480,
+        "width", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width,
+        "height", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height,
         "framerate", GST_TYPE_FRACTION, 30, 1,
         NULL);
     g_object_set(caps_element, "caps", caps, NULL);
@@ -170,7 +170,7 @@ SubElements VideoMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int b
 	  g_object_set(encoding_element,
 		"tune", H_264_TUNE_ZEROLATENCY,
 		"key-int-max", 30,
-		"bitrate", 1024
+		"bitrate", kVideoPresets.at(VideoPresetLevel::kVideoPreset5).bitrate
 		, NULL);
 
 	std::string rtp_name = get_elements_name(TYPE_ENCODING_RTP, bin_index, client_index);
@@ -239,8 +239,8 @@ SubElements VideoMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 
 void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)
 {
-	int base_width = 640;
-	int base_hight = 480;
+	int base_width = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height;
+	int base_hight = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width;
 
 	// get pad
 	GstElement* queue = get_elements_by_name(parent_bin, TYPE_QUEUE, bin_index, client_index).second;

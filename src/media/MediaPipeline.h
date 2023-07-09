@@ -2,6 +2,7 @@
 #include "call_info.h"
 #include "../common/debug.h"
 #include "pipeline_monitorable.h"
+#include "media_types.h"
 
 #include<vector>
 #include<thread>
