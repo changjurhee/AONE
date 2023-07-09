@@ -154,7 +154,7 @@ SubElements MediaPipeline::pipeline_make_udp_sink_with_port(GstBin* parent_bin, 
 	std::string host = contact_info_list_[client_index].dest_ip;
 
 	g_printerr(("host " + host + " port : " + std::to_string(port)+"\n").c_str());
-	g_object_set(element, "host", host.c_str(), "port", port, NULL);
+	g_object_set(element, "host", host.c_str(), "port", port, "sync", FALSE, "processing-deadline", 0, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
 	
 	return SubElements(element, element); 

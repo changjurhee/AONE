@@ -8,7 +8,8 @@ AudioMediaPipeline::AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_
 SubElements AudioMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index)
 {
 	std::string name = get_elements_name(TYPE_INPUT_DEVICE, bin_index, client_index);
-	GstElement* element = gst_element_factory_make("autoaudiosrc", name.c_str());
+	GstElement* element = gst_element_factory_make("wasapi2src", name.c_str());
+	g_object_set(element, "low-latency", TRUE, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
 
 	return SubElements(element, element);
@@ -32,7 +33,8 @@ void AudioMediaPipeline::setVideoQuality(int video_quality_index)
 SubElements AudioMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index)
 {
 	std::string name = get_elements_name(TYPE_OUTPUT_DEVICE, bin_index, client_index);
-	GstElement* element =  gst_element_factory_make("autoaudiosink", name.c_str());
+	GstElement* element =  gst_element_factory_make("wasapi2sink", name.c_str());
+	g_object_set(element, "low-latency", TRUE, "sync", TRUE, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
 
 	return SubElements(element, element);
@@ -48,7 +50,7 @@ SubElements AudioMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bi
 	SubElements AudioMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string encoding_name = get_elements_name(TYPE_ENCODING, bin_index, client_index);
     GstElement* encoding_element = gst_element_factory_make("opusenc", encoding_name.c_str());
-    g_object_set(encoding_element, "audio-type", 2051, NULL);
+    g_object_set(encoding_element, "audio-type", 2051, "frame-size", 10, NULL);
 
 	std::string rtp_name = get_elements_name(TYPE_ENCODING_RTP, bin_index, client_index);
     GstElement* rtp_element = gst_element_factory_make("rtpopuspay", rtp_name.c_str());
@@ -64,6 +66,8 @@ SubElements AudioMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bi
 
 	std::string decoding_name = get_elements_name(TYPE_DECODING, bin_index, client_index);
     GstElement* decoding_element = gst_element_factory_make("opusdec", decoding_name.c_str());
+	g_object_set(decoding_element, "plc", TRUE, "min-latency", 5000000, NULL);
+
 	gst_bin_add(GST_BIN(parent_bin), rtp_element);
 	gst_bin_add(GST_BIN(parent_bin), decoding_element);
 	gst_element_link(rtp_element, decoding_element);
@@ -83,7 +87,7 @@ SubElements AudioMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bi
 	std::string name = get_elements_name(TYPE_JITTER, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("rtpjitterbuffer", name.c_str());
 
-    g_object_set(element, "latency", 500, "do-lost", TRUE, NULL);
+    g_object_set(element, "latency", 80, "do-lost", TRUE, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
 	return make_pair(element, element);
 };
