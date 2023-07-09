@@ -72,6 +72,7 @@
     <ClCompile Include="SessionRegisterDlg.cpp" />
     <ClCompile Include="ContactView.cpp" />
     <ClCompile Include="SessionView.cpp" />
+    <ClCompile Include="ResetPasswordDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h">
@@ -184,6 +185,7 @@
     <ClInclude Include="SessionRegisterDlg.h" />
     <ClInclude Include="ContactView.h" />
     <ClInclude Include="SessionView.h" />
+    <ClInclude Include="ResetPasswordDlg.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\class_view.ico">

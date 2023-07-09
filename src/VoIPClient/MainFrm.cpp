@@ -13,6 +13,7 @@
 
 #include "AccountLoginDlg.h"
 #include "ManageUserAccountDlg.h"
+#include "ResetPasswordDlg.h"
 #include "SessionRegisterDlg.h"
 #include "ContactRegisterDlg.h"
 
@@ -629,6 +630,10 @@ void CMainFrame::UserLogIn()
 	if (IDCANCEL != nRet) {
 		if ((KResponse)nRet == KResponse::LOGIN) {
 			//m_spUserInfo = accountLoginDlg.GetUserInfo();
+		}
+		else if ((KResponse)nRet == KResponse::RESET_PASSWORD) {
+			CResetPasswordDlg resetPasswordDlg;
+			resetPasswordDlg.DoModal();
 		}
 		else {
 			CManageUserAccountDlg manageUserAccountDlg;

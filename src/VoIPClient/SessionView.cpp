@@ -163,31 +163,31 @@ void CSessionView::FillSessionView()
 
 void CSessionView::OnContextMenu(CWnd* pWnd, CPoint point)
 {
-	CTreeCtrl* pWndTree = (CTreeCtrl*)&m_wndSessionView;
-	ASSERT_VALID(pWndTree);
+	//CTreeCtrl* pWndTree = (CTreeCtrl*)&m_wndSessionView;
+	//ASSERT_VALID(pWndTree);
 
-	if (pWnd != pWndTree)
-	{
-		CDockablePane::OnContextMenu(pWnd, point);
-		return;
-	}
+	//if (pWnd != pWndTree)
+	//{
+	//	CDockablePane::OnContextMenu(pWnd, point);
+	//	return;
+	//}
 
-	if (point != CPoint(-1, -1))
-	{
-		// 클릭한 항목을 선택합니다.
-		CPoint ptTree = point;
-		pWndTree->ScreenToClient(&ptTree);
+	//if (point != CPoint(-1, -1))
+	//{
+	//	// 클릭한 항목을 선택합니다.
+	//	CPoint ptTree = point;
+	//	pWndTree->ScreenToClient(&ptTree);
 
-		UINT flags = 0;
-		HTREEITEM hTreeItem = pWndTree->HitTest(ptTree, &flags);
-		if (hTreeItem != nullptr)
-		{
-			pWndTree->SelectItem(hTreeItem);
-		}
-	}
+	//	UINT flags = 0;
+	//	HTREEITEM hTreeItem = pWndTree->HitTest(ptTree, &flags);
+	//	if (hTreeItem != nullptr)
+	//	{
+	//		pWndTree->SelectItem(hTreeItem);
+	//	}
+	//}
 
-	pWndTree->SetFocus();
-	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EXPLORER, point.x, point.y, this, TRUE);
+	//pWndTree->SetFocus();
+	//theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EXPLORER, point.x, point.y, this, TRUE);
 
 	/*CMenu menu;
 	menu.LoadMenu(IDR_POPUP_SORT);

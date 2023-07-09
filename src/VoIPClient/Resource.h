@@ -141,6 +141,7 @@
 #define IDD_DLG_SESSION_REGISTER        357
 #define IDD_DIALOG2                     358
 #define IDD_DLG_CONTACT_REGISTER        358
+#define IDD_RESET_PASSWORD              361
 #define ID_VIEW_CALLVIEW                400
 #define IDC_ED_EMAIL_ID                 1000
 #define IDC_ED_PASSWORD                 1001
@@ -152,10 +153,15 @@
 #define IDC_MFCBTN_UPDATE               1009
 #define IDC_LIST1                       1010
 #define IDC_LST_CONTACT_ID              1010
+#define IDC_ED_LAST_NAME                1010
 #define IDC_ST_LOGO                     1011
+#define IDC_ED_PASSWORD_ANSWER          1011
 #define IDC_MFCBTN_RESET_PW             1012
 #define IDC_BMP_MOOZ                    1013
 #define IDC_MFCBTN_START                1015
+#define IDC_COMBO1                      1016
+#define IDC_EDIT2                       1018
+#define IDC_CB_PASSWORD_QUESTION        1019
 #define ID_TEST_32771                   32771
 #define ID_TEST_32772                   32772
 #define ID_TEST_LOG_IN                  32773
@@ -170,9 +176,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        361
+#define _APS_NEXT_RESOURCE_VALUE        363
 #define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1016
+#define _APS_NEXT_CONTROL_VALUE         1020
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

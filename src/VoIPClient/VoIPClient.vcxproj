@@ -226,6 +226,7 @@
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PropertiesWnd.h" />
+    <ClInclude Include="ResetPasswordDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SessionRegisterDlg.h" />
     <ClInclude Include="SessionView.h" />
@@ -270,6 +271,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PropertiesWnd.cpp" />
+    <ClCompile Include="ResetPasswordDlg.cpp" />
     <ClCompile Include="SessionRegisterDlg.cpp" />
     <ClCompile Include="SessionView.cpp" />
     <ClCompile Include="session\AccountManager.cpp" />
