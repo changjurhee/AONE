@@ -70,12 +70,12 @@ void ServerMediaManager::startCall(Json::Value room_creat_info)
 		pipeline->makePipeline(contact_info_list, *operate_info, NULL);
 	}
 #endif
-#if 0
+#if 1
 	// TODO : audio 미동작
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
-		pipeline->makePipeline(contact_info_list, operate_info);
+		pipeline->makePipeline(contact_info_list, *operate_info, NULL);
 	}
 #endif
 }
@@ -118,13 +118,13 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 		pipeline->request_add_client(client_info);
 	}
 
-#if 0
+#if 1
 	// TODO : audio 미동작
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
 		client_info = get_contact_info(add_client_info, false);
-		pipeline->request_add_client(contact_info_list, operate_info);
+		pipeline->request_add_client(client_info);
 	}
 #endif
 }
