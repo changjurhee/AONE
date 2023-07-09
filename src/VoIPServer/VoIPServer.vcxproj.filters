@@ -126,6 +126,9 @@
     <ClInclude Include="..\media\VideoMediaPipeline.h">
       <Filter>media</Filter>
     </ClInclude>
+    <ClInclude Include="..\media\media_types.h">
+      <Filter>media</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VoIPServer.cpp">
@@ -201,6 +204,9 @@
       <Filter>media</Filter>
     </ClCompile>
     <ClCompile Include="..\media\VideoMediaPipeline.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\media_types.cpp">
       <Filter>media</Filter>
     </ClCompile>
   </ItemGroup>
