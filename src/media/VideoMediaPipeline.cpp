@@ -32,29 +32,29 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 		return;
 		break;
 	case 1:
-		videoWidth = 320;
-		videoHeight = 240;
-		videoBitRate = 60;
+		videoWidth = kVideoPresets.at(VideoPresetLevel::kVideoPreset1).width;
+		videoHeight = kVideoPresets.at(VideoPresetLevel::kVideoPreset1).height;
+		videoBitRate = kVideoPresets.at(VideoPresetLevel::kVideoPreset1).bitrate;
 		break;
 	case 2:
-		videoWidth = 320;
-		videoHeight = 240;
-		videoBitRate = 120;
+		videoWidth = kVideoPresets.at(VideoPresetLevel::kVideoPreset2).width;
+		videoHeight = kVideoPresets.at(VideoPresetLevel::kVideoPreset2).height;
+		videoBitRate = kVideoPresets.at(VideoPresetLevel::kVideoPreset2).bitrate;
 		break;
 	case 3:
-		videoWidth = 480;
-		videoHeight = 360;
-		videoBitRate = 200;
+		videoWidth = kVideoPresets.at(VideoPresetLevel::kVideoPreset3).width;
+		videoHeight = kVideoPresets.at(VideoPresetLevel::kVideoPreset3).height;
+		videoBitRate = kVideoPresets.at(VideoPresetLevel::kVideoPreset3).bitrate;
 		break;
 	case 4:
-		videoWidth = 640;
-		videoHeight = 480;
-		videoBitRate = 500;
+		videoWidth = kVideoPresets.at(VideoPresetLevel::kVideoPreset4).width;
+		videoHeight = kVideoPresets.at(VideoPresetLevel::kVideoPreset4).height;
+		videoBitRate = kVideoPresets.at(VideoPresetLevel::kVideoPreset4).bitrate;
 		break;
 	case 5:
-		videoWidth = 640;
-		videoHeight = 480;
-		videoBitRate = 1000;
+		videoWidth = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width;
+		videoHeight = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height;
+		videoBitRate = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).bitrate;
 		break;
 	}
 
@@ -95,11 +95,24 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 
 SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_INPUT_DEVICE, bin_index, client_index);
-	GstElement* element = gst_element_factory_make("mfvideosrc", name.c_str());
-	g_object_set(element, "device-index", 0, NULL);
-	gst_bin_add(GST_BIN(parent_bin), element);
+	GstElement* input_element = gst_element_factory_make("ksvideosrc", name.c_str());
+	g_object_set(input_element, "device-index", 0, NULL);
 
-	return SubElements(element, element);
+	std::string caps_name = get_elements_name(TYPE_INPUT_CAPS, bin_index, client_index);
+	GstElement* caps_element = gst_element_factory_make("capsfilter", caps_name.c_str());
+
+	GstCaps* caps = gst_caps_new_simple("video/x-raw",
+		"width", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width,
+		"height", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height,
+		"framerate", GST_TYPE_FRACTION, 30, 1,
+		NULL);
+	g_object_set(caps_element, "caps", caps, NULL);
+	gst_caps_unref(caps);
+	
+	gst_bin_add(GST_BIN(parent_bin), input_element);
+	gst_bin_add(GST_BIN(parent_bin), caps_element);
+	gst_element_link(input_element, caps_element);
+	return SubElements(input_element, caps_element);
 };
 
 SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) {
@@ -110,7 +123,7 @@ SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, 
 	GstElement* element = gst_element_factory_make("d3dvideosink", name.c_str());
 
 	// Set video sink
-	g_object_set(G_OBJECT(element), "force-aspect-ratio", TRUE, NULL);
+	g_object_set(G_OBJECT(element), "force-aspect-ratio", TRUE, "sync", FALSE, NULL);
 
 	//GST_VIDEO_OVERLAY(element);
 	gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(element), (guintptr) view_handler_);
@@ -122,7 +135,10 @@ SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, 
 };
 
 SubElements VideoMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bin_index, int client_index) {
-	return SubElements(NULL, NULL);
+	std::string name = get_elements_name(TYPE_CONVERT, bin_index, client_index);
+	GstElement* element = gst_element_factory_make("videoconvert", name.c_str());
+	gst_bin_add(GST_BIN(parent_bin), element);
+	return SubElements(element, element);
 }
 
 SubElements VideoMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bin_index, int client_index, int level) {
@@ -135,8 +151,8 @@ SubElements VideoMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bi
     // Set the video resolution using capsfilter
 	// TODO : level에 따른 해상도 적용
     GstCaps* caps = gst_caps_new_simple("video/x-raw",
-        "width", G_TYPE_INT, 1280,
-        "height", G_TYPE_INT, 720,
+        "width", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width,
+        "height", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height,
         "framerate", GST_TYPE_FRACTION, 30, 1,
         NULL);
     g_object_set(caps_element, "caps", caps, NULL);
@@ -151,12 +167,11 @@ SubElements VideoMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int b
 	std::string encoding_name = get_elements_name(TYPE_ENCODING, bin_index, client_index);
     GstElement* encoding_element = gst_element_factory_make("x264enc", encoding_name.c_str());
 	// TODO : 파라메터 추가검토
-	//  g_object_set(encoding_element, 
-		//"tune", H_264_TUNE_ZEROLATENCY,
-		//"key-int-max", 30,
-		//"bitrate", 1024
-		//, NULL);
-	g_object_set(encoding_element, "tune", H_264_TUNE_ZEROLATENCY, NULL);
+	  g_object_set(encoding_element, 
+		"tune", H_264_TUNE_ZEROLATENCY,
+		"key-int-max", 30,
+		"bitrate", kVideoPresets.at(VideoPresetLevel::kVideoPreset5).bitrate
+		, NULL);
 
 	std::string rtp_name = get_elements_name(TYPE_ENCODING_RTP, bin_index, client_index);
     GstElement* rtp_element = gst_element_factory_make("rtph264pay", rtp_name.c_str());
@@ -197,6 +212,8 @@ SubElements VideoMediaPipeline::pipeline_make_adder(GstBin* parent_bin, int bin_
 SubElements VideoMediaPipeline::pipeline_make_jitter_buffer(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_JITTER, bin_index, client_index);
     GstElement* element = gst_element_factory_make("rtpjitterbuffer", name.c_str());
+
+	// TODO : video jitter buffer 설정
     g_object_set(element, "latency", 500, "do-lost", TRUE, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
 	return SubElements(element, element);
@@ -222,8 +239,8 @@ SubElements VideoMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 
 void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)
 {
-	int base_width = 640;
-	int base_hight = 480;
+	int base_width = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height;
+	int base_hight = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width;
 
 	// get pad
 	GstElement* queue = get_elements_by_name(parent_bin, TYPE_QUEUE, bin_index, client_index).second;

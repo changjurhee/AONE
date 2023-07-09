@@ -39,6 +39,9 @@ string MediaPipeline::get_elements_name(element_type etype, int bin_index, int c
 		case TYPE_INPUT_DEVICE :
 			name = "input_device_" + std::to_string(bin_index) + "_" + std::to_string(client_index);;
 			break;
+		case TYPE_INPUT_CAPS:
+			name = "input_caps_" + std::to_string(bin_index) + "_" + std::to_string(client_index);;
+			break;
 		case TYPE_OUTPUT_DEVICE :
 			name = "output_device_" + std::to_string(bin_index) + "_" + std::to_string(client_index);;
 			break;
