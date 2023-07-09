@@ -19,6 +19,7 @@ public:
 	static CallsManager* getInstance();
 	static void releaseInstance();
 
+	Call* getCall();
 	void startOutgoingCall(std::string to);
 	void onSuccessfulOutgoingCall(Json::Value data);
 	void onFailedOutgoingCall(Json::Value data);
@@ -30,7 +31,7 @@ public:
 	void joinConference(std::string rid);
 	void onSuccessfulJoinConference(Json::Value data);
 	void onFailedJoinConference(Json::Value data);
-	void exitConference(std::string rid);
+	void exitConference();
 
 	// Session Interface
 	void setSessionControl(SessionControl* control) override;

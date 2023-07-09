@@ -43,13 +43,14 @@ void ClientMediaManager::setVideoQuality(int video_quality_index)
 	for (auto pipeline : pipelines) {
 		if (pipeline == NULL) continue;
 		pipeline->requestSetVideoQuality(&vq_info);
-	}	
+	}
 };
 
 ContactInfo* ClientMediaManager::get_contact_info(Json::Value client_join_info)
 {
 	ContactInfo *contact_info = new ContactInfo;
 	contact_info->dest_ip = client_join_info["serverIp"].asString();
+	contact_info->cid = DEFAULT_CLIENT_CID;
 //	string my_ip = get_ip_address();
 	// TODO : json 문구 확인하기
 	string my_ip = client_join_info["myIp"].asString();
@@ -74,7 +75,7 @@ OperatingInfo* ClientMediaManager::get_operate_info(Json::Value client_join_info
 void ClientMediaManager::startCall(Json::Value client_join_info)
 {
 	string rid = DEFAULT_CLIENT_RID;
-	vector<ContactInfo> contact_info_list; 
+	vector<ContactInfo> contact_info_list;
 	ContactInfo* contact_info = get_contact_info(client_join_info);
 	OperatingInfo* operate_info = get_operate_info(client_join_info);
 
@@ -92,18 +93,19 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
 		pipeline->request_add_client(&contact_info_list[0]);
-		while(view_handler_ == 0);
+		//while(view_handler_ == 0);
 		pipeline->makePipeline(contact_info_list, *operate_info, view_handler_);
 	}
 
-#if 0
+#if 1
 	// TODO : audio 미동작
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
-		pipeline->makePipeline(contact_info_list, operate_info);
+		pipeline->request_add_client(&contact_info_list[0]);
+		pipeline->makePipeline(contact_info_list, *operate_info, NULL);
 	}
-#endif 
+#endif
 }
 
 void ClientMediaManager::setViewHandler(handleptr view_handler)

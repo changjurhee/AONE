@@ -8,11 +8,9 @@
 #include <ws2tcpip.h>
 #include "session/Constants.h"
 
-using namespace std;
-
 CommandLineInterface* CommandLineInterface::instance = nullptr;
 
-static string getMyIpAddress(void)
+static std::string getMyIpAddress(void)
 {
 	struct addrinfo* _addrinfo;
 	struct addrinfo* _res;
@@ -37,95 +35,106 @@ CommandLineInterface* CommandLineInterface::getInstance() {
 	return instance;
 }
 
-void CommandLineInterface::getServerInfo( string* ip, int* port)
+void CommandLineInterface::getServerInfo(std::string& ip, int& port)
 {
-	cout << "======================================================" << endl;
-	cout << "Get Server Info " << std::endl;
-	cout << "======================================================" << endl;
+	std::cout << "======================================================" << std::endl;
+	std::cout << "Get Server Info " << std::endl;
+	std::cout << "======================================================" << std::endl;
 	std::string serverIp, serverPort;
 	std::cout << "Input serverIP(127.0.0.1): ";
-	getline(std::cin, serverIp);
+	getline(std::cin, ip);
 	std::cout << "input serverPort(5555): ";
 	getline(std::cin, serverPort);
-	int portInt = serverPort.length() > 0 ? std::stoi(serverPort) : 0;	
-	ip = &serverIp;
-	port = &portInt;
+	int portInt = serverPort.length() > 0 ? std::stoi(serverPort) : 5555;
+	port = portInt;
 }
 
 void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager* callsManager)
 {
-	string num;
+	std::string num;
 	std::string id, email, pw, name, pwdAnswer, pwdQuestion, newpw;
 	std::string inputID, inputPW, input;
 	std::list<AccountManager::ContactData> list;
 
 	while (true) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000)); 
-		cout << "======================================================" << endl;
-		cout << " 1. REGISTER CONTACT" << endl;
-		cout << " 2. LOG IN" << endl;
-		cout << " 3. LOG OUT" << endl;
-		cout << " 5. RESET PWORD" << endl;
-		cout << "50. UPDATE MY CONTACT" << endl;
-		cout << " 6. GET ALL CONTACT" << endl;
-		cout << " 7. GET MY CONTACT LIST FOR UI" << endl;
-		cout << " 8. SERCH CONTACT FOR UI" << endl;
-		cout << " 9. ADD CONTACT IN MYCONTACTLIST" << endl;
-		cout << "10. DELETE CONTACT FROM MYCONTACTLIST" << endl << endl;
-		cout << "11. ANSWER CALL " << endl;
-		cout << "12. OUTGOING CALL " << endl;
-		cout << "13. REJECT CALL " << endl;
-		cout << "14. DISCONNECT CALL " << endl << endl;
-		cout << "15. GET MY CONFERENCES " << endl;
-		cout << "16. CREATE CONFERENCE " << endl;
-		cout << "17. JOIN CONFERENCE " << endl;
-		cout << "18. EXIT_CONFERENCE " << endl << endl;
-		cout << " << MY DATA (" << getMyIpAddress() << ") >> " << endl;
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		bool inCall = isInCall();
+		if (inCall) {
+			printCallState();
+		}
+		std::cout << "======================================================" << std::endl;
+		if (!inCall) {
+			std::cout << " 1. REGISTER CONTACT" << std::endl;
+			std::cout << " 2. LOG IN" << std::endl;
+			std::cout << " 3. LOG OUT" << std::endl;
+			std::cout << " 5. RESET PWORD" << std::endl << std::endl;
+
+			std::cout << " 10. UPDATE MY CONTACT" << std::endl;
+			std::cout << " 11. GET ALL CONTACT" << std::endl;
+			std::cout << " 12. GET MY CONTACT LIST FOR UI" << std::endl;
+			std::cout << " 13. SERCH CONTACT FOR UI" << std::endl;
+			std::cout << " 14. ADD CONTACT IN MYCONTACTLIST" << std::endl;
+			std::cout << " 15. DELETE CONTACT FROM MYCONTACTLIST" << std::endl << std::endl;
+		}
+		std::cout << " 20. GET CALL_STATE" << std::endl;
+		std::cout << " 21. ANSWER CALL " << std::endl;
+		std::cout << " 22. OUTGOING CALL " << std::endl;
+		std::cout << " 23. REJECT CALL " << std::endl;
+		std::cout << " 24. DISCONNECT CALL " << std::endl << std::endl;
+
+		std::cout << " 30. GET MY CONFERENCES " << std::endl;
+		std::cout << " 31. CREATE CONFERENCE " << std::endl;
+		std::cout << " 32. JOIN CONFERENCE " << std::endl;
+		std::cout << " 33. EXIT_CONFERENCE " << std::endl << std::endl;
+		std::cout << " << MY DATA (" << getMyIpAddress() << ") >> " << std::endl;
 		
 		if (accountManager->myCid.empty()) {
-			cout << "My CID : (EMPTY)" << endl;
+			std::cout << "My CID : (EMPTY)" << std::endl;
 		} else {
-			cout << "My CID : " << accountManager->myCid << endl;
+			std::cout << "My CID : " << accountManager->myCid << std::endl;
 		}		
 		if (accountManager->myContactDataList.empty()) {
-			cout << "My ContactList : (EMPTY)";
+			std::cout << "My ContactList : (EMPTY)";
 		} else {
-			cout << "My ContactList : ";
+			std::cout << "My ContactList : ";
 			for (const auto& item : accountManager->myContactDataList) {
-				cout << item << " ";
+				std::cout << item << " ";
 			}
 		}
-		cout << endl;
+		std::cout << std::endl;
 		if ( accountManager->myConferenceDataList.empty() ) {
-			cout << "My ConferenceList : (EMPTY)" << endl;
+			std::cout << "My ConferenceList : (EMPTY)" << std::endl;
 		}
 		else {
-			cout << "My ConferenceList : " << endl;
+			std::cout << "My ConferenceList : " << std::endl;
 			for (const auto& item : accountManager->myConferenceDataList) {
-				cout << "- id[" << item.rid << "]/";
-				cout << "time[" << item.dataAndTime << "]/";
-				cout << "dur[" << item.duration << "]/";
+				std::cout << "- id[" << item.rid << "]/";
+				std::cout << "time[" << item.dataAndTime << "]/";
+				std::cout << "dur[" << item.duration << "]/";
 				std::list<std::string> li = item.participants;
 				std::list<std::string>::iterator it;
-				cout << "part[";
+				std::cout << "part[";
 				for (it = li.begin(); it != li.end(); it++) {
-					cout << *it << " ";
+					std::cout << *it << " ";
 				}
-				cout << "]";
-				cout << endl;
+				std::cout << "]";
+				std::cout << std::endl;
 			}
 		}		
-		cout << "======================================================" << endl;
+		std::cout << "======================================================" << std::endl;
 		std::cout << "Choose (Q to Exit): " ;
-		getline(cin, num);
+		getline(std::cin, num);
 		int selected = 0;
 		try {
 			selected = stoi(num);
 			if (selected == 0) {
 				continue;
 			}
+			else if (isInCall() && selected < 20) {
+				continue;
+			}
 		}
-		catch (exception ex) {
+		catch (std::exception ex) {
 			// Not number
 			if (num == "Q") {
 				break;
@@ -179,7 +188,7 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 			getline(std::cin >> std::ws, pwdAnswer);
 			accountManager->resetPassword(id, newpw, std::stoi(pwdQuestion), pwdAnswer);
 			break;
-		case 50: // UPDATE MY CONTACT
+		case 10: // UPDATE MY CONTACT
 			if (!accountManager->myCid.empty()) {
 				std::cout << "email : ";
 				getline(std::cin >> std::ws, email);
@@ -188,19 +197,19 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 				accountManager->updateMyContact(accountManager->myCid, email, name);
 			}
 			break;
-		case 6: //GET ALL CONTACTLIST FROM SERVER
+		case 11: //GET ALL CONTACTLIST FROM SERVER
 			std::cout << "GET ALL CONTACT" << std::endl;
 			accountManager->getAllContact();
 			break;
 
-		case 7://GETMYCONTACTLIST FOR UI
+		case 12://GETMYCONTACTLIST FOR UI
 			std::cout << "GET MY CONTACT LIST FOR UI" << std::endl;
 			list = accountManager->getMyContactList();
 			for (auto& myContact : list) {
 				std::cout << "contact : " << myContact.cid << ", " << myContact.email << ", " << myContact.name << std::endl;
 			}
 			break;
-		case 8://SERCHCONTACT FOR UI
+		case 13://SERCHCONTACT FOR UI
 			std::cout << "SEARCH CONTACT FOR UI" << std::endl;
 			std::cout << "Keyword : ";
 			getline(std::cin >> std::ws, input);
@@ -209,58 +218,68 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 				std::cout << myContact.cid << ", " << myContact.email << ", " << myContact.name << std::endl;
 			}
 			break;
-		case 9://ADDCONTACT IN MYCONTACTLIST
+		case 14://ADDCONTACT IN MYCONTACTLIST
 			std::cout << "ADD CONTACT IN MYCONTACTLIST" << std::endl;
 			std::cout << "cid : ";
 			getline(std::cin >> std::ws, input);
 			accountManager->addContact(input);
 			break;
-		case 10://DELETECONTACT IN MYCONTACTLIST
+		case 15://DELETECONTACT IN MYCONTACTLIST
 			std::cout << "DELETE CONTACT FROM MYCONTACTLIST" << std::endl;
 			std::cout << "cid : ";
 			getline(std::cin >> std::ws, input);
 			accountManager->deleteContact(input);
 			break;
-		case 11: // ANSWER CALL
+		case 20: // GET CALL_STATE
+			printCallState();
+			break;
+		case 21: // ANSWER CALL
 			std::cout << "ANSWER CALL" << std::endl;
 			callsManager->answerCall();
 			break;
-		case 12: // OUTGOING CALL
+		case 22: // OUTGOING CALL
 			{
 				std::cout << "OUTGOING CALL" << std::endl;
 				std::cout << "cid : ";
-				string targetCid;
+				std::string targetCid;
 				std::cin >> targetCid;
 				std::cin.ignore();
 				callsManager->startOutgoingCall(targetCid);
 				break;
 			}
-		case 13: // REJECT CALL
+		case 23: // REJECT CALL
 			std::cout << "REJECT CALL" << std::endl;
 			callsManager->rejectCall();
 			break;
-		case 14: // DISCONNECT CALL
+		case 24: // DISCONNECT CALL
 			std::cout << "DISCONNECT CALL" << std::endl;
 			callsManager->disconnectCall();
 			break;
-		case 15: // GET MY CONFERENCES 
+		case 30: // GET MY CONFERENCES 
 			std::cout << "GET MY CONFERENCES" << std::endl;
 			accountManager->getAllConference(accountManager->myCid);
 			break;
-		case 16: // CREATE CONFERENCE 
+		case 31: // CREATE CONFERENCE 
 			{
 				std::cout << "CREATE CONFERENCE" << std::endl;
-				string input;
+				std::string input;
 				long time, duration;
-				std::cout << "Time : ";
-				getline(std::cin >> std::ws, input);
-				time = stol(input);
-				std::cout << "Duration : ";
+				std::cout << "Time(now: ENTER) : ";
+				getline(std::cin, input);
+				if (input.empty()) {
+					std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+					std::chrono::system_clock::duration duration = now.time_since_epoch();
+					time = std::chrono::duration_cast<std::chrono::seconds>(duration).count();
+				}
+				else {
+					time = stol(input);
+				}
+				std::cout << "Duration(second) : ";
 				getline(std::cin >> std::ws, input);
 				duration = stol(input);
 				std::list<std::string> participants;
 				while (true) {
-					string participant;
+					std::string participant;
 					std::cout << "participant (Q to finish) : ";
 					getline(std::cin >> std::ws, participant);
 					if (participant == "Q") {
@@ -272,25 +291,69 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 				accountManager->createConference(time, duration, participants);
 				break;
 			}
-		case 17: // JOIN CONFERENCE
+		case 32: // JOIN CONFERENCE
 			std::cout << "JOIN CONFERENCE" << std::endl;
 			std::cout << "rid : ";
 			getline(std::cin >> std::ws, inputID);
 			callsManager->joinConference(inputID);
 			break;
-		case 18: // EXIT CONFERENCE
+		case 33: // EXIT CONFERENCE
 			std::cout << "EXIT CONFERENCE" << std::endl;
-			std::cout << "rid : ";
-			getline(std::cin >> std::ws, inputID);
-			callsManager->exitConference(inputID);
-			// TODO 
+			callsManager->exitConference();
 			break;
 		default:			
 			break;
 		}		
 	}
-	cout << "CLI Terminated " << endl;
+	std::cout << "CLI Terminated " << std::endl;
 	if (!accountManager->myCid.empty()) {
 		accountManager->logout(accountManager->myCid);
 	}
+}
+
+bool CommandLineInterface::isInCall() {
+	Call* call = CallsManager::getInstance()->getCall();
+	if (call == nullptr) {
+		return false;
+	}
+	int state = call->getCallState();
+	return state != CallState::STATE_IDLE && state != CallState::STATE_DISCONNECTED;
+}
+
+void CommandLineInterface::printCallState() {
+	std::string callId;
+	int state = 0;
+	std::string displayState;
+	Call* call = CallsManager::getInstance()->getCall();
+	if (call == nullptr) {
+		callId = "NO_CALL";
+	}
+	else {
+		callId = call->getCallId();
+		state = call->getCallState();
+	}
+
+	switch (state)
+	{
+	case 1:
+		displayState = "STATE_DIALING";
+		break;
+	case 2:
+		displayState = "STATE_RINGING";
+		break;
+	case 4:
+		displayState = "STATE_ACTIVE";
+		break;
+	case 7:
+		displayState = "STATE_DISCONNECTED";
+		break;
+	case 8:
+		displayState = "STATE_IDLE";
+		break;
+	default:
+		break;
+	}
+
+	std::cout << std::endl;
+	std::cout << "<< CALL INFO (" << callId << "): " << displayState << " >> " << std::endl;
 }

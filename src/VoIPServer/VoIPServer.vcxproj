@@ -207,6 +207,7 @@
     <ClInclude Include="..\media\call_info.h" />
     <ClInclude Include="..\media\MediaManager.h" />
     <ClInclude Include="..\media\MediaPipeline.h" />
+    <ClInclude Include="..\media\media_types.h" />
     <ClInclude Include="..\media\VideoMediaPipeline.h" />
     <ClInclude Include="calendarbar.h" />
     <ClInclude Include="ClassView.h" />
@@ -242,6 +243,7 @@
     <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
     <ClCompile Include="..\media\MediaManager.cpp" />
     <ClCompile Include="..\media\MediaPipeline.cpp" />
+    <ClCompile Include="..\media\media_types.cpp" />
     <ClCompile Include="..\media\VideoMediaPipeline.cpp" />
     <ClCompile Include="calendarbar.cpp" />
     <ClCompile Include="ClassView.cpp" />
