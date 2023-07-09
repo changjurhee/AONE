@@ -51,8 +51,7 @@ ContactInfo* ClientMediaManager::get_contact_info(Json::Value client_join_info)
 	ContactInfo *contact_info = new ContactInfo;
 	contact_info->dest_ip = client_join_info["serverIp"].asString();
 	contact_info->cid = DEFAULT_CLIENT_CID;
-//	string my_ip = get_ip_address();
-	// TODO : json 문구 확인하기
+
 	string my_ip = client_join_info["myIp"].asString();
 	contact_info->dest_video_port = get_port_number(my_ip, "video");
 	contact_info->dest_audio_port = get_port_number(my_ip, "audio");
@@ -97,15 +96,12 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 		pipeline->makePipeline(contact_info_list, *operate_info, view_handler_);
 	}
 
-#if 1
-	// TODO : audio 미동작
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
 		pipeline->request_add_client(&contact_info_list[0]);
 		pipeline->makePipeline(contact_info_list, *operate_info, NULL);
 	}
-#endif
 }
 
 void ClientMediaManager::setViewHandler(handleptr view_handler)

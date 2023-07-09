@@ -25,6 +25,7 @@ enum pipe_topology_mode {
 enum pipe_block_flag {
     BLOCK_MONITOR,
 	BLOCK_VIODE_STOP,
+	BLOCK_EXIT,
 	BLOCK_MAX
 };
 
@@ -44,7 +45,8 @@ enum element_type {
 	TYPE_JITTER,
 	TYPE_UDP_SINK,
 	TYPE_UDP_SRC,
-	TYPE_QUEUE,
+	TYPE_FQUEUE,
+	TYPE_BQUEUE,
 	TYPE_TEE,
 	TYPE_MAX
 };
@@ -96,7 +98,7 @@ protected :
 	virtual SubElements pipeline_make_udp_src(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	SubElements pipeline_make_udp_sink_with_port(GstBin* parent_bin, int bin_index, int client_index, int port);
 	SubElements pipeline_make_udp_src_with_port(GstBin* parent_bin, int bin_index, int client_index, int port);
-	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index);
+	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index, bool is_front);
 	SubElements pipeline_make_tee(GstBin* parent_bin, int bin_index, int client_index);
 
 	void MediaPipeline::unref_element(GstBin* parent_bin, GstElement* current_element);
@@ -107,8 +109,14 @@ protected :
 	SubElements make_back_udp_n(GstBin* parent_bin, int bin_index, int client_index);
 	void add_client_in_front(GstBin* parent_bin, int bin_index, int client_index);
 	void add_client_in_back(GstBin* parent_bin, int bin_index, int client_index);
+	SubElements add_client_at_src(GstBin* parent_bin, int bin_index, int client_index);
+
+	void add_client_udp_remove_me(GstBin* parent_bin, int bin_index, int client_index);
+	void remove_element_list(GstBin* parent_bin, string current_name, string target_name, string pad_type);
 	void remove_client_in_front(GstBin* parent_bin, int bin_index, int client_index);
 	void remove_client_in_back(GstBin* parent_bin, int bin_index, int client_index);
+	void remove_client_udp_remove_me(GstBin* parent_bin, int bin_index, int client_index);
+	void unref_and_unlink_all_pads(GstBin* parent_bin, string target_name, string pad_type);
 	void make_bin(GstBin* parent_bin, int bin_index, int front, int back);
 	int get_client_index(ContactInfo* client_info, bool new_client);
 	void disable_client_index(ContactInfo* client_info);

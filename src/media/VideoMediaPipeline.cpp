@@ -149,7 +149,6 @@ SubElements VideoMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bi
 	GstElement* caps_element = gst_element_factory_make("capsfilter", caps_name.c_str());
 
     // Set the video resolution using capsfilter
-	// TODO : level에 따른 해상도 적용
     GstCaps* caps = gst_caps_new_simple("video/x-raw",
         "width", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width,
         "height", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height,
@@ -166,7 +165,6 @@ SubElements VideoMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bi
 SubElements VideoMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int bin_index, int client_index=0) {
 	std::string encoding_name = get_elements_name(TYPE_ENCODING, bin_index, client_index);
     GstElement* encoding_element = gst_element_factory_make("x264enc", encoding_name.c_str());
-	// TODO : 파라메터 추가검토
 	  g_object_set(encoding_element,
 		"tune", H_264_TUNE_ZEROLATENCY,
 		"key-int-max", 30,
@@ -196,14 +194,6 @@ SubElements VideoMediaPipeline::pipeline_make_decoding(GstBin* parent_bin, int b
 SubElements VideoMediaPipeline::pipeline_make_adder(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_ADDER, bin_index, client_index);
     GstElement* element = gst_element_factory_make("compositor", name.c_str());
-
-	//TODO : 해당 값 동적 적용 검토
-    //g_object_set(G_OBJECT(element), "sink_0::xpos", 0, "sink_0::ypos", 0,
-    //             "sink_0::width", 640, "sink_0::height", 480,
-    //             "sink_1::xpos", 0, "sink_1::ypos", 480, "sink_1::width", 640, "sink_1::height", 480,
-    //             "sink_2::xpos", 640, "sink_2::ypos", 0, "sink_2::width", 640, "sink_2::height", 480,
-    //             "sink_3::xpos", 640, "sink_3::ypos", 480, "sink_3::width", 640, "sink_3::height", 480,
-    //             NULL);
 
 	gst_bin_add(GST_BIN(parent_bin), element);
 	return SubElements(element, element);
@@ -243,7 +233,7 @@ void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_inde
 	int base_hight = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width;
 
 	// get pad
-	GstElement* queue = get_elements_by_name(parent_bin, TYPE_QUEUE, bin_index, client_index).second;
+	GstElement* queue = get_elements_by_name(parent_bin, TYPE_FQUEUE, bin_index, client_index).second;
 
 	GstPad* srcPad = gst_element_get_static_pad(queue, "src");
 	GstPad* linkedPad = gst_pad_get_peer(srcPad);

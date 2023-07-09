@@ -7,7 +7,7 @@ ServerMediaManager* ServerMediaManager::instance = nullptr;
 
 ServerMediaManager::ServerMediaManager(int max_pipeline) : MediaManager(max_pipeline) {
 	video_pipe_mode_list_.push_back(PipeMode(MODE_UDP_N, MODE_UDP_N));
-	audio_pipe_mode_list_.push_back(PipeMode(MODE_UDP_N, MODE_UDP_N));
+	audio_pipe_mode_list_.push_back(PipeMode(MODE_UDP_REMOVE_ME, MODE_NONE));
 	sessionCallback_ = nullptr;
 	gst_init(NULL, NULL);
 
@@ -52,7 +52,7 @@ OperatingInfo* ServerMediaManager::get_operate_info(void)
 
 void ServerMediaManager::startCall(Json::Value room_creat_info)
 {
-#if 1
+
 	vector<ContactInfo> contact_info_list;
 	string rid = room_creat_info["rid"].asString();
 	server_ip = room_creat_info["myIp"].asString();
@@ -69,15 +69,12 @@ void ServerMediaManager::startCall(Json::Value room_creat_info)
 		if (pipeline == NULL) continue;
 		pipeline->makePipeline(contact_info_list, *operate_info, NULL);
 	}
-#endif
-#if 1
-	// TODO : audio 미동작
+
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
 		pipeline->makePipeline(contact_info_list, *operate_info, NULL);
 	}
-#endif
 }
 
 //
@@ -109,7 +106,6 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 {
 	string rid = add_client_info["rid"].asString();
 
-	//TODO : connect pipleline
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
 	ContactInfo* client_info;
 	for (auto pipeline : video_pipelines) {
@@ -118,20 +114,16 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 		pipeline->request_add_client(client_info);
 	}
 
-#if 1
-	// TODO : audio 미동작
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
 		client_info = get_contact_info(add_client_info, false);
 		pipeline->request_add_client(client_info);
 	}
-#endif
 }
 
 void ServerMediaManager::removeClient(Json::Value remove_client_info)
 {
-	//TODO : connect pipleline
 	string rid = remove_client_info["rid"].asString();
 	ContactInfo* client_info;
 
@@ -142,16 +134,12 @@ void ServerMediaManager::removeClient(Json::Value remove_client_info)
 		pipeline->request_remove_client(client_info);
 	}
 
-#if 0
-	// TODO : audio 미동작
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
 		client_info = get_contact_info(remove_client_info, true);
-		pipeline->request_remove_client(contact_info_list, operate_info);
+		pipeline->request_remove_client(client_info);
 	}
-#endif
-
 }
 
 Json::Value ServerMediaManager::getMediaProperty()

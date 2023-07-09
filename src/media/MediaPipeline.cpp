@@ -84,8 +84,11 @@ string MediaPipeline::get_elements_name(element_type etype, int bin_index, int c
 		case TYPE_TEE :
 			name = "tee_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
-		case TYPE_QUEUE :
-			name = "queue_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+		case TYPE_FQUEUE :
+			name = "front_queue_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
+		case TYPE_BQUEUE:
+			name = "back_queue_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
 		default:
 			break;
@@ -136,8 +139,8 @@ SubElements pipeline_make_restoration(GstBin* parent_bin, int bin_index, int cli
 	return SubElements(NULL, NULL);
 }
 
-SubElements MediaPipeline::pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index) {
-	std::string name = get_elements_name(TYPE_QUEUE, bin_index, client_index);
+SubElements MediaPipeline::pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index, bool is_front) {
+	std::string name = get_elements_name(is_front ? TYPE_FQUEUE : TYPE_BQUEUE, bin_index, client_index);
 	GstElement *element = gst_element_factory_make("queue", name.c_str());
 	gst_bin_add(GST_BIN(parent_bin), element);
 	return SubElements(element, element);
@@ -186,21 +189,16 @@ SubElements MediaPipeline::make_front_device(GstBin* parent_bin, int bin_index, 
 	return ret_sub_elements;
 }
 
-SubElements MediaPipeline::make_front_udp_n(GstBin* parent_bin, int bin_index, int client_index) {
-#if 1
-	// TODO : Adder 미동작 수정
-
+SubElements MediaPipeline::make_front_udp_n(GstBin* parent_bin, int bin_index, int client_index)
+{
 	SubElements ret_sub_elements = SubElements(NULL, NULL);
-	SubElements adder_pair = pipeline_make_adder(parent_bin, bin_index, BASE_CLIENT_ID);
+	SubElements adder_pair = pipeline_make_adder(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, adder_pair);
 
 	SubElements convert_pair = pipeline_make_convert(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, convert_pair);
 
 	return ret_sub_elements;
-#else
-	return pipeline_make_convert(parent_bin, bin_index, client_index);
-#endif
 }
 
 
@@ -217,10 +215,8 @@ SubElements MediaPipeline::make_back_udp_n(GstBin* parent_bin, int bin_index, in
 	SubElements encryption_pair = pipeline_make_encryption(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, encryption_pair);
 
-#if 1
 	SubElements tee_pair = pipeline_make_tee(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, tee_pair);
-#endif
 
 	return ret_sub_elements;
 }
@@ -240,9 +236,8 @@ void MediaPipeline::make_bin(GstBin* parent_bin, int bin_index, int front, int b
 			front_pair = make_front_udp_n(parent_bin, bin_index, BASE_CLIENT_ID);
 			break;
 
-		case MODE_UDP_REMOVE_ME:
-			// TODO
-			break;
+		case MODE_NONE:
+		case MODE_UDP_REMOVE_ME: // nothing
 		default:
 			break;
 	}
@@ -258,6 +253,8 @@ void MediaPipeline::make_bin(GstBin* parent_bin, int bin_index, int front, int b
 		case MODE_UDP_N:
 			back_pair = make_back_udp_n(parent_bin, bin_index, BASE_CLIENT_ID);
 			break;
+
+		case MODE_NONE:
 		default:
 			break;
 	}
@@ -319,6 +316,7 @@ void MediaPipeline::pipeline_run() {
         return;
     }
 
+	logPipelineElements(pipeline, 0);
 	enable_debugging();
 	// Start the main loop
 	mainLoop_ = g_main_loop_new(NULL, FALSE);
@@ -343,9 +341,9 @@ void MediaPipeline::makePipeline(vector<ContactInfo> &contact_info_list, Operati
 
 void MediaPipeline::end_call()
 {
-	// TODO : 동작 확인하기
+	set_pipe_block_flag(BLOCK_EXIT);
 	// Release the pipeline
-	gst_element_set_state(pipeline, GST_STATE_NULL);
+	stop_state_pipeline(true);
 	g_main_loop_quit(mainLoop_);
 }
 
@@ -378,7 +376,7 @@ void MediaPipeline::disable_client_index(ContactInfo* client_info)
 	}
 }
 
-void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int client_index)
+SubElements MediaPipeline::add_client_at_src(GstBin * parent_bin, int bin_index, int client_index)
 {
 	SubElements ret_sub_elements = SubElements(NULL, NULL);
 
@@ -394,14 +392,21 @@ void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int c
 	SubElements decoding_pair = pipeline_make_decoding(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, decoding_pair);
 
-	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index);
+	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index, true);
 	ret_sub_elements = connect_subElements(ret_sub_elements, queue_pair);
+
+	return ret_sub_elements;
+}
+
+void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int client_index)
+{
+	SubElements ret_sub_elements = SubElements(NULL, NULL);
+	ret_sub_elements = add_client_at_src(parent_bin, bin_index, client_index);
 
 	SubElements adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, BASE_CLIENT_ID);
 	ret_sub_elements = connect_subElements(ret_sub_elements, adder);
 
 	update_adder_parameter(parent_bin, bin_index, client_index);
-	return;
 }
 
 void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int client_index)
@@ -411,7 +416,7 @@ void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int cl
 	SubElements tee = get_elements_by_name(parent_bin, TYPE_TEE, bin_index, BASE_CLIENT_ID);
 	ret_sub_elements = connect_subElements(ret_sub_elements, tee);
 
-	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index+20);
+	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index, false);
 	ret_sub_elements = connect_subElements(ret_sub_elements, queue_pair);
 
 	SubElements udp_sink_pair = pipeline_make_udp_sink(parent_bin, bin_index, client_index);
@@ -420,56 +425,146 @@ void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int cl
 	return;
 }
 
-void MediaPipeline::unref_element(GstBin* parent_bin, GstElement* element)
+void MediaPipeline::add_client_udp_remove_me(GstBin* parent_bin, int bin_index, int client_index)
 {
-#if 1
-	gst_bin_remove(GST_BIN(parent_bin), element);
-	//TODO : 동작 확인 필요
-	//while (GST_OBJECT_REFCOUNT(GST_OBJECT(element)) != 0)
-	//	gst_object_unref(element);
-#endif
+#define REMOVE_ME_CONVERT_FLAG 10000
+#define REMOVE_ME_SHIFT 100
+
+	SubElements ret_sub_elements = SubElements(NULL, NULL);
+
+	SubElements front_sub = add_client_at_src(parent_bin, bin_index, client_index);
+	ret_sub_elements = connect_subElements(ret_sub_elements, front_sub);
+
+	SubElements tee_pair = pipeline_make_tee(parent_bin, bin_index, client_index);
+	ret_sub_elements = connect_subElements(ret_sub_elements, tee_pair);
+
+
+	SubElements adder_pair = pipeline_make_adder(parent_bin, bin_index, client_index);
+	ret_sub_elements = connect_subElements(ret_sub_elements, adder_pair);
+
+	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index, false);
+	ret_sub_elements = connect_subElements(ret_sub_elements, queue_pair);
+
+	SubElements convert_pair = pipeline_make_convert(parent_bin, bin_index, client_index);
+	ret_sub_elements = connect_subElements(ret_sub_elements, convert_pair);
+
+	SubElements encoding_pair = pipeline_make_encoding(parent_bin, bin_index, client_index);
+	ret_sub_elements = connect_subElements(ret_sub_elements, encoding_pair);
+
+	SubElements encryption_pair = pipeline_make_encryption(parent_bin, bin_index, client_index);
+	ret_sub_elements = connect_subElements(ret_sub_elements, encryption_pair);
+
+	SubElements udp_sink_pair = pipeline_make_udp_sink(parent_bin, bin_index, client_index);
+	ret_sub_elements = connect_subElements(ret_sub_elements, udp_sink_pair);
+
+	for (const auto& item : client_id_list_) {
+		bool client_enanle = item.second.second;
+		int other_client_id = item.second.first;
+		if (!client_enanle || other_client_id == client_index)
+			continue;
+
+		SubElements other_adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, other_client_id);
+		SubElements other_tee = get_elements_by_name(parent_bin, TYPE_TEE, bin_index, other_client_id);
+
+		SubElements convert_1 = pipeline_make_convert(parent_bin, bin_index, REMOVE_ME_CONVERT_FLAG + client_index* REMOVE_ME_SHIFT+ other_client_id);
+		SubElements convert_2 = pipeline_make_convert(parent_bin, bin_index, REMOVE_ME_CONVERT_FLAG + other_client_id * REMOVE_ME_SHIFT + client_index);
+
+		connect_subElements(tee_pair, convert_1);
+		connect_subElements(convert_1, other_adder);
+
+		connect_subElements(other_tee, convert_2);
+		connect_subElements(convert_2, adder_pair);
+	}
 }
 
-void MediaPipeline::remove_client_in_front(GstBin* parent_bin, int bin_index, int client_index)
+void MediaPipeline::unref_element(GstBin* parent_bin, GstElement* element)
 {
-	std::string current_name = "udpsrc_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
-	std::string target_name = "adder_"+std::to_string(bin_index)+"_"+std::to_string(BASE_CLIENT_ID);
+	gst_bin_remove(GST_BIN(parent_bin), element);
+}
+
+void MediaPipeline::remove_element_list(GstBin* parent_bin, string current_name, string target_name, string pad_type)
+{
 	while (current_name != target_name) {
 		// Determine the element linked to 'source'
 		GstElement* current_element = gst_bin_get_by_name(parent_bin, current_name.c_str());
 
-		GstPad *srcPad = gst_element_get_static_pad(current_element, "src");
-		GstPad *linkedPad = gst_pad_get_peer(srcPad);
-		GstElement *linkedElement = gst_pad_get_parent_element(linkedPad);
+		GstPad* pad = gst_element_get_static_pad(current_element, pad_type.c_str());
+		GstPad* linkedPad = gst_pad_get_peer(pad);
+		GstElement* linkedElement = gst_pad_get_parent_element(linkedPad);
 		if (linkedElement == NULL) break;
 
 		gst_element_unlink(current_element, linkedElement);
-		gst_object_unref(srcPad);
+		gst_object_unref(pad);
 		gst_object_unref(linkedPad);
 		unref_element(parent_bin, current_element);
 		current_name = gst_element_get_name(linkedElement);
+		if (target_name == "") break;
 	}
+	return;
+}
+
+void MediaPipeline::remove_client_in_front(GstBin* parent_bin, int bin_index, int client_index)
+{
+	string current_name = get_elements_name(TYPE_UDP_SRC, bin_index, client_index);
+	string target_name = get_elements_name(TYPE_ADDER, bin_index, BASE_CLIENT_ID);
+	remove_element_list(parent_bin, current_name, target_name, "src");
 }
 
 void MediaPipeline::remove_client_in_back(GstBin* parent_bin, int bin_index, int client_index)
 {
-	std::string current_name = "udpsink_"+std::to_string(bin_index)+"_"+std::to_string(client_index);
-	std::string target_name = "tee_"+std::to_string(bin_index)+"_"+std::to_string(BASE_CLIENT_ID);
-	while (current_name != target_name) {
-		// Determine the element linked to 'source'
-		GstElement* current_element = gst_bin_get_by_name(GST_BIN(parent_bin), current_name.c_str());
+	string current_name = get_elements_name(TYPE_UDP_SINK, bin_index, client_index);
+	string target_name = get_elements_name(TYPE_TEE, bin_index, BASE_CLIENT_ID);
+	remove_element_list(parent_bin, current_name, target_name, "sink");
+}
 
-		GstPad *sinkPad = gst_element_get_static_pad(current_element, "sink");
-		GstPad *linkedPad = gst_pad_get_peer(sinkPad);
-		GstElement *linkedElement = gst_pad_get_parent_element(linkedPad);
-		if (linkedElement == NULL) break;
+void MediaPipeline::unref_and_unlink_all_pads(GstBin* parent_bin, string target_name, string pad_type)
+{
+	GstElement* element = gst_bin_get_by_name(parent_bin, target_name.c_str());
+	GstIterator* it;
+	if (pad_type == "src")
+		it = gst_element_iterate_src_pads(element);
+	else
+		it = gst_element_iterate_sink_pads(element);
+	gboolean done = FALSE;
+	GstPad* pad;
+	GValue item = G_VALUE_INIT;
 
-		gst_element_unlink(current_element, linkedElement);
-		gst_object_unref(sinkPad);
-		gst_object_unref(linkedPad);
-		unref_element(parent_bin, current_element);
-		current_name = gst_element_get_name(linkedElement);
+	while (!done) {
+		switch (gst_iterator_next(it, &item)) {
+		case GST_ITERATOR_OK:
+			pad = (GstPad*)g_value_get_object(&item);
+			if (pad && GST_PAD_IS_LINKED(pad)) {
+				GstPad* linkedPad = gst_pad_get_peer(pad);
+				GstElement* linkedElement = gst_pad_get_parent_element(linkedPad);
+				gst_element_unlink(element, linkedElement);
+				remove_element_list(parent_bin, gst_element_get_name(linkedElement), "", pad_type);
+			}
+			g_value_reset(&item);
+			break;
+		case GST_ITERATOR_RESYNC:
+			gst_iterator_resync(it);
+			break;
+		case GST_ITERATOR_ERROR:
+		case GST_ITERATOR_DONE:
+			done = TRUE;
+			break;
+		}
 	}
+	unref_element(parent_bin, element);
+}
+
+void MediaPipeline::remove_client_udp_remove_me(GstBin* parent_bin, int bin_index, int client_index)
+{
+	string udp_src_name = get_elements_name(TYPE_UDP_SRC, bin_index, client_index);
+	string tee_name = get_elements_name(TYPE_TEE, bin_index, client_index);
+	remove_element_list(parent_bin, udp_src_name, tee_name, "src");
+
+	string udp_sink_name = get_elements_name(TYPE_UDP_SINK, bin_index, client_index);
+	string adder_name = get_elements_name(TYPE_ADDER, bin_index, client_index);
+	remove_element_list(parent_bin, udp_sink_name, adder_name, "sink");
+
+	unref_and_unlink_all_pads(parent_bin, tee_name, "src");
+	unref_and_unlink_all_pads(parent_bin, adder_name, "sink");
 }
 
 void MediaPipeline::request_add_client(ContactInfo* client_info)
@@ -494,6 +589,9 @@ void MediaPipeline::add_client(ContactInfo* client_info)
 		if (front == MODE_UDP_1 || front == MODE_UDP_N) {
 			add_client_in_front(bin, index, client_index);
 		}
+		else if (front == MODE_UDP_REMOVE_ME) {
+			add_client_udp_remove_me(bin, index, client_index);
+		}
 
 		int back = pipe_mode_list_[index].second;
 		if (back == MODE_UDP_1 || back == MODE_UDP_N) {
@@ -501,7 +599,6 @@ void MediaPipeline::add_client(ContactInfo* client_info)
 		}
 	}
 	logPipelineElements(pipeline, 0);
-
 }
 
 void MediaPipeline::request_remove_client(ContactInfo* client_info)
@@ -528,6 +625,9 @@ void MediaPipeline::remove_client(ContactInfo * client_info)
 		if (front == MODE_UDP_1 || front == MODE_UDP_N) {
 			remove_client_in_front(bin, bin_index, client_index);
 		}
+		else if (front == MODE_UDP_REMOVE_ME) {
+			remove_client_udp_remove_me(bin, bin_index, client_index);
+		}
 
 		int back = pipe_mode_list_[bin_index].second;
 		if (back == MODE_UDP_1 || back == MODE_UDP_N) {
@@ -535,6 +635,7 @@ void MediaPipeline::remove_client(ContactInfo * client_info)
 		}
 	}
 	disable_client_index(client_info);
+	logPipelineElements(pipeline, 0);
 }
 
 void MediaPipeline::requestSetVideoQuality(VideoQualityInfo* vq_info)
@@ -546,6 +647,45 @@ void MediaPipeline::requestSetVideoQuality(VideoQualityInfo* vq_info)
 
 string MediaPipeline::getLinkedElements(GstElement* element)
 {
+#if 1
+	string src_name = "";
+
+	GstIterator* it = gst_element_iterate_src_pads(element);
+	gboolean done = FALSE;
+	GstPad* srcPad;
+	GValue item = G_VALUE_INIT;
+
+	while (!done) {
+		switch (gst_iterator_next(it, &item)) {
+		case GST_ITERATOR_OK:
+			srcPad = (GstPad*)g_value_get_object(&item);
+			if (srcPad && GST_PAD_IS_LINKED(srcPad)) {
+				GstPad* linkedPad = gst_pad_get_peer(srcPad);
+				GstElement* linkedElement = gst_pad_get_parent_element(linkedPad);
+				if (linkedElement == NULL){
+					src_name += "NoName";
+				}
+				else {
+					src_name += gst_element_get_name(linkedElement);
+				}
+				src_name += ", ";
+			}
+			g_value_reset(&item);
+			break;
+		case GST_ITERATOR_RESYNC:
+			gst_iterator_resync(it);
+			break;
+		case GST_ITERATOR_ERROR:
+		case GST_ITERATOR_DONE:
+			done = TRUE;
+			break;
+		}
+	}
+
+	g_value_unset(&item);
+	gst_iterator_free(it);
+	return src_name.length() > 2 ? src_name.substr(0, src_name.length()-2) : src_name;
+#else
 		GstPad* srcPad = gst_element_get_static_pad(element, "src");
 
 		if (srcPad && GST_PAD_IS_LINKED(srcPad)) {
@@ -555,6 +695,7 @@ string MediaPipeline::getLinkedElements(GstElement* element)
 			return gst_element_get_name(linkedElement);
 		}
 		return "";
+#endif
 }
 
 // Function to recursively log the elements in the pipeline
@@ -567,7 +708,7 @@ void MediaPipeline::logPipelineElements(GstElement * element, int level) {
 	//gchar* elementFactory = gst_element_factory_get_longname(gst_element_get_factory(element));
 	string linkName = getLinkedElements(element);
 	// Construct the log message with indentation to show hierarchy level
-	gchar* logMessage = g_strdup_printf("%*s%s ->(%s)\n", level * 2, "", elementName, linkName.c_str());
+	gchar* logMessage = g_strdup_printf("%*s%s -> %s\n", level * 2, "", elementName, linkName.c_str());
 
 	// Log the message using GStreamer log API
 	g_printerr(logMessage);
@@ -747,8 +888,8 @@ void MediaPipeline::ReadAndNotifyRtpStats() {
 			gst_structure_get_uint64(s, "avg-jitter", &stats.avg_jitter_us);
 			stats.avg_jitter_us = stats.avg_jitter_us / 1000;
 
-			LOG_OBJ_DEBUG() << gst_element_get_name(elem) << ": lost " << stats.num_lost << ", late "
-				<< stats.num_late << ", avg_jitter " << stats.avg_jitter_us << " us" << std::endl;
+			//LOG_OBJ_DEBUG() << gst_element_get_name(elem) << ": lost " << stats.num_lost << ", late "
+			//	<< stats.num_late << ", avg_jitter " << stats.avg_jitter_us << " us" << std::endl;
 
 			VideoPresetType current_preset;
 			if (monitor_cb_)
