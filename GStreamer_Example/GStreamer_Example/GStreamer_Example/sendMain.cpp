@@ -134,7 +134,7 @@ int sendMain()
     g_object_set(gSendVideoSRTPEnc, "rtcp-cipher", 1, NULL);
 
     // Set RTP for video
-    gCaps = gst_caps_from_string("application/x-srtp, media=(string)video, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
+    gCaps = gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
     g_object_set(gSendVideoRTPCaps, "caps", gCaps, NULL);
     gst_caps_unref(gCaps);
 

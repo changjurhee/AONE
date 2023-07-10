@@ -48,7 +48,11 @@ enum element_type {
 	TYPE_FQUEUE,
 	TYPE_BQUEUE,
 	TYPE_TEE,
-	TYPE_MAX
+	TYPE_SRTPENC,
+	TYPE_SRTPENC_CAPS,
+	TYPE_SRTPDEC,
+	TYPE_SRTPDEC_CAPS,
+	TYPE_MAX,
 };
 
 struct VideoQualityInfo
@@ -100,6 +104,8 @@ protected :
 	SubElements pipeline_make_udp_src_with_port(GstBin* parent_bin, int bin_index, int client_index, int port);
 	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index, bool is_front);
 	SubElements pipeline_make_tee(GstBin* parent_bin, int bin_index, int client_index);
+	SubElements pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index);
+	SubElements pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index);
 
 	void MediaPipeline::unref_element(GstBin* parent_bin, GstElement* current_element);
 	virtual void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) = 0;

@@ -216,15 +216,7 @@ SubElements VideoMediaPipeline::pipeline_make_udp_sink(GstBin* parent_bin, int b
 SubElements VideoMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bin_index, int client_index) {
 	SubElements udpsrc_pair = MediaPipeline::pipeline_make_udp_src_with_port(parent_bin, bin_index, client_index, contact_info_list_[client_index].org_video_port);
 
-	std::string name = get_elements_name(TYPE_UDP_CAPS, bin_index, client_index);
-	GstElement* videoCapsfilter = gst_element_factory_make("capsfilter", name.c_str());
-	GstCaps* videoCaps = gst_caps_from_string("application/x-rtp, media=(string)video, payload=(int)96");
-	g_object_set(G_OBJECT(videoCapsfilter), "caps", videoCaps, NULL);
-	gst_caps_unref(videoCaps);
-
-	gst_bin_add(GST_BIN(parent_bin), videoCapsfilter);
-	gst_element_link(udpsrc_pair.second, videoCapsfilter);
-	return SubElements(udpsrc_pair.first, videoCapsfilter);
+	return udpsrc_pair;
 }
 
 void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)

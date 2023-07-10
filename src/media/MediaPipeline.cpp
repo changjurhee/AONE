@@ -90,6 +90,18 @@ string MediaPipeline::get_elements_name(element_type etype, int bin_index, int c
 		case TYPE_BQUEUE:
 			name = "back_queue_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
+		case TYPE_SRTPENC:
+			name = "srtp_enc_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
+		case TYPE_SRTPENC_CAPS:
+			name = "srtp_enc_caps_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
+		case TYPE_SRTPDEC:
+			name = "srtp_dec_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
+		case TYPE_SRTPDEC_CAPS:
+			name = "srtp_dec_caps_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
 		default:
 			break;
 	}
@@ -131,12 +143,54 @@ vector<GstElement*> MediaPipeline::get_elements_list(element_type etype)
 	return elements_list;
 }
 
-SubElements pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) {
-	return SubElements(NULL, NULL);
+SubElements MediaPipeline::pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) {
+	std::string name = get_elements_name(TYPE_SRTPENC, bin_index, client_index);
+	GstElement* SRTPEncElement = gst_element_factory_make("srtpenc", name.c_str());
+
+	name = get_elements_name(TYPE_SRTPENC_CAPS, bin_index, client_index);
+	GstElement* SRTPEncCapsElement = gst_element_factory_make("capsfilter", name.c_str());
+
+	// Set the SRTP encryption key for video
+	guint8 data[30];
+	memset(data, 0, sizeof(data));
+	guint size = sizeof(data);
+	GstBuffer* keyBuffer = gst_buffer_new_wrapped(data, size);
+
+	// Set srtpenc properties
+	g_object_set(SRTPEncElement, "key", keyBuffer, NULL);
+	g_object_set(SRTPEncElement, "rtp-auth", 2, NULL);
+	g_object_set(SRTPEncElement, "rtp-cipher", 1, NULL);
+	g_object_set(SRTPEncElement, "rtcp-auth", 2, NULL);
+	g_object_set(SRTPEncElement, "rtcp-cipher", 1, NULL);
+
+	// Set srtpEncCaps
+	GstCaps* caps = gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
+	g_object_set(SRTPEncCapsElement, "caps", caps, NULL);
+	gst_caps_unref(caps);
+
+	gst_bin_add(GST_BIN(parent_bin), SRTPEncElement);
+	gst_bin_add(GST_BIN(parent_bin), SRTPEncCapsElement);
+	gst_element_link(SRTPEncElement, SRTPEncCapsElement);
+	return make_pair(SRTPEncElement, SRTPEncCapsElement);
 }
 
-SubElements pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) {
-	return SubElements(NULL, NULL);
+SubElements MediaPipeline::pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) {
+	std::string name = get_elements_name(TYPE_SRTPDEC_CAPS, bin_index, client_index);
+	GstElement* SRTPDecCapsElement = gst_element_factory_make("capsfilter", name.c_str());
+
+	name = get_elements_name(TYPE_SRTPDEC, bin_index, client_index);
+	GstElement* SRTPDecElement = gst_element_factory_make("srtpdec", name.c_str());
+
+	// Set srtpDecrypt
+	GstCaps* videoCaps =
+		gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, srtp-key=(buffer)000000000000000000000000000000000000000000000000000000000000, srtp-cipher=(string)aes-128-icm, srtp-auth=(string)hmac-sha1-80, srtcp-cipher=(string)aes-128-icm, srtcp-auth=(string)hmac-sha1-80, roc=(uint)0");
+	g_object_set(G_OBJECT(SRTPDecCapsElement), "caps", videoCaps, NULL);
+	gst_caps_unref(videoCaps);
+
+	gst_bin_add(GST_BIN(parent_bin), SRTPDecCapsElement);
+	gst_bin_add(GST_BIN(parent_bin), SRTPDecElement);
+	gst_element_link(SRTPDecCapsElement, SRTPDecElement);
+	return make_pair(SRTPDecCapsElement, SRTPDecElement);
 }
 
 SubElements MediaPipeline::pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index, bool is_front) {
@@ -383,11 +437,11 @@ SubElements MediaPipeline::add_client_at_src(GstBin * parent_bin, int bin_index,
 	SubElements udp_src_pair = pipeline_make_udp_src(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, udp_src_pair);
 
-	SubElements jitter_pair = pipeline_make_jitter_buffer(parent_bin, bin_index, client_index);
-	ret_sub_elements = connect_subElements(ret_sub_elements, jitter_pair);
-
 	SubElements restoration_pair = pipeline_make_restoration(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, restoration_pair);
+
+	SubElements jitter_pair = pipeline_make_jitter_buffer(parent_bin, bin_index, client_index);
+	ret_sub_elements = connect_subElements(ret_sub_elements, jitter_pair);
 
 	SubElements decoding_pair = pipeline_make_decoding(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, decoding_pair);
