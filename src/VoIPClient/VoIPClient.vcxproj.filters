@@ -55,12 +55,6 @@
     <ClCompile Include="..\media\litevad.cpp">
       <Filter>media</Filter>
     </ClCompile>
-    <ClCompile Include="StartDlg.cpp" />
-    <ClCompile Include="ContactRegisterDlg.cpp" />
-    <ClCompile Include="SessionRegisterDlg.cpp" />
-    <ClCompile Include="ContactView.cpp" />
-    <ClCompile Include="SessionView.cpp" />
-    <ClCompile Include="ResetPasswordDlg.cpp" />
     <ClCompile Include="..\media\vad_processor.cpp">
       <Filter>media</Filter>
     </ClCompile>
@@ -90,6 +84,24 @@
     </ClCompile>
     <ClCompile Include="..\media\media_types.cpp">
       <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="ContactRegisterDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ContactView.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ResetPasswordDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SessionRegisterDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SessionView.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="StartDlg.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -168,12 +180,6 @@
     <ClInclude Include="..\media\litevad.h">
       <Filter>media</Filter>
     </ClInclude>
-    <ClInclude Include="StartDlg.h" />
-    <ClInclude Include="ContactRegisterDlg.h" />
-    <ClInclude Include="SessionRegisterDlg.h" />
-    <ClInclude Include="ContactView.h" />
-    <ClInclude Include="SessionView.h" />
-    <ClInclude Include="ResetPasswordDlg.h" />
     <ClInclude Include="..\media\vad_processor.h">
       <Filter>media</Filter>
     </ClInclude>
@@ -218,6 +224,24 @@
     </ClInclude>
     <ClInclude Include="..\media\media_types.h">
       <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="ContactRegisterDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ContactView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ResetPasswordDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SessionRegisterDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SessionView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="StartDlg.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -350,25 +374,63 @@
     <Image Include="res\VoIPClientDoc.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\VoIPServer\res\icons8-homer-simpson-480.png" />
-    <Image Include="res\login_95461.ico" />
-    <Image Include="res\sign_6358961.ico" />
-    <Image Include="res\login_95461_64x64.ico" />
-    <Image Include="res\sign_6358961_64x64.ico" />
-    <Image Include="res\icons8-homer-simpson-480.png" />
-    <Image Include="res\icon2.ico" />
-    <Image Include="res\homer.ico" />
-    <Image Include="res\MOOZ.bmp" />
-    <Image Include="res\bitmap2.bmp" />
-    <Image Include="res\log-in.bmp" />
-    <Image Include="res\password.bmp" />
-    <Image Include="res\sign-in.bmp" />
-    <Image Include="res\log-in-d.bmp" />
-    <Image Include="res\password-d.bmp" />
-    <Image Include="res\sign-in-d.bmp" />
-    <Image Include="res\log-in-f.bmp" />
-    <Image Include="res\password-f.bmp" />
-    <Image Include="res\sign-in-f.bmp" />
+    <Image Include="res\bitmap2.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\homer.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icon2.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\VoIPServer\res\icons8-homer-simpson-480.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-homer-simpson-480.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\log-in.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\login_95461.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\login_95461_64x64.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\log-in-d.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\log-in-f.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\MOOZ.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\password.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\password-d.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\password-f.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\sign_6358961.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\sign_6358961_64x64.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\sign-in.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\sign-in-d.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\sign-in-f.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="VoIPClient.reg" />
