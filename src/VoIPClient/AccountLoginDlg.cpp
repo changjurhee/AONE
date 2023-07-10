@@ -14,6 +14,12 @@
 #define new DEBUG_NEW
 #endif
 
+// Session
+#include <thread>
+#include "session/SessionManager.h"
+#include "session/UiController.h"
+#include "CommandLineInterface.h"
+
 // CAccountLoginDlg 대화 상자
 
 IMPLEMENT_DYNAMIC(CAccountLoginDlg, CDialogEx)
@@ -37,14 +43,13 @@ void CAccountLoginDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_PASSWORD, m_edPassword);
 	DDX_Control(pDX, IDC_MFCBTN_LOGIN, m_btnLogIn);
 	DDX_Control(pDX, IDC_MFCBTN_SIGN_IN, m_btnSignIn);
-	DDX_Control(pDX, IDC_MFCBTN_RESET_PW, m_btnResetPw);
 }
 
 
 BEGIN_MESSAGE_MAP(CAccountLoginDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCBTN_LOGIN, &CAccountLoginDlg::OnBnClickedMfcbtnLogin)
 	ON_BN_CLICKED(IDC_MFCBTN_SIGN_IN, &CAccountLoginDlg::OnBnClickedMfcbtnSignIn)
-	ON_BN_CLICKED(IDC_MFCBTN_RESET_PW, &CAccountLoginDlg::OnBnClickedMfcbtnResetPw)
+	ON_MESSAGE(UWM_UI_CONTROLLER, &CAccountLoginDlg::processUiControlNotify)
 	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
@@ -75,7 +80,7 @@ void CAccountLoginDlg::OnBnClickedMfcbtnLogin()
 	GetDocument()->SetUser(spUserInfo);
 	GetDocument()->IsCurrentUser = TRUE;
 
-	EndDialog((INT_PTR)KResponse::LOGIN);
+	UiController::getInstance()->req_Login(this, std::string(CT2CA(m_edEmailID)), std::string(CT2CA(m_edPassword)));
 }
 
 void CAccountLoginDlg::OnBnClickedMfcbtnSignIn()
@@ -95,13 +100,6 @@ void CAccountLoginDlg::OnBnClickedMfcbtnSignIn()
 	//EndDialog((INT_PTR)KResponse::UPDATE_USER);
 }
 
-
-void CAccountLoginDlg::OnBnClickedMfcbtnResetPw()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	EndDialog((INT_PTR)KResponse::RESET_PASSWORD);
-}
-
 HBRUSH CAccountLoginDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -118,12 +116,55 @@ BOOL CAccountLoginDlg::OnInitDialog()
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 	m_btnLogIn.LoadBitmaps(IDB_LOG_IN, IDB_LOG_IN_D, NULL , IDB_LOG_IN_F);
 	m_btnSignIn.LoadBitmaps(IDB_SIGN_IN, IDB_SIGN_IN_D, NULL, IDB_SIGN_IN_F);
-	m_btnResetPw.LoadBitmaps(IDB_RESET_PW, IDB_RESET_PW_D, NULL, IDB_RESET_PW_F);
 
 	m_btnLogIn.SizeToContent();
 	m_btnSignIn.SizeToContent();
-	m_btnResetPw.SizeToContent();
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
+}
+
+BOOL CAccountLoginDlg::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_KEYDOWN) {
+		if (pMsg->wParam == VK_RETURN  ) {
+			OnBnClickedMfcbtnLogin();
+			return TRUE;
+		} else if (pMsg->wParam == VK_ESCAPE) {
+			return FALSE;
+		}
+	}
+
+	return CDialog::PreTranslateMessage(pMsg);
+}
+
+LRESULT CAccountLoginDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
+{
+	cout << "processUiControlNotify()/WPARAM:" << wParam << "/LPARAM:" << lParam << endl;
+	switch (wParam)
+	{
+	case MSG_RESPONSE_CONNECT:
+		if ( lParam == 0 ) {
+			cout << "SUCCESS" << endl;
+			MessageBox(_T("Connection Success"));
+		} else  {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Connection FAILED"));
+		} 
+		break;
+	case MSG_RESPONSE_LOGIN:
+		if (lParam == 0) {
+			cout << "SUCCESS" << endl;
+			MessageBox(_T("Login Success"));
+			EndDialog((INT_PTR)KResponse::LOGIN_COMPLETE);
+		}
+		else {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Login FAILED"));
+		}
+		break;
+	default:
+		break;
+	}
+	return LRESULT();
 }

@@ -239,9 +239,11 @@
     <ClInclude Include="session\Call.h" />
     <ClInclude Include="session\CallsManager.h" />
     <ClInclude Include="session\Constants.h" />
+    <ClInclude Include="session\Data.h" />
     <ClInclude Include="session\IAccountManager.h" />
     <ClInclude Include="session\ICallsManager.h" />
     <ClInclude Include="session\ISessionMediaCallback.h" />
+    <ClInclude Include="session\IUiController.h" />
     <ClInclude Include="session\SessionControl.h" />
     <ClInclude Include="session\SessionManager.h" />
     <ClInclude Include="StartDlg.h" />
@@ -269,6 +271,7 @@
     <ClCompile Include="ClientMediaManager.cpp" />
     <ClCompile Include="ContactRegisterDlg.cpp" />
     <ClCompile Include="ContactView.cpp" />
+    <ClCompile Include="CommandLineInterface.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="ManageUserAccountDlg.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
@@ -289,6 +292,7 @@
     <ClCompile Include="session\SessionManager.cpp" />
     <ClCompile Include="StartDlg.cpp" />
     <ClCompile Include="ViewTree.cpp" />
+    <ClCompile Include="session\UiController.cpp" />
     <ClCompile Include="VoIPClient.cpp" />
     <ClCompile Include="VoIPClientDoc.cpp" />
     <ClCompile Include="VoIPClientView.cpp" />

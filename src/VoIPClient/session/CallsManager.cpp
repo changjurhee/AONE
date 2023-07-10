@@ -223,6 +223,11 @@ void CallsManager::setSessionControl(SessionControl* control) {
 	sessionControl = control;
 }
 
+void CallsManager::setUiControl(IUiController* control)
+{
+	uiControl = control;
+}
+
 void CallsManager::onIncomingCall(Json::Value data) {
 	if (sessionControl == nullptr) {
 		std::cerr << "Not register sessionControl" << std::endl;
@@ -250,6 +255,9 @@ void CallsManager::onIncomingCall(Json::Value data) {
 	call->setContactId(from);
 	call->setCallState(CallState::STATE_RINGING);
 	std::cout << "[Received] -> (STATE_RINGING) Calling from " << from << std::endl;
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
+	}
 }
 
 void CallsManager::onOutgoingCallResult(Json::Value data) {
@@ -260,6 +268,9 @@ void CallsManager::onOutgoingCallResult(Json::Value data) {
 	else if (result == 2) { // 2:fail
 		onFailedOutgoingCall(data);
 	}
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
+	}
 }
 
 void CallsManager::onIncomingCallResult(Json::Value data) {
@@ -269,6 +280,9 @@ void CallsManager::onIncomingCallResult(Json::Value data) {
 	}
 	else if (result == 2) { // 2:fail
 		onRejectedIncomingCall();
+	}
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
 	}
 }
 
@@ -283,6 +297,9 @@ void CallsManager::onDisconnected(Json::Value data) {
 	Json::Value media;
 	media["rid"] = call->getCallId();
 	ClientMediaManager::getInstance()->endCall(media);
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
+	}
 }
 
 void CallsManager::onJoinConferenceResult(Json::Value data) {
@@ -293,6 +310,9 @@ void CallsManager::onJoinConferenceResult(Json::Value data) {
 	}
 	else if (result == 2) {
 		onFailedJoinConference(data);
+	}
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
 	}
 }
 
@@ -307,6 +327,9 @@ void CallsManager::onExitConference(Json::Value data) {
 	Json::Value media;
 	media["rid"] = call->getCallId();
 	ClientMediaManager::getInstance()->endCall(media);
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
+	}
 }
 
 void CallsManager::onVideoQualityChanged(Json::Value data) {

@@ -626,19 +626,13 @@ void CMainFrame::UserLogIn()
 	INT_PTR nRet = -1;
 	nRet = accountLoginDlg.DoModal();
 	if (IDCANCEL != nRet) {
-		if ((KResponse)nRet == KResponse::LOGIN) {
-			//m_spUserInfo = accountLoginDlg.GetUserInfo();
-		}
-		else if ((KResponse)nRet == KResponse::RESET_PASSWORD) {
-			CResetPasswordDlg resetPasswordDlg;
-			resetPasswordDlg.DoModal();
-		}
-		else {
-			CManageUserAccountDlg manageUserAccountDlg;
-			manageUserAccountDlg.DoModal();
+		if ((KResponse)nRet == KResponse::LOGIN_COMPLETE) {
+			// TODO Login complete : Go to the main screen 
+			MessageBox(_T("Login Complete"));
+		} else if ((KResponse)nRet == KResponse::CREATE_USER) {
+			AddContactList();
 		}
 	}
-
 	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
 	SetWindowText(FormatString(_T("MOOZ %s"), pDoc->GetUser()->email.c_str()).data());
 }
