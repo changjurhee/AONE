@@ -26,4 +26,12 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
+	// Handle UI notification from modules
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnBnClickedOk();
+	CString m_sNewPassword;
+	CComboBox m_cbPassword;
+	CString m_edPasswordAnswer;
+	virtual BOOL OnInitDialog();
 };
