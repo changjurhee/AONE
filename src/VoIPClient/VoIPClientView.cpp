@@ -27,8 +27,10 @@ BEGIN_MESSAGE_MAP(CVoIPClientView, CView)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CVoIPClientView::OnFilePrintPreview)
+	ON_COMMAND(ID_EDIT_CUT, &CVoIPClientView::OnEditCut)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 // CVoIPClientView 생성/소멸
@@ -36,6 +38,7 @@ END_MESSAGE_MAP()
 CVoIPClientView::CVoIPClientView() noexcept
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
+	LOG_DEBUG("waiting something...");
 
 }
 
@@ -47,6 +50,7 @@ BOOL CVoIPClientView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: CREATESTRUCT cs를 수정하여 여기에서
 	//  Window 클래스 또는 스타일을 수정합니다.
+	LOG_DEBUG("waiting something...");
 
 	return CView::PreCreateWindow(cs);
 }
@@ -56,6 +60,9 @@ BOOL CVoIPClientView::PreCreateWindow(CREATESTRUCT& cs)
 void CVoIPClientView::OnDraw(CDC* /*pDC*/)
 {
 	CVoIPClientDoc* pDoc = GetDocument();
+	
+	LOG_DEBUG("waiting something...");
+
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
@@ -99,10 +106,14 @@ void CVoIPClientView::OnRButtonUp(UINT /* nFlags */, CPoint point)
 void CVoIPClientView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
 #ifndef SHARED_HANDLERS
-	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
+	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, FALSE);
 #endif
 }
 
+void CVoIPClientView::OnEditCut()
+{
+	LOG_DEBUG("waiting something...");
+}
 
 // CVoIPClientView 진단
 
@@ -126,3 +137,41 @@ CVoIPClientDoc* CVoIPClientView::GetDocument() const // 디버그되지 않은 �
 
 
 // CVoIPClientView 메시지 처리기
+
+void CVoIPClientView::OnPaint()
+{
+	CPaintDC dc(this); // 그리기를 위한 디바이스 컨텍스트입니다.
+	
+	CRect rectClient;
+	GetClientRect(rectClient);
+	CPoint StartPos = rectClient.CenterPoint();
+
+	CDC MemDC;
+	BITMAP bmpInfo;
+
+	// 화면 DC와 호환되는 메모리 DC를 생성
+	MemDC.CreateCompatibleDC(&dc);
+
+	// 비트맵 리소스 로딩
+	CBitmap bmp;
+	CBitmap* pOldBmp = NULL;
+	bmp.LoadBitmapW(IDB_MASK);
+
+	// 로딩된 비트맵 정보 확인
+	bmp.GetBitmap(&bmpInfo);
+
+	// 메모리 DC에 선택
+	pOldBmp = MemDC.SelectObject(&bmp);
+
+	// 메모리 DC에 들어 있는 비트맵을 화면 DC로 복사하여 출력
+	dc.BitBlt(StartPos.x - bmpInfo.bmWidth / 2, StartPos.y - bmpInfo.bmHeight / 2, bmpInfo.bmWidth, bmpInfo.bmHeight, &MemDC, 0, 0, SRCCOPY);
+
+	MemDC.SelectObject(pOldBmp);
+}
+
+
+void CVoIPClientView::OnUpdate(CView* /*pSender*/, LPARAM /*lHint*/, CObject* /*pHint*/)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	ModifyStyleEx(WS_EX_CLIENTEDGE, 0, SWP_FRAMECHANGED);
+}

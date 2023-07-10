@@ -2,19 +2,19 @@
 #include "afxdialogex.h"
 
 
-// CManageUserAccountDlg 대화 상자
+// CSessionRegisterDlg 대화 상자
 
-class CManageUserAccountDlg : public CDialogEx
+class CSessionRegisterDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(CManageUserAccountDlg)
+	DECLARE_DYNAMIC(CSessionRegisterDlg)
 
 public:
-	CManageUserAccountDlg(CWnd* pParent = nullptr);   // 표준 생성자입니다.
-	virtual ~CManageUserAccountDlg();
+	CSessionRegisterDlg(CWnd* pParent = nullptr);   // 표준 생성자입니다.
+	virtual ~CSessionRegisterDlg();
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_DLG_MANAGE_ACCOUNT };
+	enum { IDD = IDD_DLG_SESSION_REGISTER };
 #endif
 
 public:
@@ -25,8 +25,6 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedMfcbtnCreate();
-	afx_msg void OnBnClickedMfcbtnUpdate();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 };

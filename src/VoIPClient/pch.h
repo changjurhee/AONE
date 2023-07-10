@@ -13,6 +13,8 @@
 #include <string>
 #include <string_view>
 
+#include "common/logger.h"
+
 using tstring = std::basic_string<TCHAR>;
 using tstring_view = std::basic_string_view<TCHAR>;
 using tstringstream = std::basic_stringstream<TCHAR>;
@@ -39,5 +41,19 @@ static std::string FormatString(const std::string_view& rsFormat, TypeTs ... Var
 	return std::string(sMessage);
 }
 #pragma warning(pop)
+
+enum class KResponse : INT_PTR {
+	LOGIN,
+	CREATE_USER,
+	UPDATE_USER,
+	RESET_PASSWORD,
+	START,
+};
+
+struct userInfo {
+	tstring email;
+	tstring password;
+	tstring server_ip_num;
+};
 
 #endif //PCH_H

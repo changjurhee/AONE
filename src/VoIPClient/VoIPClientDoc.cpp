@@ -46,10 +46,12 @@ END_INTERFACE_MAP()
 CVoIPClientDoc::CVoIPClientDoc() noexcept
 {
 	// TODO: 여기에 일회성 생성 코드를 추가합니다.
-
 	EnableAutomation();
 
 	AfxOleLockApp();
+	m_spUserInfo = std::shared_ptr<userInfo>(new userInfo);
+
+	IsCurrentUser = FALSE;
 }
 
 CVoIPClientDoc::~CVoIPClientDoc()
@@ -67,9 +69,6 @@ BOOL CVoIPClientDoc::OnNewDocument()
 
 	return TRUE;
 }
-
-
-
 
 // CVoIPClientDoc serialization
 

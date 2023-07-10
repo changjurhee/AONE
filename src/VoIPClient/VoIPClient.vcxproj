@@ -220,10 +220,9 @@
     <ClInclude Include="calendarbar.h" />
     <ClInclude Include="CallListView.h" />
     <ClInclude Include="CallView.h" />
-    <ClInclude Include="ClassView.h" />
     <ClInclude Include="ClientMediaManager.h" />
-    <ClInclude Include="CommandLineInterface.h" />
-    <ClInclude Include="FileView.h" />
+    <ClInclude Include="ContactRegisterDlg.h" />
+    <ClInclude Include="ContactView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IClientMediaManager.h" />
     <ClInclude Include="IServerMediaManager.h" />
@@ -232,7 +231,10 @@
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PropertiesWnd.h" />
+    <ClInclude Include="ResetPasswordDlg.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SessionRegisterDlg.h" />
+    <ClInclude Include="SessionView.h" />
     <ClInclude Include="ServerMediaManager.h" />
     <ClInclude Include="session\AccountManager.h" />
     <ClInclude Include="session\Call.h" />
@@ -243,6 +245,7 @@
     <ClInclude Include="session\ISessionMediaCallback.h" />
     <ClInclude Include="session\SessionControl.h" />
     <ClInclude Include="session\SessionManager.h" />
+    <ClInclude Include="StartDlg.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ViewTree.h" />
     <ClInclude Include="VoIPClient.h" />
@@ -265,10 +268,9 @@
     <ClCompile Include="calendarbar.cpp" />
     <ClCompile Include="CallListView.cpp" />
     <ClCompile Include="CallView.cpp" />
-    <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="ClientMediaManager.cpp" />
-    <ClCompile Include="CommandLineInterface.cpp" />
-    <ClCompile Include="FileView.cpp" />
+    <ClCompile Include="ContactRegisterDlg.cpp" />
+    <ClCompile Include="ContactView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="ManageUserAccountDlg.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
@@ -279,11 +281,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PropertiesWnd.cpp" />
+    <ClCompile Include="ResetPasswordDlg.cpp" />
+    <ClCompile Include="SessionRegisterDlg.cpp" />
+    <ClCompile Include="SessionView.cpp" />
     <ClCompile Include="ServerMediaManager.cpp" />
     <ClCompile Include="session\AccountManager.cpp" />
     <ClCompile Include="session\Call.cpp" />
     <ClCompile Include="session\CallsManager.cpp" />
     <ClCompile Include="session\SessionManager.cpp" />
+    <ClCompile Include="StartDlg.cpp" />
     <ClCompile Include="ViewTree.cpp" />
     <ClCompile Include="VoIPClient.cpp" />
     <ClCompile Include="VoIPClientDoc.cpp" />
@@ -302,6 +308,7 @@
   <ItemGroup>
     <Image Include="..\VoIPServer\res\icons8-homer-simpson-32x32.ico" />
     <Image Include="..\VoIPServer\res\icons8-homer-simpson-480.png" />
+    <Image Include="res\bitmap2.bmp" />
     <Image Include="res\classview.bmp" />
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
@@ -312,6 +319,8 @@
     <Image Include="res\fileview_hc.bmp" />
     <Image Include="res\file_view.ico" />
     <Image Include="res\file_view_hc.ico" />
+    <Image Include="res\homer.ico" />
+    <Image Include="res\icon2.ico" />
     <Image Include="res\icons8-anonymous-mask-100.png" />
     <Image Include="res\icons8-anonymous-mask-120.png" />
     <Image Include="res\icons8-anonymous-mask-240.png" />
@@ -324,10 +333,14 @@
     <Image Include="res\icons8-homer-simpson-32x32.ico" />
     <Image Include="res\icons8-homer-simpson-480.png" />
     <Image Include="res\info.bmp" />
+    <Image Include="res\log-in-d.bmp" />
+    <Image Include="res\log-in-f.bmp" />
+    <Image Include="res\log-in.bmp" />
     <Image Include="res\login_95461.ico" />
     <Image Include="res\login_95461_64x64.ico" />
     <Image Include="res\menuimages.bmp" />
     <Image Include="res\menuimages_hc.bmp" />
+    <Image Include="res\MOOZ.bmp" />
     <Image Include="res\nav_large.bmp" />
     <Image Include="res\nav_large_hc.bmp" />
     <Image Include="res\output_wnd.ico" />
@@ -336,10 +349,16 @@
     <Image Include="res\pages_hc.bmp" />
     <Image Include="res\pages_small.bmp" />
     <Image Include="res\pages_small_hc.bmp" />
+    <Image Include="res\password-d.bmp" />
+    <Image Include="res\password-f.bmp" />
+    <Image Include="res\password.bmp" />
     <Image Include="res\properties.bmp" />
     <Image Include="res\properties_hc.bmp" />
     <Image Include="res\properties_wnd.ico" />
     <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\sign-in-d.bmp" />
+    <Image Include="res\sign-in-f.bmp" />
+    <Image Include="res\sign-in.bmp" />
     <Image Include="res\sign_6358961.ico" />
     <Image Include="res\sign_6358961_64x64.ico" />
     <Image Include="res\sort.bmp" />

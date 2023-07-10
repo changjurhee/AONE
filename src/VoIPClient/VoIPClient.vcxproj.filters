@@ -13,12 +13,6 @@
     <ClCompile Include="CallView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ClassView.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="FileView.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="MainFrm.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -67,6 +61,12 @@
     <ClCompile Include="..\media\litevad.cpp">
       <Filter>media</Filter>
     </ClCompile>
+    <ClCompile Include="StartDlg.cpp" />
+    <ClCompile Include="ContactRegisterDlg.cpp" />
+    <ClCompile Include="SessionRegisterDlg.cpp" />
+    <ClCompile Include="ContactView.cpp" />
+    <ClCompile Include="SessionView.cpp" />
+    <ClCompile Include="ResetPasswordDlg.cpp" />
     <ClCompile Include="..\media\vad_processor.cpp">
       <Filter>media</Filter>
     </ClCompile>
@@ -112,12 +112,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CallView.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ClassView.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FileView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
@@ -189,6 +183,12 @@
     <ClInclude Include="..\media\litevad.h">
       <Filter>media</Filter>
     </ClInclude>
+    <ClInclude Include="StartDlg.h" />
+    <ClInclude Include="ContactRegisterDlg.h" />
+    <ClInclude Include="SessionRegisterDlg.h" />
+    <ClInclude Include="ContactView.h" />
+    <ClInclude Include="SessionView.h" />
+    <ClInclude Include="ResetPasswordDlg.h" />
     <ClInclude Include="..\media\vad_processor.h">
       <Filter>media</Filter>
     </ClInclude>
@@ -374,6 +374,19 @@
     <Image Include="res\login_95461_64x64.ico" />
     <Image Include="res\sign_6358961_64x64.ico" />
     <Image Include="res\icons8-homer-simpson-480.png" />
+    <Image Include="res\icon2.ico" />
+    <Image Include="res\homer.ico" />
+    <Image Include="res\MOOZ.bmp" />
+    <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\log-in.bmp" />
+    <Image Include="res\password.bmp" />
+    <Image Include="res\sign-in.bmp" />
+    <Image Include="res\log-in-d.bmp" />
+    <Image Include="res\password-d.bmp" />
+    <Image Include="res\sign-in-d.bmp" />
+    <Image Include="res\log-in-f.bmp" />
+    <Image Include="res\password-f.bmp" />
+    <Image Include="res\sign-in-f.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="VoIPClient.reg" />
