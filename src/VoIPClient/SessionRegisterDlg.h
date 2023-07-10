@@ -45,4 +45,10 @@ public:
 
 	// Handle UI notification from modules
 	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
+	// // second
+	COleDateTime m_Date;
+	// // second
+	COleDateTime m_StartTime;
+	// // second
+	COleDateTime m_endTime;
 };

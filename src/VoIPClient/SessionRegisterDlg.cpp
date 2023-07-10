@@ -20,6 +20,9 @@ CSessionRegisterDlg::CSessionRegisterDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DLG_SESSION_REGISTER, pParent)
 	, m_nIndexContact(0)
 	, m_nIndexParticipants(0)
+	, m_Date(COleDateTime::GetCurrentTime())
+	, m_StartTime(COleDateTime::GetCurrentTime())
+	, m_endTime(COleDateTime::GetCurrentTime())
 {
 
 }
@@ -33,6 +36,9 @@ void CSessionRegisterDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LT_CONTACT, m_ltContact);
 	DDX_Control(pDX, IDC_LT_PARTICIPANTS, m_ltParticipants);
+	DDX_DateTimeCtrl(pDX, IDC_DP_DATE, m_Date);
+	DDX_DateTimeCtrl(pDX, IDC_DP_TIME_START, m_StartTime);
+	DDX_DateTimeCtrl(pDX, IDC_DP_TIME_END, m_endTime);
 }
 
 
@@ -71,6 +77,27 @@ HBRUSH CSessionRegisterDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 void CSessionRegisterDlg::OnBnClickedOk()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+	/*constexpr long long RESOLUTION_TIME = 10000000;
+	std::tm tm_start = {};
+	std::tm tm_end = {};
+	std::string st_time = FormatString("%d %d %d %d %d %d", m_Date.GetYear(), m_Date.GetMonth(), m_Date.GetDay(), m_StartTime.GetHour(), m_StartTime.GetMinute(), m_StartTime.GetSecond());
+	std::string ed_time = FormatString("%d %d %d %d %d %d", m_Date.GetYear(), m_Date.GetMonth(), m_Date.GetDay(), m_endTime.GetHour(), m_endTime.GetMinute(), m_endTime.GetSecond());
+
+	std::stringstream ss_s(st_time);
+	std::stringstream ss_e(ed_time);
+	ss_s >> std::get_time(&tm_start, "%Y %m %d %H %M %S");
+	ss_e>> std::get_time(&tm_end, "%Y %m %d %H %M %S");
+	auto tp_s = std::chrono::system_clock::from_time_t(std::mktime(&tm_start));
+	auto tp_e = std::chrono::system_clock::from_time_t(std::mktime(&tm_end));
+	std::chrono::seconds duration_second = std::chrono::duration_cast<std::chrono::seconds>(tp_e - tp_s);
+
+	std::cout << tp_s.time_since_epoch().count() / RESOLUTION_TIME << "\n";
+	std::cout << tp_e.time_since_epoch().count() / RESOLUTION_TIME << "\n";
+	std::cout << duration_second.count()  << "\n";*/
+
+	stOleToDate res = SetDateTime(m_Date, m_StartTime, m_endTime);
+
 	int num = m_ltParticipants.GetItemCount();
 	std::list<std::string> Participants;
 
@@ -78,7 +105,7 @@ void CSessionRegisterDlg::OnBnClickedOk()
 		Participants.push_back(std::string(CT2CA(m_ltParticipants.GetItemText(i, 0))));
 	}
 
-	if(num != 0) UiController::getInstance()->request_CreateConference(this, 1, 1, Participants);
+	if(num != 0) UiController::getInstance()->request_CreateConference(this, res.dataAndTime, res.duration, Participants);
 }
 
 
