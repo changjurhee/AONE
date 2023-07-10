@@ -7,12 +7,6 @@
     <ClCompile Include="calendarbar.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CallListView.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CallView.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="MainFrm.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -79,12 +73,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="calendarbar.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CallListView.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CallView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
