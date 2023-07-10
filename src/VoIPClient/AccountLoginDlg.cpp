@@ -75,14 +75,6 @@ void CAccountLoginDlg::OnBnClickedMfcbtnLogin()
 	GetDocument()->SetUser(spUserInfo);
 	GetDocument()->IsCurrentUser = TRUE;
 
-	
-	// For TEST CommandLineInterface
-	// TODO Modify
-	// SessionManager init
-	// SessionManager::getInstance()->init(serverIp.c_str(), serverPort); // TODO modify dynamic serverIp, serverPort
-	std::thread commandline(&CAccountLoginDlg::RunCommandLine, this);
-	commandline.detach();
-
 	EndDialog((INT_PTR)KResponse::LOGIN);
 }
 
