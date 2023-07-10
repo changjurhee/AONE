@@ -29,4 +29,6 @@ public:
 	afx_msg void OnBnClickedMfcbtnStart();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnNcPaint();
+
+	LRESULT CStartDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam);
 };

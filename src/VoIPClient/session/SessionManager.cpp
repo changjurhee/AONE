@@ -102,12 +102,6 @@ void SessionManager::proc_recv() {
 		
 		std::string msg(buf);
 		std::string msgStr;
-		if (msg.find("onLoginSuccess") != std::string::npos) {
-			msgStr = "onLoginSuccess";
-			std::vector<std::string> tokens = split(msg, ',');
-			accountManager->onLoginSuccess(tokens.back());
-		}
-
 		//-------------------------------------------------------------
 		// JSON payload parser
 		Json::Value jsonData;
@@ -186,6 +180,7 @@ void SessionManager::proc_recv() {
 void SessionManager::openSocket() {
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa)) {
+		accountManager->handleConnect(1); // Connection failed
 		std::cout << "WSA error";
 		WSACleanup();
 		return;
@@ -193,6 +188,7 @@ void SessionManager::openSocket() {
 
 	clientSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (clientSocket == INVALID_SOCKET) {
+		accountManager->handleConnect(1); // Connection failed
 		std::cout << std::endl;
 		std::cout << "socket error";
 		closesocket(clientSocket);
@@ -206,6 +202,7 @@ void SessionManager::openSocket() {
 	inet_pton(AF_INET, serverIP, &(addr.sin_addr.s_addr));
 
 	if (connect(clientSocket, (SOCKADDR*)&addr, sizeof(addr)) == -1) {
+		accountManager->handleConnect(1); // Connection failed
 		std::cout << std::endl;
 		std::cerr << "Failed to connect server." << std::endl;
 		closesocket(clientSocket);
@@ -213,7 +210,7 @@ void SessionManager::openSocket() {
 		return;
 	}
 	std::cout << "Connected to server!" << std::endl;
-
+	accountManager->handleConnect(0); // Connected to server
 	std::thread recvThread(&SessionManager::proc_recv, instance);
 	recvThread.join();
 

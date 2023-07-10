@@ -31,14 +31,16 @@ protected:
 public:
 	afx_msg void OnBnClickedMfcbtnLogin();
 	afx_msg void OnBnClickedMfcbtnSignIn();
-	afx_msg void OnBnClickedMfcbtnResetPw();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 public:
 	std::shared_ptr<userInfo> GetUserInfo() { return spUserInfo; }
 
+	// Handle UI notification from modules
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
+
 	virtual BOOL OnInitDialog();
+	BOOL PreTranslateMessage(MSG* pMsg);
 	CBitmapButton m_btnLogIn;
 	CBitmapButton m_btnSignIn;
-	CBitmapButton m_btnResetPw;
 };

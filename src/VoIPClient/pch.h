@@ -43,7 +43,10 @@ static std::string FormatString(const std::string_view& rsFormat, TypeTs ... Var
 #pragma warning(pop)
 
 enum class KResponse : INT_PTR {
-	LOGIN,
+	CONNECT_COMPLETE, 
+	CONNECT_FAILED,
+	LOGIN_COMPLETE,
+	LOGIN_FAILED, 
 	CREATE_USER,
 	UPDATE_USER,
 	RESET_PASSWORD,

@@ -9,6 +9,7 @@
 
 #include "afxdialogex.h"
 #include "StartDlg.h"
+#include "session/UiController.h"
 
 // CStartDlg 대화 상자
 
@@ -34,6 +35,7 @@ void CStartDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CStartDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCBTN_START, &CStartDlg::OnBnClickedMfcbtnStart)
+	ON_MESSAGE(UWM_UI_CONTROLLER, &CStartDlg::processUiControlNotify)
 	ON_WM_CTLCOLOR()
 	ON_WM_NCPAINT()
 END_MESSAGE_MAP()
@@ -58,7 +60,7 @@ void CStartDlg::OnBnClickedMfcbtnStart()
 	spUserInfo->server_ip_num = tstring(m_sIpAddressServer);
 	GetDocument()->SetUser(spUserInfo);
 
-	EndDialog((INT_PTR)KResponse::START);
+	UiController::getInstance()->req_Connect(this, std::string(CT2CA(m_sIpAddressServer)));
 }
 
 
@@ -84,3 +86,26 @@ void CStartDlg::OnNcPaint()
 	pDC->FrameRect(&rect, &brush);
 	ReleaseDC(pDC);
 }
+
+LRESULT CStartDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
+{
+	cout << "processUiControlNotify()/WPARAM:" << wParam << "/LPARAM:" << lParam << endl;
+	switch (wParam)
+	{
+	case MSG_RESPONSE_CONNECT:
+		if (lParam == 0) {
+			cout << "SUCCESS" << endl;
+			MessageBox(_T("Connection Success"));
+			EndDialog((INT_PTR)KResponse::CONNECT_COMPLETE);
+		}
+		else {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Connection FAILED"));
+		}
+		break;
+	default:
+		break;
+	}
+	return LRESULT();
+}
+
