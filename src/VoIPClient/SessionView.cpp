@@ -55,7 +55,8 @@ BEGIN_MESSAGE_MAP(CSessionView, CDockablePane)
 	ON_COMMAND(ID_CLASS_ADD_MEMBER_VARIABLE, OnClassAddMemberVariable)
 	ON_COMMAND(ID_CLASS_DEFINITION, OnClassDefinition)
 	ON_COMMAND(ID_CLASS_PROPERTIES, OnClassProperties)
-	ON_COMMAND(ID_NEW_FOLDER, OnNewFolder)
+	ON_COMMAND(ID_NEW_FOLDER, OnNewSession)
+	ON_COMMAND(ID_JOIN_SESSION, OnJoinSession)
 	ON_WM_PAINT()
 	ON_WM_SETFOCUS()
 	ON_COMMAND_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnSort)
@@ -271,10 +272,16 @@ void CSessionView::OnClassProperties()
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }
 
-void CSessionView::OnNewFolder()
+void CSessionView::OnNewSession()
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	pFrame->AddSessionList();
+}
+
+void CSessionView::OnJoinSession()
+{
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	pFrame->JoinSession();
 }
 
 void CSessionView::OnPaint()
