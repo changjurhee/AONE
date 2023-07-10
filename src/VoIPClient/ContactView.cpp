@@ -63,7 +63,9 @@ BEGIN_MESSAGE_MAP(CContactView, CDockablePane)
 	ON_COMMAND(ID_EDIT_CUT, OnEditCut)
 	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
 	ON_COMMAND(ID_EDIT_CLEAR, OnEditClear)
-	ON_COMMAND(ID_NEW_FOLDER, OnNewFolder)
+	ON_COMMAND(ID_NEW_FOLDER, OnNewUser)
+	ON_COMMAND(ID_DELETE_USER, OnDeleteUser)
+	ON_COMMAND(ID_JOIN_SESSION, OnJoinUser)
 	ON_WM_PAINT()
 	ON_WM_SETFOCUS()
 	ON_COMMAND_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnSort)
@@ -268,10 +270,22 @@ void CContactView::OnEditClear()
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }
 
-void CContactView::OnNewFolder()
+void CContactView::OnNewUser()
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	pFrame->AddContactList();
+}
+
+void CContactView::OnDeleteUser()
+{
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	pFrame->DeleteUser();
+}
+
+void CContactView::OnJoinUser()
+{
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	pFrame->JoinUser();
 }
 
 void CContactView::OnPaint()
