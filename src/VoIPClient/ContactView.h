@@ -54,7 +54,9 @@ protected:
 	afx_msg void OnEditClear();
 	afx_msg void OnPaint();
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
-	afx_msg void OnNewFolder();
+	afx_msg void OnNewUser();
+	afx_msg void OnDeleteUser();
+	afx_msg void OnJoinUser();
 	afx_msg void OnSort(UINT id);
 	afx_msg void OnUpdateSort(CCmdUI* pCmdUI);
 

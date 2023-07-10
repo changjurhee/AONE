@@ -671,10 +671,25 @@ void CMainFrame::AddSessionList()
 	dlg.DoModal();
 }
 
+void CMainFrame::JoinSession()
+{
+	MessageBox(CString("Join Session Event"));
+}
+
 void CMainFrame::AddContactList()
 {
 	CContactRegisterDlg dlg;
 	dlg.DoModal();
+}
+
+void CMainFrame::DeleteUser()
+{
+	MessageBox(CString("Delete User Event"));
+}
+
+void CMainFrame::JoinUser()
+{
+	MessageBox(CString("Join User Event"));
 }
 
 
