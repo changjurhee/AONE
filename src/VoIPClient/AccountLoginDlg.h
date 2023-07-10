@@ -23,24 +23,21 @@ private:
 	std::shared_ptr<userInfo> spUserInfo;
 	CString m_edEmailID;
 	CString m_edPassword;
+	CBitmapButton m_btnLogIn;
+	CBitmapButton m_btnSignIn;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
 public:
+	virtual BOOL OnInitDialog();
+	BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnBnClickedMfcbtnLogin();
 	afx_msg void OnBnClickedMfcbtnSignIn();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
-public:
 	std::shared_ptr<userInfo> GetUserInfo() { return spUserInfo; }
-
-	// Handle UI notification from modules
 	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
-
-	virtual BOOL OnInitDialog();
-	BOOL PreTranslateMessage(MSG* pMsg);
-	CBitmapButton m_btnLogIn;
-	CBitmapButton m_btnSignIn;
 };

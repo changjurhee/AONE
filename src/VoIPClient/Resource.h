@@ -149,8 +149,10 @@
 #define IDC_MFCBTN_LOGIN                1004
 #define IDC_MFCBTN_SIGN_IN              1005
 #define IDC_ED_NAME                     1007
+#define IDC_ED_EMAIL                    1007
 #define IDC_MFCBTN_CREATE               1008
 #define IDC_MFCBTN_UPDATE               1009
+#define IDC_MFCBTN_CANCEL               1009
 #define IDC_LIST1                       1010
 #define IDC_LST_CONTACT_ID              1010
 #define IDC_ED_LAST_NAME                1010
@@ -163,6 +165,7 @@
 #define IDC_Client_EndCall              1015
 #define IDC_COMBO1                      1016
 #define IDC_Server_StartCall            1016
+#define IDC_COMBO_PASSWORD_QUESTION     1016
 #define IDC_Server_EndCall              1017
 #define IDC_Server_AddClient            1018
 #define IDC_CB_PASSWORD_QUESTION        1019
@@ -196,6 +199,7 @@
 #define IDC_Server_CID                  1035
 #define IDC_SET_HANDLER                 1036
 #define IDC_DISPLAY                     1037
+#define IDC_ED_ACCOUNT_ID               1038
 #define ID_TEST_32771                   32771
 #define ID_TEST_32772                   32772
 #define ID_TEST_LOG_IN                  32773
@@ -214,8 +218,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        366
-#define _APS_NEXT_COMMAND_VALUE         32783
-#define _APS_NEXT_CONTROL_VALUE         1038
+#define _APS_NEXT_COMMAND_VALUE         32781
+#define _APS_NEXT_CONTROL_VALUE         1039
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
