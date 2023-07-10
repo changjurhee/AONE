@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-
+#define WM_MY_WINDOW_CREATED (WM_USER + 1)
 
 // CCallView 폼 보기
 
@@ -11,6 +11,8 @@ class CCallView : public CFormView
 protected:
 	CCallView();           // 동적 만들기에 사용되는 protected 생성자입니다.
 	virtual ~CCallView();
+	void OnInitialUpdate() override;
+	LRESULT OnMyWindowCreated(WPARAM wParam, LPARAM lParam);
 
 public:
 #ifdef AFX_DESIGN_TIME
