@@ -35,4 +35,5 @@ protected:
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnNcPaint();
+	virtual BOOL OnInitDialog();
 };
