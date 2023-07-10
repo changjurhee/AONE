@@ -27,4 +27,14 @@ protected:
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
+	CListCtrl m_ltContactNames;
+	CString m_sSearchName;
+	int m_ltIndex;
+	afx_msg void OnBnClickedMfcbtnSearch();
+
+	// Handle UI notification from modules
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
+	virtual BOOL OnInitDialog();
+	afx_msg void OnNMClickLtContactNames(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnBnClickedOk();
 };
