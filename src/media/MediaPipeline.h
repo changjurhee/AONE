@@ -48,6 +48,10 @@ enum element_type {
 	TYPE_FQUEUE,
 	TYPE_BQUEUE,
 	TYPE_TEE,
+	TYPE_SRTPENC,
+	TYPE_SRTPENC_CAPS,
+	TYPE_SRTPDEC,
+	TYPE_SRTPDEC_CAPS, 
 	TYPE_MAX
 };
 
@@ -96,6 +100,8 @@ protected :
 	virtual SubElements pipeline_make_jitter_buffer(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_udp_sink(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_udp_src(GstBin* parent_bin, int bin_index, int client_index) = 0;
+	virtual SubElements pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) = 0;
+	virtual SubElements pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	SubElements pipeline_make_udp_sink_with_port(GstBin* parent_bin, int bin_index, int client_index, int port);
 	SubElements pipeline_make_udp_src_with_port(GstBin* parent_bin, int bin_index, int client_index, int port);
 	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index, bool is_front);

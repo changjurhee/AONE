@@ -90,6 +90,18 @@ string MediaPipeline::get_elements_name(element_type etype, int bin_index, int c
 		case TYPE_BQUEUE:
 			name = "back_queue_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
+		case TYPE_SRTPENC:
+			name = "srtp_enc_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
+		case TYPE_SRTPENC_CAPS:
+			name = "srtp_enc_caps_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
+		case TYPE_SRTPDEC:
+			name = "srtp_dec_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
+		case TYPE_SRTPDEC_CAPS:
+			name = "srtp_dec_caps_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
 		default:
 			break;
 	}
@@ -129,14 +141,6 @@ vector<GstElement*> MediaPipeline::get_elements_list(element_type etype)
 			elements_list.push_back(element);
 	}
 	return elements_list;
-}
-
-SubElements pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) {
-	return SubElements(NULL, NULL);
-}
-
-SubElements pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) {
-	return SubElements(NULL, NULL);
 }
 
 SubElements MediaPipeline::pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index, bool is_front) {
@@ -273,7 +277,7 @@ void MediaPipeline::enable_debugging(void)
 	//gst_debug_set_threshold_for_name("rtph264pay", logLevel);
 	//gst_debug_set_threshold_for_name("udpsink", logLevel);
 	/* Set default debug level */
-	//gst_debug_set_default_threshold(GST_LEVEL_FIXME);
+	gst_debug_set_default_threshold(GST_LEVEL_FIXME);
 	//g_printerr("log start!!!\n");
 
 	//for (int etype_int = TYPE_INPUT_DEVICE; etype_int != TYPE_MAX; etype_int++)

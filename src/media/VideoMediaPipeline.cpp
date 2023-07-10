@@ -227,6 +227,14 @@ SubElements VideoMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 	return SubElements(udpsrc_pair.first, videoCapsfilter);
 }
 
+SubElements VideoMediaPipeline::pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) {
+	return SubElements(NULL, NULL);
+}
+
+SubElements VideoMediaPipeline::pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) {
+	return SubElements(NULL, NULL);
+}
+
 void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)
 {
 	int base_width = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height;
