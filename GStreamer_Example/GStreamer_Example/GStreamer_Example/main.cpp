@@ -138,8 +138,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 int main(int argc, char* argv[])
 {
-    // Initialize GStreamer
+    // Initialize GStreamer 
     gst_init(&argc, &argv);
+
+    /* Set default debug level */
+    gst_debug_set_default_threshold(GST_LEVEL_FIXME);
 
     // 윈도우 클래스 등록
     WNDCLASSEX wc = {};
