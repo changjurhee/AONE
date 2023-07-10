@@ -266,6 +266,11 @@ void AccountManager::deleteContact(std::string cid)
 
 void AccountManager::addContact(std::string cid)
 {
+	for (auto& contact : AccountManager::myContactDataList) {
+		if (cid == contact) {
+			return;
+		}
+	}
 	//Add cid in myContactDataList and request updateMyContactList
 	for (auto& contact : AccountManager::allConatactDataList) {
 		if (cid == contact.cid) {
