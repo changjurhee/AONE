@@ -19,6 +19,7 @@ private:
 	const int MAX_CLIENTS = 10;  // 최대참여자 수
 	std::map<std::string, int> clientMap;
 	std::vector<std::thread> clientThread;
+	std::string myIp;
 
 	int contactNum; // For TEST
 
@@ -40,5 +41,6 @@ public:
 	// interface
 	void sendData(const char* message, std::string to) override;
 	void sendData(int msgId, Json::Value payload, std::string to) override;
+	std::string getMyIp() override;
 };
 

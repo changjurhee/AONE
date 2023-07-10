@@ -1,8 +1,9 @@
 {
   "rid": "string",
-  "serverip": "192.0.0.1",
-  "videocodec": "string",
-  "audiocodec": "string",
+  "serverIp": "192.0.0.1",
+  "videoCodec": "string",
+  "audioCodec": "string",
   "encryption_alg": "string",
-  "encryption_key": "string"
+  "encryption_key": "string",
+  "myIp": "192.0.0.4"
 }

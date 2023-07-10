@@ -20,7 +20,6 @@
 // Session
 #include "session/SessionManager.h"
 
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -231,7 +230,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_TEST_UPDATE_USER);
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
-
 
 	return 0;
 }
@@ -684,7 +682,6 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 
 	return TRUE;
 }
-
 
 void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 {

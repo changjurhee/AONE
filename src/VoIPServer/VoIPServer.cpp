@@ -11,11 +11,16 @@
 
 #include "VoIPServerDoc.h"
 #include "VoIPServerView.h"
+#include "ServerMediaManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+// Session
+#include "session/SessionManager.h"
+#include "session/TelephonyManager.h"
+#include "session/AccountManager.h"
 
 // CVoIPServerApp
 
@@ -122,6 +127,7 @@ BOOL CVoIPServerApp::InitInstance()
 	InitKeyboardManager();
 
 	InitTooltipManager();
+
 	CMFCToolTipInfo ttParams;
 	ttParams.m_bVislManagerTheme = TRUE;
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
@@ -188,6 +194,12 @@ BOOL CVoIPServerApp::InitInstance()
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 	m_pMainWnd->UpdateWindow();
+
+	// SessionManager create and init
+	SessionManager::getInstance()->init();
+
+	media::ServerMediaManager* server = media::ServerMediaManager::getInstance();
+
 	return TRUE;
 }
 
@@ -195,6 +207,11 @@ int CVoIPServerApp::ExitInstance()
 {
 	//TODO: 추가한 추가 리소스를 처리합니다.
 	AfxOleTerm(FALSE);
+
+	// Session clear
+	SessionManager::releaseInstance();
+	TelephonyManager::releaseInstance();
+	AccountManager::releaseInstance();
 
 	return CWinAppEx::ExitInstance();
 }
