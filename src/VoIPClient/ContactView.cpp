@@ -7,6 +7,8 @@
 #include "Resource.h"
 #include "VoIPClient.h"
 
+#include "session/UiController.h"
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -70,6 +72,7 @@ BEGIN_MESSAGE_MAP(CContactView, CDockablePane)
 	ON_WM_SETFOCUS()
 	ON_COMMAND_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnSort)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnUpdateSort)
+	ON_MESSAGE(UWM_UI_CONTROLLER, processUiControlNotify)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -124,8 +127,10 @@ int CContactView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		pButton->SetMessageWnd(this);
 	}
 
+	UiController::getInstance()->setCallbackWnd(this);
+
 	// 정적 트리 뷰 데이터를 더미 코드로 채웁니다.
-	FillContactView();
+	//FillContactView();
 	AdjustLayout();
 
 	return 0;
@@ -168,27 +173,22 @@ void CContactView::OnSize(UINT nType, int cx, int cy)
 
 void CContactView::FillContactView()
 {
+	auto pAccountList = UiController::getInstance()->get_MyContacts();
+
 	HTREEITEM hRoot = m_wndContactView.InsertItem(_T("Contact List"), 2, 2);
 	m_wndContactView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
 
-	HTREEITEM hSrc = m_wndContactView.InsertItem(_T("홍길동"), 1, 1, hRoot);
+	for (ContactData p : pAccountList) {
+		HTREEITEM hSrc = m_wndContactView.InsertItem(FormatString(_T("%s"), p.cid.c_str()).data(), 1, 1, hRoot);
 
-	m_wndContactView.InsertItem(_T("길동.홍@구글.본사"), 0, 0, hSrc);
-	m_wndContactView.InsertItem(_T("홍_001"), 3, 3, hSrc);
+		m_wndContactView.InsertItem(FormatString(_T("%s"), p.email).data(), 0, 0, hSrc);
+		m_wndContactView.InsertItem(FormatString(_T("%s"), p.name.c_str()).data(), 3, 3, hSrc);
+		
+		m_wndContactView.Expand(hRoot, TVE_EXPAND);
+		m_wndContactView.Expand(hSrc, TVE_EXPAND);
+	}
 
-	HTREEITEM hInc = m_wndContactView.InsertItem(_T("황진이"), 1, 1, hRoot);
-
-	m_wndContactView.InsertItem(_T("진이.황@나주.관아"), 3, 3, hInc);
-	m_wndContactView.InsertItem(_T("황_002"), 0, 0, hInc);
-
-	HTREEITEM hRes = m_wndContactView.InsertItem(_T("스티브잡스"), 1, 1, hRoot);
-
-	m_wndContactView.InsertItem(_T("잡스.스티브@애플.회사"), 3, 3, hRes);
-	m_wndContactView.InsertItem(_T("스티브_003"), 0, 0, hRes);
-
-	m_wndContactView.Expand(hRoot, TVE_EXPAND);
-	m_wndContactView.Expand(hSrc, TVE_EXPAND);
-	m_wndContactView.Expand(hInc, TVE_EXPAND);
+	AdjustLayout();
 }
 
 void CContactView::OnContextMenu(CWnd* pWnd, CPoint point)
@@ -278,14 +278,15 @@ void CContactView::OnNewUser()
 
 void CContactView::OnDeleteUser()
 {
-	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	pFrame->DeleteUser();
+	// @todo get element cid from tree node
+	UiController::getInstance()->req_DeleteMyContact(this, std::string(CT2CA(_T("hello"))));
 }
 
 void CContactView::OnJoinUser()
 {
-	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	pFrame->JoinUser();
+	// @todo get element cid from tree node
+
+	UiController::getInstance()->request_OutgoingCall(this, std::string(CT2CA(_T("hello"))));
 }
 
 void CContactView::OnPaint()
@@ -335,4 +336,20 @@ void CContactView::OnChangeVisualStyle()
 
 	m_wndToolBar.CleanUpLockedImages();
 	m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_SORT_24 : IDR_SORT, 0, 0, TRUE /* 잠금 */);
+}
+
+LRESULT CContactView::processUiControlNotify(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+	case MSG_RESPONSE_LOGIN:
+		if (lParam == 0) {
+			FillContactView();
+		}
+		break;
+	default:
+		break;
+	}
+
+	return LRESULT();
 }

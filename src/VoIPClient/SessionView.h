@@ -21,6 +21,7 @@ public:
 
 	void AdjustLayout();
 	void OnChangeVisualStyle();
+	void FillSessionView();
 
 protected:
 	CClassToolBar m_wndToolBar;
@@ -28,7 +29,6 @@ protected:
 	CImageList m_SessionViewImages;
 	UINT m_nCurrSort;
 
-	void FillSessionView();
 
 // 재정의입니다.
 public:
@@ -43,7 +43,6 @@ protected:
 	afx_msg void OnClassDefinition();
 	afx_msg void OnClassProperties();
 	afx_msg void OnNewSession();
-	afx_msg void OnDeleteSession();
 	afx_msg void OnJoinSession();
 	afx_msg void OnPaint();
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
@@ -52,5 +51,8 @@ protected:
 	afx_msg void OnUpdateSort(CCmdUI* pCmdUI);
 
 	DECLARE_MESSAGE_MAP()
+
+	// Handle UI notification from modules
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
 };
 

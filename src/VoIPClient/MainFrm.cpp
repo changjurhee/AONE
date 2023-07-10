@@ -628,19 +628,12 @@ void CMainFrame::OnUpdateUserLogOut(CCmdUI* pCmdUI)
 
 void CMainFrame::OnTestDlg()
 {
-	CTestCallDlg* dlg;
-	dlg = new CTestCallDlg(); 
-	dlg->Create(IDD_DLG_CALL_VIEW, NULL);
-	dlg->ShowWindow(SW_SHOW); //혹은 dlg->ShowWindow(SW_SHOWNA); 등등 으로 창을 띄워주면 된다.
-
-	//initDialog등을 처리해주고싶다면 
-	//dlg->PostMessage(WM_INITDIALOG);
-	//dlg->SendMessage(WM_CLOSE); //등을 넣어서 창을 닫아 줄 수 있다.
-
-	/*ShowWindow(SW_HIDE);
+#if 0
+	ShowWindow(SW_HIDE);
 	CTestCallDlg dlg;
 	dlg.DoModal();
-	ShowWindow(SW_SHOW);*/
+	ShowWindow(SW_SHOW);
+#endif
 }
 
 void CMainFrame::OnUpdateTestDlg(CCmdUI* pCmdUI)
@@ -653,10 +646,11 @@ void CMainFrame::UserLogIn()
 	CAccountLoginDlg accountLoginDlg;
 	INT_PTR nRet = -1;
 	nRet = accountLoginDlg.DoModal();
-	if (IDCANCEL != nRet) {
+	if (KResponse::CONNECT_FAILED != (KResponse)nRet) {
 		if ((KResponse)nRet == KResponse::LOGIN_COMPLETE) {
 			// TODO Login complete : Go to the main screen 
 			MessageBox(_T("Login Complete"));
+
 		} else if ((KResponse)nRet == KResponse::CREATE_USER) {
 			AddContactList();
 		}
@@ -671,27 +665,11 @@ void CMainFrame::AddSessionList()
 	dlg.DoModal();
 }
 
-void CMainFrame::JoinSession()
-{
-	MessageBox(CString("Join Session Event"));
-}
-
 void CMainFrame::AddContactList()
 {
 	CContactRegisterDlg dlg;
 	dlg.DoModal();
 }
-
-void CMainFrame::DeleteUser()
-{
-	MessageBox(CString("Delete User Event"));
-}
-
-void CMainFrame::JoinUser()
-{
-	MessageBox(CString("Join User Event"));
-}
-
 
 BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext)
 {
