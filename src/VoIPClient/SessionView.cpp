@@ -7,6 +7,8 @@
 #include "Resource.h"
 #include "VoIPClient.h"
 
+#include "session/UiController.h"
+
 class CSessionViewMenuButton : public CMFCToolBarMenuButton
 {
 	friend class CSessionView;
@@ -61,6 +63,7 @@ BEGIN_MESSAGE_MAP(CSessionView, CDockablePane)
 	ON_WM_SETFOCUS()
 	ON_COMMAND_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnSort)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnUpdateSort)
+	ON_MESSAGE(UWM_UI_CONTROLLER, processUiControlNotify)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -113,7 +116,9 @@ int CSessionView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	// 정적 트리 뷰 데이터를 더미 코드로 채웁니다.
-	FillSessionView();
+	//FillSessionView();
+
+	UiController::getInstance()->setCallbackWnd(this);
 
 	return 0;
 }
@@ -126,6 +131,8 @@ void CSessionView::OnSize(UINT nType, int cx, int cy)
 
 void CSessionView::FillSessionView()
 {
+	auto ConfData = UiController::getInstance()->get_MyConferences();
+
 	HTREEITEM hRoot = m_wndSessionView.InsertItem(_T("FakeApp 클래스"), 0, 0);
 	m_wndSessionView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
 
@@ -160,7 +167,10 @@ void CSessionView::FillSessionView()
 	hClass = m_wndSessionView.InsertItem(_T("Globals"), 2, 2, hRoot);
 	m_wndSessionView.InsertItem(_T("theFakeApp"), 5, 5, hClass);
 	m_wndSessionView.Expand(hClass, TVE_EXPAND);
+
+	AdjustLayout();
 }
+
 
 void CSessionView::OnContextMenu(CWnd* pWnd, CPoint point)
 {
@@ -274,14 +284,14 @@ void CSessionView::OnClassProperties()
 
 void CSessionView::OnNewSession()
 {
-	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	pFrame->AddSessionList();
+	// @todo get element id 
+
+	UiController::getInstance()->request_JoinConference(this, "hello");
 }
 
 void CSessionView::OnJoinSession()
 {
-	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	pFrame->JoinSession();
+	UiController::getInstance()->request_JoinConference(this, std::string(CT2CA(_T("hello"))));
 }
 
 void CSessionView::OnPaint()
@@ -332,4 +342,20 @@ void CSessionView::OnChangeVisualStyle()
 
 	m_wndToolBar.CleanUpLockedImages();
 	m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_SORT_24 : IDR_SORT, 0, 0, TRUE /* 잠금 */);
+}
+
+LRESULT CSessionView::processUiControlNotify(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+	case MSG_RESPONSE_LOGIN:
+		if (lParam == 0) {
+			FillSessionView();
+		}
+		break;
+	default:
+		break;
+	}
+
+	return LRESULT();
 }

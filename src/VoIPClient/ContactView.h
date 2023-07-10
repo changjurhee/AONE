@@ -30,7 +30,7 @@ protected:
 	CContactViewToolBar m_wndToolBar;
 	UINT m_nCurrSort;
 
-protected:
+public:
 	void FillContactView();
 
 // 구현입니다.
@@ -61,5 +61,9 @@ protected:
 	afx_msg void OnUpdateSort(CCmdUI* pCmdUI);
 
 	DECLARE_MESSAGE_MAP()
+
+	// Handle UI notification from modules
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
+
 };
 

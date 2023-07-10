@@ -35,11 +35,7 @@ public:
 	void UserLogIn(); // User Login
 	void UserSignIn(); // User Signin
 	void AddSessionList();
-	void JoinSession();
-
 	void AddContactList();
-	void DeleteUser();
-	void JoinUser();
 
 // 재정의입니다.
 public:
