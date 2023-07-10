@@ -1,4 +1,4 @@
-﻿// ResetPasswordDlg.cpp: 구현 파일
+// ResetPasswordDlg.cpp: 구현 파일
 //
 
 #include "pch.h"

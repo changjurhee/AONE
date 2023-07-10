@@ -61,6 +61,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_OUT, &CMainFrame::OnUpdateUserLogOut)
 	ON_COMMAND(ID_SETTING_TEST, &CMainFrame::OnTestDlg)
 	ON_UPDATE_COMMAND_UI(ID_SETTING_TEST, &CMainFrame::OnUpdateTestDlg)
+	ON_COMMAND(ID_TEST_UPDATE_USER, &CMainFrame::OnResetPassword)
+	ON_UPDATE_COMMAND_UI(ID_TEST_UPDATE_USER, &CMainFrame::OnUpdateResetPassword)
 	ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
@@ -641,6 +643,18 @@ void CMainFrame::OnTestDlg()
 void CMainFrame::OnUpdateTestDlg(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(TRUE);
+}
+
+void CMainFrame::OnUpdateResetPassword(CCmdUI* pCmdUI)
+{
+	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
+	pCmdUI->Enable(pDoc->IsCurrentUser);
+}
+
+void CMainFrame::OnResetPassword()
+{
+	CResetPasswordDlg resetDlg;
+	resetDlg.DoModal();
 }
 
 void CMainFrame::Connect()

@@ -20,6 +20,12 @@ public:
 public:
 	CVoIPClientDoc* GetDocument() const;
 
+private:
+	CListCtrl m_ltContact;
+	CListCtrl m_ltParticipants;
+	int m_nIndexContact;
+	int m_nIndexParticipants;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -27,4 +33,16 @@ protected:
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
+	afx_msg void OnBnClickedOk();
+	afx_msg void OnNMClickLtContact(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnNMClickLtParticipants(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnNMThemeChangedDpDate(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnNMThemeChangedDpTimeStart(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnNMThemeChangedDpTimeEnd(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnBnClickedMfcbtnRight();
+	afx_msg void OnBnClickedMfcbtnLeft();
+	virtual BOOL OnInitDialog();
+
+	// Handle UI notification from modules
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
 };

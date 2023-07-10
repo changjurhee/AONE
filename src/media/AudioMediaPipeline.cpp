@@ -10,9 +10,22 @@ SubElements AudioMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, i
 	std::string name = get_elements_name(TYPE_INPUT_DEVICE, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("wasapi2src", name.c_str());
 	g_object_set(element, "low-latency", TRUE, NULL);
-	gst_bin_add(GST_BIN(parent_bin), element);
 
-	return SubElements(element, element);
+	std::string cname = get_elements_name(TYPE_CONVERT, 1, client_index, "to1channel_for_vad");
+	GstElement* celement = gst_element_factory_make("audioconvert", cname.c_str());
+	
+	std::string fname = get_elements_name(TYPE_UDP_CAPS, 1, client_index, "to1channel_for_vad");
+	GstElement* audioCapsfilter = gst_element_factory_make("capsfilter", fname.c_str());
+	GstCaps* audioCaps = gst_caps_from_string("audio/x-raw, channels=1");
+	g_object_set(G_OBJECT(audioCapsfilter), "caps", audioCaps, NULL);
+	gst_caps_unref(audioCaps);
+
+	gst_bin_add(GST_BIN(parent_bin), element);
+	gst_bin_add(GST_BIN(parent_bin), celement);
+	gst_bin_add(GST_BIN(parent_bin), audioCapsfilter);
+	gst_element_link(element, celement);
+	gst_element_link(celement, audioCapsfilter);
+	return SubElements(element, audioCapsfilter);
 };
 
 
@@ -50,7 +63,11 @@ SubElements AudioMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bi
 	SubElements AudioMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string encoding_name = get_elements_name(TYPE_ENCODING, bin_index, client_index);
     GstElement* encoding_element = gst_element_factory_make("opusenc", encoding_name.c_str());
-    g_object_set(encoding_element, "audio-type", 2051, "frame-size", 10, NULL);
+	g_object_set(encoding_element, "audio-type", 2051, "frame-size", 10, NULL);
+	// add probe for processing vad
+	GstPad* sinkpad = gst_element_get_static_pad(encoding_element, "sink");
+	gst_pad_add_probe(sinkpad, GST_PAD_PROBE_TYPE_BUFFER, (GstPadProbeCallback)
+		AudioMediaPipeline::ProbeForProcessingVad, this, NULL);
 
 	std::string rtp_name = get_elements_name(TYPE_ENCODING_RTP, bin_index, client_index);
     GstElement* rtp_element = gst_element_factory_make("rtpopuspay", rtp_name.c_str());
@@ -113,6 +130,18 @@ SubElements AudioMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 void AudioMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)
 {
 	return;
+}
+
+bool AudioMediaPipeline::ProcessVad(GstPadProbeInfo* info) {
+	if (!monitor_cb_)
+		return true;
+
+	GstBuffer* buffer = GST_PAD_PROBE_INFO_BUFFER(info);
+	GstMapInfo buffer_info;
+	gst_buffer_map(buffer, &buffer_info, GST_MAP_READ);
+
+	AudioBuffer audio_buffer(48000, 1, 16, (char*)buffer_info.data, buffer_info.size);
+	return monitor_cb_->OnAudioBuffer(audio_buffer, 48000/100); // 48000/100 meand frames of 10 ms. same with frame-size of encoder.
 }
 
 } // namespace media

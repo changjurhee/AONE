@@ -179,8 +179,10 @@
 #define IDC_Client_EncKey               1021
 #define IDC_LIST3                       1022
 #define IDC_Client_AudioCodec           1022
+#define IDC_LT_CONTACT                  1022
 #define IDC_LIST4                       1023
 #define IDC_Client_VideoCodec           1023
+#define IDC_LT_PARTICIPANTS             1023
 #define IDC_DP_DATE                     1024
 #define IDC_Client_ClientIP             1024
 #define IDC_MFCBTN_RIGHT                1025

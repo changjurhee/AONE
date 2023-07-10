@@ -93,7 +93,9 @@ protected:
 	afx_msg void OnUserLogOut();
 	afx_msg void OnUpdateTestDlg(CCmdUI* pCmdUI);
 	afx_msg void OnTestDlg();
-
+	afx_msg void OnUpdateResetPassword(CCmdUI* pCmdUI);
+	afx_msg void OnResetPassword();
+	
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();

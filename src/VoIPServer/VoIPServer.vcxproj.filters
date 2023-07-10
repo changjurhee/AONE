@@ -129,6 +129,9 @@
     <ClInclude Include="..\media\media_types.h">
       <Filter>media</Filter>
     </ClInclude>
+    <ClInclude Include="..\media\audio_buffer.h">
+      <Filter>media</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VoIPServer.cpp">
@@ -207,6 +210,9 @@
       <Filter>media</Filter>
     </ClCompile>
     <ClCompile Include="..\media\media_types.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\audio_buffer.cpp">
       <Filter>media</Filter>
     </ClCompile>
   </ItemGroup>

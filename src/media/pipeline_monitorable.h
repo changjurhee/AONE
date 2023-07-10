@@ -27,7 +27,7 @@ public:
 		Callback() {}
 
 		virtual void OnRtpStats(const VideoPresetType& current_preset, const PipelineMonitorable::RtpStats& stats) = 0;
-		virtual void OnAudioBuffer(const AudioBuffer& buffer) = 0;
+		virtual bool OnAudioBuffer(const AudioBuffer& buffer, size_t frames_per_buffer) = 0;
 
 	protected:
 		virtual ~Callback() {}
