@@ -1,0 +1,20 @@
+"conferences" : [
+   {
+      "dateAndTime" : 1688540955,
+      "duration" : 3600000,
+      "participants" : [ "bruno", "tom", "john" ],
+      "rid" : "CONNECTION_2"
+   },
+   {
+      "dateAndTime" : 1688627355,
+      "duration" : 3600000,
+      "participants" : [ "bruno", "tom", "john" ],
+      "rid" : "CONNECTION_1"
+   },
+   {
+      "dateAndTime" : 54325432,
+      "duration" : 543254325,
+      "participants" : [ "bruno", "tom", "john" ],
+      "rid" : "CONNECTION_0"
+   }
+]

@@ -48,8 +48,8 @@
 // BOS: begin of speech
 // EOS:   end of speech
 
-// If the voice is detected for 300ms, it is considered that there 
-// is valid voice data. Before this condition occurs, VAD will not 
+// If the voice is detected for 300ms, it is considered that there
+// is valid voice data. Before this condition occurs, VAD will not
 // be judged to stop
 // Prevent the user from clicking the recording, and stop it directly
 // if he does not speak within a few seconds
@@ -59,7 +59,7 @@
 #define DEFAULT_EOS_SILENCE_TIME 700
 
 // Voice Weight Threshold (Max 100, Min 0):
-// The introduction of the voice weight is mainly to solve the problem 
+// The introduction of the voice weight is mainly to solve the problem
 // of "due to the pause of the voice in the segment, it has not been able
 // to reach the" duration of 300 ms
 // Speech detected’ conditions”. During the segment, there are pauses between
@@ -74,7 +74,7 @@
 //  3. When the weight value is lower than 30, it will trigger VAD judgment stop
 // The introduction of the mute weight is mainly to solve the problem of "in a
 // segment time, it is wrongly detected as speech and cannot be judged to stop".
-// For example: a large amount of silent data appears in a fragmented time, but 
+// For example: a large amount of silent data appears in a fragmented time, but
 // fragmentary voices are detected. We believe that these fragmentary voices are
 // misdetected
 #define DEFAULT_EOS_SILENCE_WEIGHT 30
@@ -83,7 +83,7 @@
 // judgment (more accurate?)
 #define DEFAULT_VAD_MODE           3
 
-// The length of each frame(in ms, legal value : 10ms / 20ms / 30ms), 
+// The length of each frame(in ms, legal value : 10ms / 20ms / 30ms),
 // it is recommended to set it to 10ms
 
 #define DEFAULT_SPEECH_FRAME_TIME  10

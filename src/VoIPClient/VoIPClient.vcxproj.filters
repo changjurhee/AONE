@@ -40,12 +40,6 @@
     <ClCompile Include="VoIPClientView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\debug.cpp" />
-    <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
-    <ClCompile Include="..\media\MediaManager.cpp" />
-    <ClCompile Include="..\media\MediaPipeline.cpp" />
-    <ClCompile Include="..\media\VideoMediaPipeline.cpp" />
-    <ClCompile Include="ClientMediaManager.cpp" />
     <ClCompile Include="session\AccountManager.cpp">
       <Filter>Session</Filter>
     </ClCompile>
@@ -73,6 +67,39 @@
     <ClCompile Include="ContactView.cpp" />
     <ClCompile Include="SessionView.cpp" />
     <ClCompile Include="ResetPasswordDlg.cpp" />
+    <ClCompile Include="..\media\vad_processor.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\audio_buffer.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\MediaManager.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\MediaPipeline.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerMediaManager.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientMediaManager.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\AudioMediaPipeline.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\debug.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\VideoMediaPipeline.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandLineInterface.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\media_types.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h">
@@ -123,30 +150,6 @@
     <ClInclude Include="OutputWnd.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\debug.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientMediaManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="IClientMediaManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\AudioMediaPipeline.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\call_info.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\MediaManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\MediaPipeline.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\media\VideoMediaPipeline.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="session\AccountManager.h">
       <Filter>Session</Filter>
     </ClInclude>
@@ -186,6 +189,54 @@
     <ClInclude Include="ContactView.h" />
     <ClInclude Include="SessionView.h" />
     <ClInclude Include="ResetPasswordDlg.h" />
+    <ClInclude Include="..\media\vad_processor.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\audio_buffer.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="session\ISessionMediaCallback.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="IServerMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\AudioMediaPipeline.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\call_info.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="IClientMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\MediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\MediaPipeline.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\VideoMediaPipeline.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\debug.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandLineInterface.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\pipeline_monitorable.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\media_types.h">
+      <Filter>media</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\class_view.ico">

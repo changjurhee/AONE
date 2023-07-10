@@ -1,11 +1,13 @@
 #pragma once
 #include <string>
 struct ContactInfo {
+	std::string cid;
 	std::string dest_ip;
 	int dest_video_port;
 	int dest_audio_port;
 	int org_video_port;
 	int org_audio_port;
+	bool new_client;
 };
 
 struct OperatingInfo {

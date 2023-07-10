@@ -36,6 +36,7 @@ public:
 
 public:
 	std::shared_ptr<userInfo> GetUserInfo() { return spUserInfo; }
+
 	virtual BOOL OnInitDialog();
 	CBitmapButton m_btnLogIn;
 	CBitmapButton m_btnSignIn;
