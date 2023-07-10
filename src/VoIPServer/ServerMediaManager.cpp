@@ -85,6 +85,7 @@ ContactInfo* ServerMediaManager::get_contact_info(Json::Value add_client_info, b
 
 	if (is_remove) return contact_info;
 	contact_info->dest_ip = split(add_client_info["clientIp"].asString(), ':')[0];
+	contact_info->client_name = add_client_info["name"].asString();;
 	string my_ip = server_ip;
 	contact_info->dest_video_port = get_port_number(my_ip, "video");
 	contact_info->dest_audio_port = get_port_number(my_ip, "audio");

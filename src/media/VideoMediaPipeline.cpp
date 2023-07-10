@@ -193,9 +193,27 @@ SubElements VideoMediaPipeline::pipeline_make_decoding(GstBin* parent_bin, int b
 	return SubElements(rtp_element, decoding_element);
 };
 
+SubElements VideoMediaPipeline::pipeline_make_overlay(GstBin* parent_bin, int bin_index, int client_index) {
+#if 0
+	std::string name = get_elements_name(TYPE_OVERLAY, bin_index, client_index);
+	GstElement* element = gst_element_factory_make("textoverlay", name.c_str());
+	g_object_set(element,
+		"text", contact_info_list_[client_index].client_name,
+		"auto-resize", FALSE,
+		"font-desc", "Serif, 5, italic"
+		, NULL);
+	gst_bin_add(GST_BIN(parent_bin), element);
+	return SubElements(element, element);
+#else
+	return SubElements(NULL, NULL);
+#endif
+}
+
 SubElements VideoMediaPipeline::pipeline_make_adder(GstBin* parent_bin, int bin_index, int client_index) {
+
 	std::string name = get_elements_name(TYPE_ADDER, bin_index, client_index);
     GstElement* element = gst_element_factory_make("compositor", name.c_str());
+	g_object_set(element, "background", 1, NULL);
 
 	gst_bin_add(GST_BIN(parent_bin), element);
 	return SubElements(element, element);
@@ -229,24 +247,77 @@ SubElements VideoMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 	return SubElements(udpsrc_pair.first, videoCapsfilter);
 }
 
+vector<string> split(const string& str, char delim)
+{
+	auto i = 0;
+	vector<string> list;
+
+	auto pos = str.find(delim);
+	while (pos != string::npos)
+	{
+		list.push_back(str.substr(i, pos - i));
+		i = ++pos;
+		pos = str.find(delim, pos);
+	}
+
+	list.push_back(str.substr(i, str.length()));
+	return list;
+}
+
 void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)
 {
-	int base_width = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height;
-	int base_hight = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width;
+	int base_width = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width;
+	int base_height = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height;
 
 	// get pad
-	GstElement* queue = get_elements_by_name(parent_bin, TYPE_FQUEUE, bin_index, client_index).second;
+	GstElement* adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, BASE_CLIENT_ID).second;
+	int position_table[10][2] = { {0, 0}, {0, 1}, {1, 0}, {1, 1}, {0, 2}, {1, 2}, {2, 0}, {2, 1}, {2, 2}, {0, 3} };
 
-	GstPad* srcPad = gst_element_get_static_pad(queue, "src");
-	GstPad* linkedPad = gst_pad_get_peer(srcPad);
+	int count = count_active_client();
+	map<int, int> sort_num;
+	vector<int> order;
+	for (const auto& item : client_id_list_) {
+		int sub_client_index = item.second.first;
+		bool actived_client = item.second.second;
+		if (actived_client)
+			order.push_back(sub_client_index);
+	}
+	std::sort(order.begin(), order.end());
+	for (int i = 0; i < order.size(); i++)
+		sort_num[order[i]] = i;
 
-	int x_pos = base_width*(client_index/2);
-	int y_pos = client_index%2==0 ? 0 : base_hight;
+	GstIterator* it = gst_element_iterate_sink_pads(adder);
+	gboolean done = FALSE;
+	GstPad* sinkPad;
+	GValue item = G_VALUE_INIT;
 
-	g_object_set(linkedPad, "xpos", x_pos, NULL);
-	g_object_set(linkedPad, "ypos", y_pos, NULL);
-
-	gst_object_unref(linkedPad);
+	while (!done) {
+		switch (gst_iterator_next(it, &item)) {
+		case GST_ITERATOR_OK:
+			sinkPad = (GstPad*)g_value_get_object(&item);
+			if (sinkPad && GST_PAD_IS_LINKED(sinkPad)) {
+				GstPad* linkedPad = gst_pad_get_peer(sinkPad);
+				GstElement* linkedElement = gst_pad_get_parent_element(linkedPad);
+				string name = gst_element_get_name(linkedElement);
+				int num = stoi(split(name, '_')[2]);
+				g_object_set(sinkPad, "xpos", position_table[sort_num[num]][0] * base_width, NULL);
+				g_object_set(sinkPad, "ypos", position_table[sort_num[num]][1] * base_height, NULL);
+				g_object_set(sinkPad, "width", base_width, NULL);
+				g_object_set(sinkPad, "height", base_height, NULL);
+				gst_object_unref(linkedPad);
+				gst_object_unref(linkedElement);
+			}
+			g_value_reset(&item);
+			break;
+		case GST_ITERATOR_RESYNC:
+			gst_iterator_resync(it);
+			break;
+		case GST_ITERATOR_ERROR:
+		case GST_ITERATOR_DONE:
+			done = TRUE;
+			break;
+		}
+	}
 };
 
 } // namespace media

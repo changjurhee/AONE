@@ -41,6 +41,7 @@ enum element_type {
 	TYPE_ENCODING_RTP,
 	TYPE_DECODING,
 	TYPE_DECODING_RTP,
+	TYPE_OVERLAY,
 	TYPE_ADDER,
 	TYPE_JITTER,
 	TYPE_UDP_SINK,
@@ -92,6 +93,7 @@ protected :
 	virtual SubElements pipeline_make_jitter_buffer(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_udp_sink(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_udp_src(GstBin* parent_bin, int bin_index, int client_index) = 0;
+	virtual SubElements pipeline_make_overlay(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	SubElements pipeline_make_udp_sink_with_port(GstBin* parent_bin, int bin_index, int client_index, int port);
 	SubElements pipeline_make_udp_src_with_port(GstBin* parent_bin, int bin_index, int client_index, int port);
 	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index, bool is_front);

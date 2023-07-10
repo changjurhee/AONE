@@ -69,6 +69,9 @@ string MediaPipeline::get_elements_name(element_type etype, int bin_index, int c
 		case TYPE_DECODING_RTP:
 			name = "decoding_rtp_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
+		case TYPE_OVERLAY:
+			name = "overlay_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
 		case TYPE_ADDER :
 			name = "adder_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
@@ -364,14 +367,6 @@ void MediaPipeline::pipeline_run() {
 	set_pipe_block_flag(BLOCK_NO_JOIN);
 	stop_state_pipeline(false);
 
-	GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
-    if (ret == GST_STATE_CHANGE_FAILURE)
-    {
-		LOG_ERROR("Sender : Unable to start the pipeline.");
-        gst_object_unref(pipeline);
-        return;
-    }
-
 	LOG_OBJ_INFO() << get_pipeline_info(0) << " Get pipeline view (start)" << endl;
 	logPipelineElements(pipeline, 0);
 	enable_debugging();
@@ -460,6 +455,12 @@ SubElements MediaPipeline::add_client_at_src(GstBin * parent_bin, int bin_index,
 	SubElements decoding_pair = pipeline_make_decoding(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, decoding_pair);
 
+	int back = pipe_mode_list_[bin_index].second;
+	if (back != MODE_DEVICE && back != MODE_NONE) {
+		SubElements overlay_pair = pipeline_make_overlay(parent_bin, bin_index, client_index);
+		ret_sub_elements = connect_subElements(ret_sub_elements, overlay_pair);
+	}
+
 #if 0
 	// Remove queue by jitter buffer
 	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index, true);
@@ -476,7 +477,7 @@ void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int c
 	SubElements adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, BASE_CLIENT_ID);
 	ret_sub_elements = connect_subElements(ret_sub_elements, adder);
 
-	update_adder_parameter(parent_bin, bin_index, client_index);
+	update_adder_parameter(parent_bin, bin_index, BASE_CLIENT_ID);
 }
 
 void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int client_index)
