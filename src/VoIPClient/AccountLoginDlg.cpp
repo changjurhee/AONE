@@ -46,6 +46,7 @@ BEGIN_MESSAGE_MAP(CAccountLoginDlg, CDialogEx)
 	ON_MESSAGE(UWM_UI_CONTROLLER, &CAccountLoginDlg::processUiControlNotify)
 	ON_WM_CTLCOLOR()
 	ON_WM_SYSCOMMAND()
+	ON_BN_CLICKED(IDC_MFCBTN_RESET_PW, &CAccountLoginDlg::OnBnClickedMfcbtnResetPw)
 END_MESSAGE_MAP()
 
 // CAccountLoginDlg 메시지 처리기
@@ -117,6 +118,7 @@ void CAccountLoginDlg::OnBnClickedMfcbtnLogin()
 	GetDocument()->SetUser(spUserInfo);
 	GetDocument()->IsCurrentUser = TRUE;
 
+	GetDlgItem(IDC_MFCBTN_LOGIN)->EnableWindow(false);
 	UiController::getInstance()->req_Login(this, std::string(CT2CA(m_edEmailID)), std::string(CT2CA(m_edPassword)));
 }
 
@@ -133,29 +135,31 @@ void CAccountLoginDlg::OnBnClickedMfcbtnSignIn()
 	EndDialog((INT_PTR)KResponse::CREATE_USER);
 }
 
+void CAccountLoginDlg::OnBnClickedMfcbtnResetPw()
+{
+	EndDialog((INT_PTR)KResponse::RESET_PASSWORD);
+}
+
 LRESULT CAccountLoginDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 {
 	cout << "processUiControlNotify()/WPARAM:" << wParam << "/LPARAM:" << lParam << endl;
 	switch (wParam)
 	{
-	case MSG_RESPONSE_CONNECT:
-		if ( lParam == 0 ) {
-			cout << "SUCCESS" << endl;
-			MessageBox(_T("Connection Success"));
-		} else  {
-			cout << "FAILED" << endl;
-			MessageBox(_T("Connection FAILED"));
-		} 
-		break;
 	case MSG_RESPONSE_LOGIN:
+		GetDlgItem(IDC_MFCBTN_LOGIN)->EnableWindow(true);
 		if (lParam == 0) {
 			cout << "SUCCESS" << endl;
 			MessageBox(_T("Login Success"));
 			EndDialog((INT_PTR)KResponse::LOGIN_COMPLETE);
-		}
-		else {
+		} else if (lParam == 1) {
 			cout << "FAILED" << endl;
-			MessageBox(_T("Login FAILED"));
+			MessageBox(_T("Login Failed : ID not registered"));
+		} else if (lParam == 2) {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Login Failed : Wrong password"));
+		} else {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Login Failed"));
 		}
 		break;
 	default:

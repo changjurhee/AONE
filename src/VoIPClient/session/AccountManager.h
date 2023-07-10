@@ -44,7 +44,7 @@ public:
 	std::list<ContactData> searchContact(std::string key);
 	void deleteContact(std::string cid);
 	void addContact(std::string cid);
-	void updateMyContact(std::string cid, std::string email, std::string name);
+	void updateMyContact(std::string cid, std::string email, std::string name, std::string password);
 
 	// Listener (Recieve Msg)
 	void setSessionControl(SessionControl* control) override;
@@ -56,4 +56,5 @@ public:
 	void handleResetPassword(Json::Value data) override;	
 	void handleGetAllContact(Json::Value data) override;
 	void handleGetAllMyConference(Json::Value data) override;
+	void handleUpdateMyContact(Json::Value data) override;
 };

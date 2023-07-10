@@ -37,10 +37,11 @@ void UiController::setCallbackWnd(CWnd* wnd)
 
 void UiController::postMessage(WPARAM wPram, LPARAM lParam)
 {
-	callbackWnds.erase(remove_if(callbackWnds.begin(), callbackWnds.end(), [](CWnd* p) {return (p->m_hWnd == 0);}), callbackWnds.end());
+	callbackWnds.erase(remove_if(callbackWnds.begin(), callbackWnds.end(), [](CWnd* p) {return !IsWindow(p->m_hWnd);}), callbackWnds.end());
 	for (int i = 0; i < callbackWnds.size(); i++) {
-		if (callbackWnds[i]->m_hWnd != 0) {
+		if (IsWindow(callbackWnds[i]->m_hWnd)) {
 			callbackWnds[i]->PostMessageW(UWM_UI_CONTROLLER, wPram, lParam);
+			cout << "UiController::postMessage() = " << lParam << endl;
 		}
 	}
 }
@@ -96,10 +97,10 @@ void UiController::req_GetAllConferences(CWnd* wnd)
 	accountManager->getAllConference(accountManager->myCid);
 }
 
-void UiController::req_ResetPassword(CWnd* wnd, string newPw, int pwdQ, string pwdA)
+void UiController::req_ResetPassword(CWnd* wnd, string id, string newPw, int pwdQ, string pwdA)
 {
 	setCallbackWnd(wnd);
-	accountManager->resetPassword(accountManager->myCid, newPw, pwdQ, pwdA);
+	accountManager->resetPassword(id, newPw, pwdQ, pwdA);
 }
 
 void UiController::req_Login(CWnd* wnd, string email, string password)
@@ -130,6 +131,12 @@ void UiController::req_DeleteMyContact(CWnd* wnd, string id)
 {
 	setCallbackWnd(wnd);
 	accountManager->deleteContact(id);
+}
+
+void UiController::req_updateContact(CWnd* wnd, string email, string name, string password)
+{
+	setCallbackWnd(wnd);
+	accountManager->updateMyContact(accountManager->myCid, email, name, password);
 }
 
 void UiController::request_OutgoingCall(CWnd* wnd, string id)

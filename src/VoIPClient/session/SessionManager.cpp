@@ -131,6 +131,9 @@ void SessionManager::proc_recv() {
 			case 106: // 106 : GET_ALL_CONTACT
 				accountManager->handleGetAllContact(payloads);
 				break;
+			case 107: // 107 : UPDATE_MY_CONTACT
+				accountManager->handleUpdateMyContact(payloads);
+				break;
 			case 205: // 205 : GET_ALL_CONFERENCE
 				msgStr = "GET_ALL_CONFERENCE";
 				accountManager->handleGetAllMyConference(payloads);

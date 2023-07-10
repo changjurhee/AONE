@@ -248,6 +248,7 @@
     <ClInclude Include="StartDlg.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TestCallDlg.h" />
+    <ClInclude Include="UpdateUserAccountDlg.h" />
     <ClInclude Include="ViewTree.h" />
     <ClInclude Include="VoIPClient.h" />
     <ClInclude Include="VoIPClientDoc.h" />
@@ -291,6 +292,7 @@
     <ClCompile Include="session\SessionManager.cpp" />
     <ClCompile Include="StartDlg.cpp" />
     <ClCompile Include="TestCallDlg.cpp" />
+    <ClCompile Include="UpdateUserAccountDlg.cpp" />
     <ClCompile Include="ViewTree.cpp" />
     <ClCompile Include="session\UiController.cpp" />
     <ClCompile Include="VoIPClient.cpp" />

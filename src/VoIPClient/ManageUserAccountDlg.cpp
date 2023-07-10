@@ -90,7 +90,7 @@ BOOL CManageUserAccountDlg::PreTranslateMessage(MSG* pMsg)
 void CManageUserAccountDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if (nID == SC_CLOSE) {
-		EndDialog((INT_PTR)KResponse::LOGIN_FAILED);
+		EndDialog((INT_PTR)KResponse::SIGNIN_CANCELED);
 	}
 	else {
 		CDialogEx::OnSysCommand(nID, lParam);

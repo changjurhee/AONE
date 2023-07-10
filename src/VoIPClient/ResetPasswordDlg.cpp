@@ -1,4 +1,4 @@
-﻿// ResetPasswordDlg.cpp: 구현 파일
+// ResetPasswordDlg.cpp: 구현 파일
 //
 
 #include "pch.h"
@@ -10,16 +10,16 @@
 #include "afxdialogex.h"
 #include "ResetPasswordDlg.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 #include "session/UiController.h"
-
 // CResetPasswordDlg 대화 상자
 
 IMPLEMENT_DYNAMIC(CResetPasswordDlg, CDialogEx)
 
 CResetPasswordDlg::CResetPasswordDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_RESET_PASSWORD, pParent)
-	, m_sNewPassword(_T(""))
-	, m_edPasswordAnswer(_T(""))
 {
 
 }
@@ -31,21 +31,20 @@ CResetPasswordDlg::~CResetPasswordDlg()
 void CResetPasswordDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_ED_PASSWORD, m_sNewPassword);
-	DDX_Control(pDX, IDC_CB_PASSWORD_QUESTION, m_cbPassword);
+	DDX_Text(pDX, IDC_ED_ID, m_edId);
+	DDX_Text(pDX, IDC_ED_PASSWORD, m_edPassword);
 	DDX_Text(pDX, IDC_ED_PASSWORD_ANSWER, m_edPasswordAnswer);
 }
 
-
 BEGIN_MESSAGE_MAP(CResetPasswordDlg, CDialogEx)
+	ON_BN_CLICKED(ID_MFCBTN_RESET, &CResetPasswordDlg::OnBnClickedMfcbtnReset)
+	ON_BN_CLICKED(IDC_MFCBTN_CANCEL, &CResetPasswordDlg::OnBnClickedMfcbtnCancel)
+	ON_MESSAGE(UWM_UI_CONTROLLER, &CResetPasswordDlg::processUiControlNotify)
 	ON_WM_CTLCOLOR()
-	ON_MESSAGE(UWM_UI_CONTROLLER, processUiControlNotify)
-	ON_BN_CLICKED(IDOK, &CResetPasswordDlg::OnBnClickedOk)
+	ON_WM_SYSCOMMAND()
 END_MESSAGE_MAP()
 
-
 // CResetPasswordDlg 메시지 처리기
-
 CVoIPClientDoc* CResetPasswordDlg::GetDocument() const
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
@@ -62,44 +61,83 @@ HBRUSH CResetPasswordDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return (HBRUSH)GetStockObject(WHITE_BRUSH);
 }
 
+BOOL CResetPasswordDlg::OnInitDialog()
+{
+	CComboBox* combo = (CComboBox*)GetDlgItem(IDC_CB_PASSWORD_QUESTION);
+	combo->AddString(_T("1: What is your favorite city?"));
+	combo->AddString(_T("2: What is your favorite food?"));
+	combo->AddString(_T("3: What is your favorite car?"));
+	combo->SetCurSel(0);
+	
+	return TRUE;  // return TRUE unless you set the focus to a control
+}
+
+BOOL CResetPasswordDlg::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_KEYDOWN) {
+		if (pMsg->wParam == VK_RETURN  ) {
+			OnBnClickedMfcbtnReset();
+			return TRUE;
+		} else if (pMsg->wParam == VK_ESCAPE) {
+			return FALSE;
+		}
+	}
+	return CDialog::PreTranslateMessage(pMsg);
+}
+
+void CResetPasswordDlg::OnSysCommand(UINT nID, LPARAM lParam)
+{
+	if (nID == SC_CLOSE) {
+		EndDialog((INT_PTR)KResponse::RESET_PASSWORD_COMPLETE);
+	}
+	else {
+		CDialogEx::OnSysCommand(nID, lParam);
+	}
+}
+
+void CResetPasswordDlg::OnBnClickedMfcbtnReset()
+{
+	UpdateData(TRUE);
+	string id = std::string(CT2CA(m_edId));
+	string pass = std::string(CT2CA(m_edPassword));
+	CComboBox* combo = (CComboBox*)GetDlgItem(IDC_CB_PASSWORD_QUESTION);
+	int questionIndex = combo->GetCurSel();
+	string answer = std::string(CT2CA(m_edPasswordAnswer));
+
+	UiController::getInstance()->req_ResetPassword(this, id, pass, questionIndex, answer);
+}
+
+
+void CResetPasswordDlg::OnBnClickedMfcbtnCancel()
+{
+	EndDialog((INT_PTR)KResponse::RESET_PASSWORD_CANCELED);
+}
+
 LRESULT CResetPasswordDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 {
+	cout << "processUiControlNotify()/WPARAM:" << wParam << "/LPARAM:" << lParam << endl;
 	switch (wParam)
 	{
 	case MSG_RESPONSE_RESET_PW:
 		if (lParam == 0) {
-			MessageBox(_T("Valid Password Reset."));
+			cout << "SUCCESS" << endl;
+			MessageBox(_T("Reset Password Success"));
+			EndDialog((INT_PTR)KResponse::RESET_PASSWORD_COMPLETE);
 		}
-		else {
-			MessageBox(_T("Invalid Password Reset."));
+		else if (lParam == 1) {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Reset Password failed : No ID exists"));
+		} else if (lParam == 2) {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Reset Password failed : Wrong password info"));
+		} else {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Reset Password FAILED"));
 		}
-		CDialogEx::OnOK();
 		break;
 	default:
 		break;
 	}
-
 	return LRESULT();
 }
 
-void CResetPasswordDlg::OnBnClickedOk()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(TRUE);
-	UiController::getInstance()->req_ResetPassword(this, std::string(CT2CA(m_sNewPassword)), m_cbPassword.GetCurSel(), std::string(CT2CA(m_edPasswordAnswer)));
-}
-
-
-BOOL CResetPasswordDlg::OnInitDialog()
-{
-	CDialogEx::OnInitDialog();
-
-	// TODO:  여기에 추가 초기화 작업을 추가합니다.
-	m_cbPassword.AddString(_T("1: What is your favorite city?"));
-	m_cbPassword.AddString(_T("2: What is your favorite food?"));
-	m_cbPassword.AddString(_T("3: What is your favorite car?"));
-	m_cbPassword.SetCurSel(0);
-
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
-}
