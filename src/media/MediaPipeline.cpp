@@ -32,7 +32,7 @@ SubElements MediaPipeline::connect_subElements(SubElements front, SubElements ba
 	return SubElements(front.first, back.second);
 }
 
-string MediaPipeline::get_elements_name(element_type etype, int bin_index, int client_index) {
+string MediaPipeline::get_elements_name(element_type etype, int bin_index, int client_index, std::string suffix) {
 	string name;
 	switch (etype)
 	{
@@ -40,13 +40,13 @@ string MediaPipeline::get_elements_name(element_type etype, int bin_index, int c
 			name = "input_device_" + std::to_string(bin_index) + "_" + std::to_string(client_index);;
 			break;
 		case TYPE_INPUT_CAPS:
-			name = "input_caps_" + std::to_string(bin_index) + "_" + std::to_string(client_index);;
+			name = "input_caps_" + std::to_string(bin_index) + "_" + std::to_string(client_index) + (!suffix.empty() ? "_" + suffix : "");
 			break;
 		case TYPE_OUTPUT_DEVICE :
 			name = "output_device_" + std::to_string(bin_index) + "_" + std::to_string(client_index);;
 			break;
 		case TYPE_CONVERT :
-			name = "convert_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			name = "convert_" + std::to_string(bin_index) + "_" + std::to_string(client_index) + (!suffix.empty() ? "_" + suffix : "");
 			break;
 		case TYPE_RESCALE :
 			name = "scale_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
@@ -299,6 +299,7 @@ void MediaPipeline::pipeline_run() {
 	gst_bus_set_sync_handler(bus, BusSyncHandlerCallback, (gpointer)this, NULL);
 	bus_watch_id_ = gst_bus_add_watch(bus, (GstBusFunc)BusHandlerCallback, (gpointer)this);
 	gst_object_unref(bus);
+	gst_element_add_property_deep_notify_watch(pipeline, NULL, TRUE);
 
 	LOG_INFO("Setting timer (500 ms)");
 	g_timeout_add(500, (GSourceFunc)TimerTask, (gpointer)this);
@@ -773,7 +774,42 @@ GstBusSyncReply MediaPipeline::BusSyncHandler(GstBus* bus, GstMessage* message, 
 	return GST_BUS_PASS;
 }
 bool MediaPipeline::BusHandler(GstBus* bus, GstMessage* message, gpointer data) {
+	switch (GST_MESSAGE_TYPE(message)) {
+	case GST_MESSAGE_PROPERTY_NOTIFY: {
+		const GValue* val;
+		const gchar* name;
+		GstObject* obj;
+		gchar* val_str = NULL;
+		gchar** ex_prop, * obj_name;
 
+
+		gst_message_parse_property_notify(message, &obj, &name, &val);
+
+
+
+		obj_name = gst_object_get_path_string(GST_OBJECT(obj));
+		if (val != NULL) {
+			if (G_VALUE_HOLDS_STRING(val))
+				val_str = g_value_dup_string(val);
+			else if (G_VALUE_TYPE(val) == GST_TYPE_CAPS)
+				val_str = gst_caps_to_string((GstCaps*)g_value_get_boxed(val));
+			else if (G_VALUE_TYPE(val) == GST_TYPE_TAG_LIST)
+				val_str = gst_tag_list_to_string((GstTagList*)g_value_get_boxed(val));
+			else if (G_VALUE_TYPE(val) == GST_TYPE_STRUCTURE)
+				val_str = gst_structure_to_string((GstStructure*)g_value_get_boxed(val));
+			else
+				val_str = gst_value_serialize(val);
+		}
+		else {
+			val_str = g_strdup("(no value)");
+		}
+
+		gst_print("%s: %s = %s\n", obj_name, name, val_str);
+		g_free(obj_name);
+		g_free(val_str);
+		break;
+	}
+	}
 	return true;
 }
 

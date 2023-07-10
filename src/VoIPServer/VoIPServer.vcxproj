@@ -204,6 +204,7 @@
     <ClInclude Include="..\common\debug.h" />
     <ClInclude Include="..\common\logger.h" />
     <ClInclude Include="..\media\AudioMediaPipeline.h" />
+    <ClInclude Include="..\media\audio_buffer.h" />
     <ClInclude Include="..\media\call_info.h" />
     <ClInclude Include="..\media\MediaManager.h" />
     <ClInclude Include="..\media\MediaPipeline.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="..\common\debug.cpp" />
     <ClCompile Include="..\common\logger.cpp" />
     <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
+    <ClCompile Include="..\media\audio_buffer.cpp" />
     <ClCompile Include="..\media\MediaManager.cpp" />
     <ClCompile Include="..\media\MediaPipeline.cpp" />
     <ClCompile Include="..\media\media_types.cpp" />

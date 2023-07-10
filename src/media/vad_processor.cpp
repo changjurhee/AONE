@@ -43,8 +43,10 @@ bool VadProcessor::Initialize(int sample_rate, int channels, int bits_per_sample
 
 bool VadProcessor::OnData(const AudioBuffer& buf, std::size_t frames_per_buffer) {
     //vad_state = litevad_process(vad_handle, (const int16_t*)(pbMicInputBuffer + (i * BytesPerFrame)), FRAMES_PER_BUFFER);
-    litevad_result_t vad_state = LITEVAD_RESULT_NOTSET;
-        //litevad_process(vad_handle, (const int16_t*)(pbMicInputBuffer + (i * BytesPerFrame)), frames_per_buffer);
+
+    //LOG_OBJ_DEBUG() << buf.size() << " " << frames_per_buffer << std::endl;
+    litevad_result_t vad_state =
+        litevad_process(vad_handle_, (const int16_t*)buf.data(), frames_per_buffer);
 
     if (vad_state != last_vad_status_)
     {
@@ -75,7 +77,10 @@ bool VadProcessor::OnData(const AudioBuffer& buf, std::size_t frames_per_buffer)
         }
     }
 
-    return true;
+    if (vad_state == LITEVAD_RESULT_FRAME_SILENCE)
+        return false;
+    else
+        return true;
 }
 
 } // namespace media

@@ -4,6 +4,7 @@
 #include "../media/VideoMediaPipeline.h"
 #include "../media/AudioMediaPipeline.h"
 #include "session/ISessionMediaCallback.h"
+#include "media/vad_processor.h"
 
 #define DEFAULT_CLIENT_CID "0"
 #define DEFAULT_CLIENT_RID "0"
@@ -22,7 +23,11 @@ private:
 	OperatingInfo* get_operate_info(Json::Value client_join_info);
 
 	ISessionMediaCallback* sessionCallback_;
+	media::VadProcessor vad_;
+	bool vad_on_;
 	ClientMediaManager(int max_pipeline);
+
+	virtual bool OnAudioBuffer(const AudioBuffer& buffer, size_t frames_per_buffer) override;
 public:
 	void setVideoQuality(int video_quality_index) override;
 	void startCall(Json::Value client_join_info) override;
