@@ -100,16 +100,12 @@ int sendMain()
     // Add element to pipeline
     gst_bin_add_many(GST_BIN(gSendPipeline),
         gSendVideoSrc, gSendVideoScale, gSendVideoResCaps, gSendVideoH264Enc, gSendVideoRTPH264Pay, gSendVideoSRTPEnc, gSendVideoRTPCaps, gSendVideoQueue, gSendVideoSink,
-        gSendAudioSrc, gSendAudioConv, gSendAudioResample, gSendAudioOpusenc, gSendAudioRTPOpusPay, gSendAudioQueue, gSendAudioSink,
         NULL);
 
     // linking elements for video
     gst_element_link_many(gSendVideoSrc, gSendVideoScale, gSendVideoResCaps, gSendVideoH264Enc, gSendVideoRTPH264Pay, gSendVideoSRTPEnc, gSendVideoRTPCaps, gSendVideoQueue, gSendVideoSink,
         NULL);
 
-    // linking elements for audio
-    gst_element_link_many(gSendAudioSrc, gSendAudioConv, gSendAudioResample, gSendAudioOpusenc, gSendAudioRTPOpusPay, gSendAudioQueue, gSendAudioSink,
-        NULL);
 
     // set up laptop camera
     g_object_set(gSendVideoSrc, "device-index", 0, NULL);  // 0은 첫 번째 카메라를 나타냅니다.
@@ -128,14 +124,17 @@ int sendMain()
     g_object_set(gSendVideoH264Enc, "tune", H_264_TUNE_ZEROLATENCY, NULL);
 
     // Set the SRTP encryption key for video
-    gsize key_size = strlen("012345678901234567890123456789");
-    GstBuffer* key_buffer = gst_buffer_new_wrapped((gpointer)"012345678901234567890123456789", key_size);
-    g_object_set(gSendVideoSRTPEnc, "key", key_buffer,NULL);
+    guint8 data[30];
+    memset(data, 0, sizeof(data));
+    guint size = sizeof(data);
+    GstBuffer* keyBuffer = gst_buffer_new_wrapped(data, size);
+
+    g_object_set(gSendVideoSRTPEnc, "key", keyBuffer, NULL);
     g_object_set(gSendVideoSRTPEnc, "rtcp-auth", 2, NULL);
     g_object_set(gSendVideoSRTPEnc, "rtcp-cipher", 1, NULL);
 
     // Set RTP for video
-    gCaps = gst_caps_from_string("application/x-srtp, media=(string)video, payload=(int)96, ssrc=(uint)1356955624, roc=(uint)0");
+    gCaps = gst_caps_from_string("application/x-srtp, media=(string)video, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
     g_object_set(gSendVideoRTPCaps, "caps", gCaps, NULL);
     gst_caps_unref(gCaps);
 
