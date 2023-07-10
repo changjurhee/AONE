@@ -2,7 +2,9 @@
 // VoIPClientDoc.h: CVoIPClientDoc 클래스의 인터페이스
 //
 
+
 #pragma once
+
 
 class CVoIPClientDoc : public CDocument
 {
@@ -12,8 +14,6 @@ protected: // serialization에서만 만들어집니다.
 
 // 특성입니다.
 public:
-	std::shared_ptr<userInfo> m_spUserInfo;
-	BOOL IsCurrentUser;
 
 // 작업입니다.
 public:
@@ -30,10 +30,6 @@ public:
 // 구현입니다.
 public:
 	virtual ~CVoIPClientDoc();
-
-	void SetUser(std::shared_ptr<userInfo> spUserInfo) { m_spUserInfo = spUserInfo; };
-	std::shared_ptr<userInfo> GetUser() { return m_spUserInfo;  };
-
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;

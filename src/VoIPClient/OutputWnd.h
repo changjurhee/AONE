@@ -30,7 +30,6 @@ public:
 	COutputWnd() noexcept;
 
 	void UpdateFonts();
-	void FillDebug(tstring str);
 
 // 특성입니다.
 protected:

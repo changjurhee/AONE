@@ -17,9 +17,6 @@ public:
 	enum { IDD = IDD_DLG_MANAGE_ACCOUNT };
 #endif
 
-public:
-	CVoIPClientDoc* GetDocument() const;
-
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -27,6 +24,4 @@ protected:
 public:
 	afx_msg void OnBnClickedMfcbtnCreate();
 	afx_msg void OnBnClickedMfcbtnUpdate();
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-
 };

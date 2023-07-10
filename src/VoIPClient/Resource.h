@@ -119,6 +119,7 @@
 #define IDD_DLG_ACCOUNT_LOGIN           321
 #define IDD_DLG_MANAGE_ACCOUNT          322
 #define IDD_DLG_CALL_VIEW               327
+#define IDB_PNG8                        332
 #define IDB_BITMAP1                     334
 #define IDB_MASK                        334
 #define IDD_DLG_CALL_LIST_VIEW          335
@@ -127,21 +128,6 @@
 #define IDI_LOGIN_64                    339
 #define IDI_ICON4                       340
 #define IDI_SIGNIN_64                   340
-#define IDD_DLG_START                   343
-#define IDB_MOOZ                        345
-#define IDB_LOG_IN                      348
-#define IDB_RESET_PW                    349
-#define IDB_SIGN_IN                     350
-#define IDB_LOG_IN_D                    351
-#define IDB_RESET_PW_D                  352
-#define IDB_SIGN_IN_D                   353
-#define IDB_LOG_IN_F                    354
-#define IDB_RESET_PW_F                  355
-#define IDB_SIGN_IN_F                   356
-#define IDD_DLG_SESSION_REGISTER        357
-#define IDD_DIALOG2                     358
-#define IDD_DLG_CONTACT_REGISTER        358
-#define IDD_RESET_PASSWORD              361
 #define ID_VIEW_CALLVIEW                400
 #define IDC_ED_EMAIL_ID                 1000
 #define IDC_ED_PASSWORD                 1001
@@ -153,25 +139,32 @@
 #define IDC_MFCBTN_UPDATE               1009
 #define IDC_LIST1                       1010
 #define IDC_LST_CONTACT_ID              1010
-#define IDC_ED_LAST_NAME                1010
 #define IDC_ST_LOGO                     1011
-#define IDC_ED_PASSWORD_ANSWER          1011
 #define IDC_MFCBTN_RESET_PW             1012
-#define IDC_BMP_MOOZ                    1013
-#define IDC_MFCBTN_START                1015
-#define IDC_COMBO1                      1016
-#define IDC_CB_PASSWORD_QUESTION        1019
-#define IDC_ED_SEARCH_NAME              1020
-#define IDC_MFCBTN_SEARCH               1021
-#define IDC_LIST3                       1022
-#define IDC_LIST4                       1023
-#define IDC_DP_DATE                     1024
-#define IDC_MFCBTN_RIGHT                1025
-#define IDC_MFCBTN_LEFT                 1026
-#define IDC_LIST2                       1026
-#define IDC_LT_CONTACT_NAMES            1026
-#define IDC_DP_TIME_START               1027
-#define IDC_DP_TIME_END                 1028
+#define IDC_Client_StartCall            1014
+#define IDC_Client_EndCall              1015
+#define IDC_Server_StartCall            1016
+#define IDC_Server_EndCall              1017
+#define IDC_Server_AddClient            1018
+#define IDC_Server_RemoveClient         1019
+#define IDC_Client_EncAlgo              1020
+#define IDC_Client_EncKey               1021
+#define IDC_Client_AudioCodec           1022
+#define IDC_Client_VideoCodec           1023
+#define IDC_Client_ClientIP             1024
+#define IDC_Client_ServerIP             1025
+#define IDC_Server_EncAlgo              1026
+#define IDC_Server_EncKey               1027
+#define IDC_Server_AudioCodec           1028
+#define IDC_Server_VideoCodec           1029
+#define IDC_Server_MaxClient            1030
+#define IDC_Server_ServerIP             1031
+#define IDC_Server_RIDForStart          1032
+#define IDC_Server_RIDForAdd            1033
+#define IDC_Server_ClientIP             1034
+#define IDC_Server_CID                  1035
+#define IDC_SET_HANDLER                 1036
+#define IDC_DISPLAY                     1037
 #define ID_TEST_32771                   32771
 #define ID_TEST_32772                   32772
 #define ID_TEST_LOG_IN                  32773
@@ -180,17 +173,14 @@
 #define ID_TEST_32776                   32776
 #define ID_TEST_CREATE_USER             32777
 #define ID_TEST_UPDATE_USER             32778
-#define ID_SETTING_32779                32779
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-
-#define _APS_NEXT_RESOURCE_VALUE        365
-#define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1027
-
+#define _APS_NEXT_RESOURCE_VALUE        342
+#define _APS_NEXT_COMMAND_VALUE         32779
+#define _APS_NEXT_CONTROL_VALUE         1038
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

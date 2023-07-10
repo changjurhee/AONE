@@ -5,20 +5,12 @@
 #include "pch.h"
 #include "framework.h"
 #include "VoIPClient.h"
+#include "AccountLoginDlg.h"
+#include "ManageUserAccountDlg.h"
 
 #include "CallView.h"
 #include "CallListView.h"
 #include "MainFrm.h"
-#include "VoIPClientDoc.h"
-
-#include "AccountLoginDlg.h"
-#include "ManageUserAccountDlg.h"
-#include "ResetPasswordDlg.h"
-#include "SessionRegisterDlg.h"
-#include "ContactRegisterDlg.h"
-
-// Session
-#include "session/SessionManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -50,11 +42,6 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_VIEW_PROPERTIESWND, &CMainFrame::OnViewPropertiesWindow)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_PROPERTIESWND, &CMainFrame::OnUpdateViewPropertiesWindow)
 	ON_WM_SETTINGCHANGE()
-	ON_COMMAND(ID_TEST_LOG_IN, &CMainFrame::OnUserLogIn)
-	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_IN, &CMainFrame::OnUpdateUserLogIn)
-	ON_COMMAND(ID_TEST_LOG_OUT, &CMainFrame::OnUserLogOut)
-	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_OUT, &CMainFrame::OnUpdateUserLogOut)
-	ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -79,8 +66,6 @@ CMainFrame::~CMainFrame()
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	LOG_DEBUG("waiting something...");
-
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
@@ -104,15 +89,15 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // 만들지 못했습니다.
 	}
 
-	/*CString strToolBarName;
+	CString strToolBarName;
 	bNameValid = strToolBarName.LoadString(IDS_TOOLBAR_STANDARD);
 	ASSERT(bNameValid);
-	m_wndToolBar.SetWindowText(strToolBarName);*/
+	m_wndToolBar.SetWindowText(strToolBarName);
 
 	CString strCustomize;
 	bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
 	ASSERT(bNameValid);
-	/*m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);*/
+	m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
 
 	// 사용자 정의 도구 모음 작업을 허용합니다.
 	InitUserToolbars(nullptr, uiFirstUserToolBarId, uiLastUserToolBarId);
@@ -140,12 +125,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// 탐색 창이 왼쪽에 만들어지므로 일시적으로 왼쪽에 도킹을 비활성화합니다.
 	EnableDocking(CBRS_ALIGN_TOP | CBRS_ALIGN_BOTTOM | CBRS_ALIGN_RIGHT);
 
-	//// "Outlook" 탐색 모음을 만들고 설치합니다.
-	//if (!CreateOutlookBar(m_wndNavigationBar, ID_VIEW_NAVIGATION, m_wndTree, m_wndCalendar, 250))
-	//{
-	//	TRACE0("탐색 창을 만들지 못했습니다.\n");
-	//	return -1;      // 만들지 못했습니다.
-	//}
+	// "Outlook" 탐색 모음을 만들고 설치합니다.
+	if (!CreateOutlookBar(m_wndNavigationBar, ID_VIEW_NAVIGATION, m_wndTree, m_wndCalendar, 250))
+	{
+		TRACE0("탐색 창을 만들지 못했습니다.\n");
+		return -1;      // 만들지 못했습니다.
+	}
 
 	// 캡션 표시줄을 만듭니다.
 	if (!CreateCaptionBar())
@@ -168,15 +153,15 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
-	m_wndContactView.EnableDocking(CBRS_ALIGN_ANY);
-	m_wndSessionView.EnableDocking(CBRS_ALIGN_ANY);
-	DockPane(&m_wndContactView);
+	m_wndFileView.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndClassView.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_wndFileView);
 	CDockablePane* pTabbedBar = nullptr;
-	m_wndSessionView.AttachToTabWnd(&m_wndContactView, DM_SHOW, TRUE, &pTabbedBar);
+	m_wndClassView.AttachToTabWnd(&m_wndFileView, DM_SHOW, TRUE, &pTabbedBar);
 	m_wndOutput.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndOutput);
-	//m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
-	//DockPane(&m_wndProperties);
+	m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_wndProperties);
 	
 	// 보관된 값에 따라 비주얼 관리자 및 스타일을 설정합니다.
 	OnApplicationLook(theApp.m_nAppLook);
@@ -225,7 +210,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// @ test menu
 	lstBasicCommands.AddTail(ID_TEST_LOG_IN);
-	lstBasicCommands.AddTail(ID_TEST_LOG_OUT);
 	lstBasicCommands.AddTail(ID_TEST_CREATE_USER);
 	lstBasicCommands.AddTail(ID_TEST_UPDATE_USER);
 
@@ -237,21 +221,42 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/,
 	CCreateContext* pContext)
 {
-	return m_wndSplitter.Create(this,
-		2, 2,						// TODO: 행 및 열의 개수를 조정합니다.
-		CSize(10, 10),      // TODO: 최소 창 크기를 조정합니다.
-		pContext);
+	const int nRow = 1, nCol = 2;
+	if (!m_wndSplitter.CreateStatic(this, nRow, nCol))
+	{
+		TRACE0("Fail to create splitter.\n");
+		return FALSE;
+	}
+
+	if (!m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(CCallView), CSize(900, 900), pContext))
+	{
+		AfxMessageBox(_T("Failed to create left pane of nested splitter"));
+		return FALSE;
+	}
+
+	if (!m_wndSplitter.CreateView(0, 1, RUNTIME_CLASS(CCallListView), CSize(300, 900), pContext))
+	{
+		AfxMessageBox(_T("Failed to create right pane of nested splitter"));
+		return FALSE;
+	}
+
+	return TRUE;
+
+	//return m_wndSplitter.Create(this,
+	//	2, 2,						// TODO: 행 및 열의 개수를 조정합니다.
+	//	CSize(10, 10),      // TODO: 최소 창 크기를 조정합니다.
+	//	pContext);
 }
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
-
 	if( !CFrameWndEx::PreCreateWindow(cs) )
 		return FALSE;
 	// TODO: CREATESTRUCT cs를 수정하여 여기에서
 	//  Window 클래스 또는 스타일을 수정합니다.
 
-	cs.style = WS_OVERLAPPED | WS_CAPTION | FWS_ADDTOTITLE | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_MAXIMIZE | WS_SYSMENU | WS_THICKFRAME;
+	cs.style = WS_OVERLAPPED | WS_CAPTION | FWS_ADDTOTITLE
+		 | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_MAXIMIZE | WS_SYSMENU;
 
 	return TRUE;
 }
@@ -264,7 +269,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	CString strClassView;
 	bNameValid = strClassView.LoadString(IDS_CLASS_VIEW);
 	ASSERT(bNameValid);
-	if (!m_wndSessionView.Create(strClassView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_CLASSVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+	if (!m_wndClassView.Create(strClassView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_CLASSVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
 	{
 		TRACE0("클래스 뷰 창을 만들지 못했습니다.\n");
 		return FALSE; // 만들지 못했습니다.
@@ -274,7 +279,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	CString strFileView;
 	bNameValid = strFileView.LoadString(IDS_FILE_VIEW);
 	ASSERT(bNameValid);
-	if (!m_wndContactView.Create(strFileView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
+	if (!m_wndFileView.Create(strFileView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
 	{
 		TRACE0("파일 뷰 창을 만들지 못했습니다.\n");
 		return FALSE; // 만들지 못했습니다.
@@ -290,15 +295,15 @@ BOOL CMainFrame::CreateDockingWindows()
 		return FALSE; // 만들지 못했습니다.
 	}
 
-	//// 속성 창을 만듭니다.
-	//CString strPropertiesWnd;
-	//bNameValid = strPropertiesWnd.LoadString(IDS_PROPERTIES_WND);
-	//ASSERT(bNameValid);
-	//if (!m_wndProperties.Create(strPropertiesWnd, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROPERTIESWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
-	//{
-	//	TRACE0("속성 창을 만들지 못했습니다.\n");
-	//	return FALSE; // 만들지 못했습니다.
-	//}
+	// 속성 창을 만듭니다.
+	CString strPropertiesWnd;
+	bNameValid = strPropertiesWnd.LoadString(IDS_PROPERTIES_WND);
+	ASSERT(bNameValid);
+	if (!m_wndProperties.Create(strPropertiesWnd, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROPERTIESWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+	{
+		TRACE0("속성 창을 만들지 못했습니다.\n");
+		return FALSE; // 만들지 못했습니다.
+	}
 
 	SetDockingWindowIcons(theApp.m_bHiColorIcons);
 	return TRUE;
@@ -307,16 +312,16 @@ BOOL CMainFrame::CreateDockingWindows()
 void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 {
 	HICON hFileViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_FILE_VIEW_HC : IDI_FILE_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-	m_wndContactView.SetIcon(hFileViewIcon, FALSE);
+	m_wndFileView.SetIcon(hFileViewIcon, FALSE);
 
 	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-	m_wndSessionView.SetIcon(hClassViewIcon, FALSE);
+	m_wndClassView.SetIcon(hClassViewIcon, FALSE);
 
 	HICON hOutputBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	m_wndOutput.SetIcon(hOutputBarIcon, FALSE);
 
-	/*HICON hPropertiesBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-	m_wndProperties.SetIcon(hPropertiesBarIcon, FALSE);*/
+	HICON hPropertiesBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+	m_wndProperties.SetIcon(hPropertiesBarIcon, FALSE);
 
 }
 
@@ -426,9 +431,9 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 void CMainFrame::OnViewCustomize()
 {
-	//CMFCToolBarsCustomizeDialog* pDlgCust = new CMFCToolBarsCustomizeDialog(this, TRUE /* 메뉴를 검색합니다. */);
-	//pDlgCust->EnableUserDefinedToolbars();
-	//pDlgCust->Create();
+	CMFCToolBarsCustomizeDialog* pDlgCust = new CMFCToolBarsCustomizeDialog(this, TRUE /* 메뉴를 검색합니다. */);
+	pDlgCust->EnableUserDefinedToolbars();
+	pDlgCust->Create();
 }
 
 LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp,LPARAM lp)
@@ -442,12 +447,12 @@ LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp,LPARAM lp)
 	CMFCToolBar* pUserToolbar = (CMFCToolBar*)lres;
 	ASSERT_VALID(pUserToolbar);
 
-	/*BOOL bNameValid;
+	BOOL bNameValid;
 	CString strCustomize;
 	bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
 	ASSERT(bNameValid);
 
-	pUserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);*/
+	pUserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
 	return lres;
 }
 
@@ -546,8 +551,8 @@ void CMainFrame::OnViewFileView()
 {
 	// 현재 상태에 따라 창을 표시하거나 활성화합니다.
 	// 창을 닫으려면 창 프레임의 [x] 단추를 사용해야 합니다.
-	m_wndContactView.ShowPane(TRUE, FALSE, TRUE);
-	m_wndContactView.SetFocus();
+	m_wndFileView.ShowPane(TRUE, FALSE, TRUE);
+	m_wndFileView.SetFocus();
 }
 
 void CMainFrame::OnUpdateViewFileView(CCmdUI* pCmdUI)
@@ -559,8 +564,8 @@ void CMainFrame::OnViewClassView()
 {
 	// 현재 상태에 따라 창을 표시하거나 활성화합니다.
 	// 창을 닫으려면 창 프레임의 [x] 단추를 사용해야 합니다.
-	m_wndSessionView.ShowPane(TRUE, FALSE, TRUE);
-	m_wndSessionView.SetFocus();
+	m_wndClassView.ShowPane(TRUE, FALSE, TRUE);
+	m_wndClassView.SetFocus();
 }
 
 void CMainFrame::OnUpdateViewClassView(CCmdUI* pCmdUI)
@@ -594,44 +599,18 @@ void CMainFrame::OnUpdateViewPropertiesWindow(CCmdUI* pCmdUI)
 	pCmdUI->Enable(TRUE);
 }
 
-void CMainFrame::OnUserLogIn()
+BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext)
 {
-	ShowWindow(SW_HIDE);
-	UserLogIn();
-	ShowWindow(SW_SHOW);
-}
-
-void CMainFrame::OnUpdateUserLogIn(CCmdUI* pCmdUI)
-{
-	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
-	pCmdUI->Enable(!pDoc->IsCurrentUser);
-}
-
-void CMainFrame::OnUserLogOut()
-{
-	ShowWindow(SW_HIDE);
-	UserLogIn();
-	ShowWindow(SW_SHOW);
-}
-
-void CMainFrame::OnUpdateUserLogOut(CCmdUI* pCmdUI)
-{
-	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
-	pCmdUI->Enable(pDoc->IsCurrentUser);
-}
-
-void CMainFrame::UserLogIn()
-{
+	// 기본 클래스가 실제 작업을 수행합니다.
 	CAccountLoginDlg accountLoginDlg;
 	INT_PTR nRet = -1;
 	nRet = accountLoginDlg.DoModal();
 	if (IDCANCEL != nRet) {
-		if ((KResponse)nRet == KResponse::LOGIN) {
-			//m_spUserInfo = accountLoginDlg.GetUserInfo();
-		}
-		else if ((KResponse)nRet == KResponse::RESET_PASSWORD) {
-			CResetPasswordDlg resetPasswordDlg;
-			resetPasswordDlg.DoModal();
+		if ((CAccountLoginDlg::KResponse)nRet == CAccountLoginDlg::KResponse::LOGIN) {
+			std::shared_ptr<CAccountLoginDlg::userInfo> spUserInfo = accountLoginDlg.GetUserInfo();
+			// @todo do something for login
+			// FIleOpen 시 state가 바뀌는데 같은 역할을 해주면 좋을 듯 함. 
+			// SetWindowText(FormatString(_T("%s"), spUserInfo->email.c_str()).data());
 		}
 		else {
 			CManageUserAccountDlg manageUserAccountDlg;
@@ -639,34 +618,14 @@ void CMainFrame::UserLogIn()
 		}
 	}
 
-	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
-	SetWindowText(FormatString(_T("MOOZ %s"), pDoc->GetUser()->email.c_str()).data());
-}
-
-void CMainFrame::AddSessionList()
-{
-	CSessionRegisterDlg dlg;
-	dlg.DoModal();
-}
-
-void CMainFrame::AddContactList()
-{
-	CContactRegisterDlg dlg;
-	dlg.DoModal();
-}
-
-
-BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext)
-{
-	// 기본 클래스가 실제 작업을 수행합니다.
-	
 	if (!CFrameWndEx::LoadFrame(nIDResource, dwDefaultStyle, pParentWnd, pContext))
 	{
 		return FALSE;
 	}
 
+
 	// 모든 사용자 도구 모음에 사용자 지정 단추를 활성화합니다.
-	/*BOOL bNameValid;
+	BOOL bNameValid;
 	CString strCustomize;
 	bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
 	ASSERT(bNameValid);
@@ -678,7 +637,7 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 		{
 			pUserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
 		}
-	}*/
+	}
 
 	return TRUE;
 }
@@ -687,14 +646,4 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 {
 	CFrameWndEx::OnSettingChange(uFlags, lpszSection);
 	m_wndOutput.UpdateFonts();
-}
-
-void CMainFrame::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
-{
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
-	lpMMI->ptMinTrackSize.x = 500;
-	lpMMI->ptMinTrackSize.y = 500;
-
-	CFrameWndEx::OnGetMinMaxInfo(lpMMI);
 }
