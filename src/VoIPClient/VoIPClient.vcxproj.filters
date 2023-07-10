@@ -103,7 +103,7 @@
     <ClCompile Include="StartDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CallView.cpp">
+    <ClCompile Include="TestCallDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -246,7 +246,7 @@
     <ClInclude Include="StartDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CallView.h">
+    <ClInclude Include="TestCallDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

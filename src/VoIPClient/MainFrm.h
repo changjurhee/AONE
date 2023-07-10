@@ -86,6 +86,8 @@ protected:
 	afx_msg void OnUserLogIn();
 	afx_msg void OnUpdateUserLogOut(CCmdUI* pCmdUI);
 	afx_msg void OnUserLogOut();
+	afx_msg void OnUpdateTestDlg(CCmdUI* pCmdUI);
+	afx_msg void OnTestDlg();
 
 	DECLARE_MESSAGE_MAP()
 

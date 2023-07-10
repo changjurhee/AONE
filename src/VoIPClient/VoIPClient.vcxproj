@@ -218,7 +218,6 @@
     <ClInclude Include="..\media\MediaPipeline.h" />
     <ClInclude Include="..\media\VideoMediaPipeline.h" />
     <ClInclude Include="calendarbar.h" />
-    <ClInclude Include="CallView.h" />
     <ClInclude Include="ClientMediaManager.h" />
     <ClInclude Include="ContactRegisterDlg.h" />
     <ClInclude Include="ContactView.h" />
@@ -246,6 +245,7 @@
     <ClInclude Include="session\SessionManager.h" />
     <ClInclude Include="StartDlg.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TestCallDlg.h" />
     <ClInclude Include="ViewTree.h" />
     <ClInclude Include="VoIPClient.h" />
     <ClInclude Include="VoIPClientDoc.h" />
@@ -265,7 +265,6 @@
     <ClCompile Include="..\media\MediaPipeline.cpp" />
     <ClCompile Include="..\media\VideoMediaPipeline.cpp" />
     <ClCompile Include="calendarbar.cpp" />
-    <ClCompile Include="CallView.cpp" />
     <ClCompile Include="ClientMediaManager.cpp" />
     <ClCompile Include="ContactRegisterDlg.cpp" />
     <ClCompile Include="ContactView.cpp" />
@@ -288,6 +287,7 @@
     <ClCompile Include="session\CallsManager.cpp" />
     <ClCompile Include="session\SessionManager.cpp" />
     <ClCompile Include="StartDlg.cpp" />
+    <ClCompile Include="TestCallDlg.cpp" />
     <ClCompile Include="ViewTree.cpp" />
     <ClCompile Include="VoIPClient.cpp" />
     <ClCompile Include="VoIPClientDoc.cpp" />

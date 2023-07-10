@@ -6,8 +6,8 @@
 #include "framework.h"
 #include "VoIPClient.h"
 
-#include "CallView.h"
-#include "CallListView.h"
+//#include "CallView.h"
+//#include "CallListView.h"
 #include "MainFrm.h"
 #include "VoIPClientDoc.h"
 
@@ -16,6 +16,9 @@
 #include "ResetPasswordDlg.h"
 #include "SessionRegisterDlg.h"
 #include "ContactRegisterDlg.h"
+
+// @deprecated only test
+#include "TestCallDlg.h"
 
 // Session
 #include "session/SessionManager.h"
@@ -54,6 +57,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_IN, &CMainFrame::OnUpdateUserLogIn)
 	ON_COMMAND(ID_TEST_LOG_OUT, &CMainFrame::OnUserLogOut)
 	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_OUT, &CMainFrame::OnUpdateUserLogOut)
+	ON_COMMAND(ID_SETTING_TEST, &CMainFrame::OnTestDlg)
+	ON_UPDATE_COMMAND_UI(ID_SETTING_TEST, &CMainFrame::OnUpdateTestDlg)
 	ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
@@ -228,6 +233,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_TEST_LOG_OUT);
 	lstBasicCommands.AddTail(ID_TEST_CREATE_USER);
 	lstBasicCommands.AddTail(ID_TEST_UPDATE_USER);
+	lstBasicCommands.AddTail(ID_SETTING_TEST);
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
 
@@ -618,6 +624,28 @@ void CMainFrame::OnUpdateUserLogOut(CCmdUI* pCmdUI)
 {
 	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
 	pCmdUI->Enable(pDoc->IsCurrentUser);
+}
+
+void CMainFrame::OnTestDlg()
+{
+	CTestCallDlg* dlg;
+	dlg = new CTestCallDlg(); 
+	dlg->Create(IDD_DLG_CALL_VIEW, NULL);
+	dlg->ShowWindow(SW_SHOW); //혹은 dlg->ShowWindow(SW_SHOWNA); 등등 으로 창을 띄워주면 된다.
+
+	//initDialog등을 처리해주고싶다면 
+	//dlg->PostMessage(WM_INITDIALOG);
+	//dlg->SendMessage(WM_CLOSE); //등을 넣어서 창을 닫아 줄 수 있다.
+
+	/*ShowWindow(SW_HIDE);
+	CTestCallDlg dlg;
+	dlg.DoModal();
+	ShowWindow(SW_SHOW);*/
+}
+
+void CMainFrame::OnUpdateTestDlg(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(TRUE);
 }
 
 void CMainFrame::UserLogIn()
