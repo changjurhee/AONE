@@ -360,8 +360,11 @@ void MediaPipeline::pipeline_run() {
 
 	start_pipeline_ = true;
 	// Pipeline execution
-	LOG_INFO("Setting pipeline to PLAYING");
-    GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
+	LOG_INFO("Ready pipeline");
+	set_pipe_block_flag(BLOCK_NO_JOIN);
+	stop_state_pipeline(false);
+
+	GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
     if (ret == GST_STATE_CHANGE_FAILURE)
     {
 		LOG_ERROR("Sender : Unable to start the pipeline.");
@@ -369,6 +372,7 @@ void MediaPipeline::pipeline_run() {
         return;
     }
 
+	LOG_OBJ_INFO() << get_pipeline_info(0) << " Get pipeline view (start)" << endl;
 	logPipelineElements(pipeline, 0);
 	enable_debugging();
 	// Start the main loop
@@ -430,6 +434,16 @@ void MediaPipeline::disable_client_index(ContactInfo* client_info)
 	}
 }
 
+bool MediaPipeline::count_active_client(void)
+{
+	int count = 0;
+	for (const auto& item : client_id_list_) {
+		bool actived_client = item.second.second;
+		if (actived_client) count++;
+	}
+	return count;
+}
+
 SubElements MediaPipeline::add_client_at_src(GstBin * parent_bin, int bin_index, int client_index)
 {
 	SubElements ret_sub_elements = SubElements(NULL, NULL);
@@ -446,9 +460,11 @@ SubElements MediaPipeline::add_client_at_src(GstBin * parent_bin, int bin_index,
 	SubElements decoding_pair = pipeline_make_decoding(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, decoding_pair);
 
+#if 0
+	// Remove queue by jitter buffer
 	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index, true);
 	ret_sub_elements = connect_subElements(ret_sub_elements, queue_pair);
-
+#endif
 	return ret_sub_elements;
 }
 
@@ -512,9 +528,9 @@ void MediaPipeline::add_client_udp_remove_me(GstBin* parent_bin, int bin_index, 
 	ret_sub_elements = connect_subElements(ret_sub_elements, udp_sink_pair);
 
 	for (const auto& item : client_id_list_) {
-		bool client_enanle = item.second.second;
+		bool actived_client = item.second.second;
 		int other_client_id = item.second.first;
-		if (!client_enanle || other_client_id == client_index)
+		if (!actived_client || other_client_id == client_index)
 			continue;
 
 		SubElements other_adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, other_client_id);
@@ -653,6 +669,7 @@ void MediaPipeline::add_client(ContactInfo* client_info)
 			add_client_in_back(bin, index, client_index);
 		}
 	}
+	LOG_OBJ_INFO() << get_pipeline_info(0) << " Get pipeline view (Add client)" << endl;
 	logPipelineElements(pipeline, 0);
 }
 
@@ -691,6 +708,7 @@ void MediaPipeline::remove_client(ContactInfo * client_info)
 		}
 	}
 	disable_client_index(client_info);
+	LOG_OBJ_INFO() << get_pipeline_info(0) << " Get pipeline view (remove Client)" << endl;
 	logPipelineElements(pipeline, 0);
 }
 
@@ -768,8 +786,7 @@ void MediaPipeline::logPipelineElements(GstElement * element, int level) {
 	gchar* logMessage = g_strdup_printf("%*s%s -> %s\n", level * 2, "", elementName, linkName.c_str());
 
 	// Log the message using GStreamer log API
-	//g_printerr(logMessage);
-	LOG_OBJ_INFO() << get_pipeline_info(0) << logMessage;
+	g_printerr(logMessage);
 
 	g_free(elementName);
 	//g_free(elementFactory);
@@ -888,6 +905,12 @@ void MediaPipeline::checkMessageQueue(void) {
 		}
 		else {
 			remove_client(&client_info);
+		}
+		if (count_active_client() > 0) {
+			unset_pipe_block_flag(BLOCK_NO_JOIN);
+		}
+		else {
+			set_pipe_block_flag(BLOCK_NO_JOIN);
 		}
 	}
 	while (true) {
