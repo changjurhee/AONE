@@ -1,11 +1,12 @@
 #include "VideoMediaPipeline.h"
 #include <gst/video/videooverlay.h>
 
+#include "common/logger.h"
 namespace media {
 
 VideoMediaPipeline::VideoMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb) :
 	MediaPipeline(rid, pipe_mode_list, monitor_cb) {
-
+	media_mode_ = "Video";
 }
 
 void VideoMediaPipeline::setVideoQuality(int video_quality_index)
@@ -21,6 +22,7 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 	int videoHeight;
 	int videoBitRate;
 
+	LOG_OBJ_INFO() << get_pipeline_info(0) << " video_quality_index : " << video_quality_index << endl;
 	unset_pipe_block_flag(BLOCK_VIODE_STOP);
 	// Set video resolution & bitrate
 	switch(video_quality_index){

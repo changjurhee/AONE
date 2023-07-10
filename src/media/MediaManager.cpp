@@ -56,15 +56,15 @@ vector<string> MediaManager::split(const string& str, char delim)
 }
 
 int MediaManager::get_port_number(string dest_ip, string type) {
-	string port_num = "000";
+	string ip_part = "000";
 
 	vector<string> nums = split(dest_ip, '.');
 	if (nums.size() == 4) {
-		port_num = std::to_string(stoi(nums[2])%10);
+		ip_part = std::to_string(stoi(nums[2])%10);
 		if (nums[3].size() == 1) {
-			port_num += "0" + nums[3];
+			ip_part += "0" + nums[3];
 		} else {
-			port_num += std::to_string(stoi(nums[3]) % 100);
+			ip_part += std::to_string(stoi(nums[3]) % 100);
 		}
 	}
 
@@ -73,14 +73,22 @@ int MediaManager::get_port_number(string dest_ip, string type) {
 	else if(type == "audio") type_number = "2";
 	else  type_number = "0";
 
-	debug_log("IP : " + dest_ip + " port : " + "1" + port_num + type_number);
-	return stoi("1"+ port_num+ type_number);
+	string port_num = "1" + ip_part + type_number;
+	LOG_OBJ_INFO() << "IP : " << dest_ip << " port : " << port_num << endl;
+	return stoi(port_num);
+}
+
+bool MediaManager::checkValidRID(string rid) {
+	if (pipelineMap_.find(rid) == pipelineMap_.end()) {
+		return FALSE;
+	}
+	return TRUE;
 }
 
 vector<VideoMediaPipeline*> MediaManager::getVideoPipeLine(string rid) {
 	vector<VideoMediaPipeline*> null_vector;
-	if (pipelineMap_.find(rid) == pipelineMap_.end()) {
-		debug_log("유효하지 않는 call입니다.");
+	if (!checkValidRID(rid)) {
+		LOG_OBJ_INFO() << " Invalid RID (" << rid << ")" << endl;
 		return null_vector;
 	}
 	return pipelineMap_[rid].video_pipelines;
@@ -88,8 +96,8 @@ vector<VideoMediaPipeline*> MediaManager::getVideoPipeLine(string rid) {
 
 vector<AudioMediaPipeline*> MediaManager::getAudioPipeLine(string rid) {
 	vector<AudioMediaPipeline*> null_vector;
-	if (pipelineMap_.find(rid) == pipelineMap_.end()) {
-		debug_log("유효하지 않는 call입니다.");
+	if (!checkValidRID(rid)) {
+		LOG_OBJ_INFO() << " Invalid RID (" << rid << ")" << endl;
 		return null_vector;
 	}
 	return pipelineMap_[rid].audio_pipelines;

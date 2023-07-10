@@ -15,7 +15,7 @@ MediaPipeline::MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list,
 	pipe_mode_list_ = pipe_mode_list;
 	start_pipeline_ = false;
 	view_handler_ = NULL;
-
+	media_mode_ = "";
 	bus_watch_id_ = 0;
 	timer_id_ = 0;
 	pipe_block_flag_ = 0;
@@ -131,11 +131,63 @@ vector<GstElement*> MediaPipeline::get_elements_list(element_type etype)
 	return elements_list;
 }
 
-SubElements pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) {
+string MediaPipeline::get_pipe_mode_name(int mode) {
+	string mode_name;
+	switch (mode) {
+		case MODE_NONE:
+			mode_name = "None";
+			break;
+		case MODE_DEVICE:
+			mode_name = "Device";
+			break;
+		case MODE_UDP_1:
+			mode_name = "UDP(1)";
+			break;
+		case MODE_UDP_N:
+			mode_name = "UDP(N)";
+			break;
+		case MODE_UDP_REMOVE_ME:
+			mode_name = "UDP(N-1)";
+			break;
+		default:
+			mode_name = "other(" + std::to_string(mode)+")";
+			break;
+	}
+	return mode_name;
+}
+
+string MediaPipeline::get_pipeline_info(int bin_index) {
+	string pipeline_info = "";
+	pipeline_info += "[ ";
+	pipeline_info += media_mode_;
+	int front = pipe_mode_list_[bin_index].first;
+	int back = pipe_mode_list_[bin_index].second;
+
+	if (front == MODE_DEVICE && back == MODE_UDP_1) {
+		pipeline_info += "-Cli-Snd";
+	}
+	else if (front == MODE_UDP_1 && back == MODE_DEVICE) {
+		pipeline_info += "-Cli-Rec";
+	}
+	else if (front == MODE_UDP_N && back == MODE_UDP_N) {
+		pipeline_info += "-Ser-N2N";
+	}
+	else if (front == MODE_UDP_REMOVE_ME) {
+		pipeline_info += "-Ser-AUD";
+	}
+	else {
+		pipeline_info += ", (" + get_pipe_mode_name (front) + + " -> " + get_pipe_mode_name(front) +")";
+	}
+
+	pipeline_info += " ] ";
+	return pipeline_info;
+}
+
+SubElements MediaPipeline::pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) {
 	return SubElements(NULL, NULL);
 }
 
-SubElements pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) {
+SubElements MediaPipeline::pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) {
 	return SubElements(NULL, NULL);
 }
 
@@ -159,7 +211,7 @@ SubElements MediaPipeline::pipeline_make_udp_sink_with_port(GstBin* parent_bin, 
 
 	std::string host = contact_info_list_[client_index].dest_ip;
 
-	g_printerr(("host " + host + " port : " + std::to_string(port)+"\n").c_str());
+	LOG_OBJ_INFO() << get_pipeline_info(0) << "host " << host << " port : " << port << endl;
 	g_object_set(element, "host", host.c_str(), "port", port, "sync", FALSE, "processing-deadline", 0, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
 
@@ -285,7 +337,8 @@ void MediaPipeline::enable_debugging(void)
 }
 
 void MediaPipeline::pipeline_run() {
-	g_printerr("pipeline : Start!!!.\n");
+	LOG_OBJ_INFO() << get_pipeline_info(0) << " pipeline : Start!!!." << endl;
+
 	pipeline = gst_pipeline_new("pipeline");
 	for (int index = 0; index < pipe_mode_list_.size(); index++) {
 		std::string name = "bin_"+std::to_string(index);
@@ -311,7 +364,7 @@ void MediaPipeline::pipeline_run() {
     GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
     if (ret == GST_STATE_CHANGE_FAILURE)
     {
-        g_printerr("Sender : Unable to start the pipeline.\n");
+		LOG_ERROR("Sender : Unable to start the pipeline.");
         gst_object_unref(pipeline);
         return;
     }
@@ -325,7 +378,8 @@ void MediaPipeline::pipeline_run() {
     // Release the pipeline
     gst_object_unref(pipeline);
   	g_source_remove(bus_watch_id_);
-    g_printerr("pipeline : End!!!.\n");
+
+	LOG_OBJ_INFO() << get_pipeline_info(0) << " pipeline : End!!" << endl;
 }
 
 
@@ -580,6 +634,7 @@ void MediaPipeline::add_client(ContactInfo* client_info)
 	int client_index = get_client_index(client_info, true);
 	if (client_index < 0) return;
 
+	LOG_OBJ_INFO() << get_pipeline_info(0) << " CID : " << client_info->cid << ", client_id : " << client_index << endl;
 	stop_state_pipeline(true);
 	for (int index = 0; index < pipe_mode_list_.size(); index++) {
 		std::string name = "bin_"+std::to_string(index);
@@ -616,6 +671,7 @@ void MediaPipeline::remove_client(ContactInfo * client_info)
 	int client_index = get_client_index(client_info, false);
 	if (client_index < 0) return;
 
+	LOG_OBJ_INFO() << get_pipeline_info(0) << " CID : " << client_info->cid << ", client_id : " << client_index << endl;
 	stop_state_pipeline(true);
 	for (int bin_index = 0; bin_index < pipe_mode_list_.size(); bin_index++) {
 		std::string name = "bin_" + std::to_string(bin_index);
@@ -704,6 +760,7 @@ void MediaPipeline::logPipelineElements(GstElement * element, int level) {
 		return;
 	}
 
+	//g_printerr(get_pipeline_info(0).c_str());
 	gchar* elementName = gst_element_get_name(element);
 	//gchar* elementFactory = gst_element_factory_get_longname(gst_element_get_factory(element));
 	string linkName = getLinkedElements(element);
@@ -711,7 +768,8 @@ void MediaPipeline::logPipelineElements(GstElement * element, int level) {
 	gchar* logMessage = g_strdup_printf("%*s%s -> %s\n", level * 2, "", elementName, linkName.c_str());
 
 	// Log the message using GStreamer log API
-	g_printerr(logMessage);
+	//g_printerr(logMessage);
+	LOG_OBJ_INFO() << get_pipeline_info(0) << logMessage;
 
 	g_free(elementName);
 	//g_free(elementFactory);
@@ -796,11 +854,13 @@ void MediaPipeline::stop_state_pipeline(bool stop)
 	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
 	if (stop) {
 		if (pipe_block_flag_ && cur_state != GST_STATE_NULL) {
+			LOG_OBJ_INFO() << get_pipeline_info(0) << " state : NULL by " << pipe_block_flag_ << endl;
 			GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_NULL);
 		}
 	}
 	else {
 		if (!pipe_block_flag_ && cur_state != GST_STATE_PLAYING) {
+			LOG_OBJ_INFO() << get_pipeline_info(0) << " state : Play" << endl;
 			GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
 		}
 	}

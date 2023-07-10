@@ -32,6 +32,8 @@
 #include <mutex>
 #include <fstream>
 
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+
 enum class LogLevel {
 	LL_NONE = 0,
 	LL_ERROR = 1,

@@ -1,6 +1,5 @@
 #pragma once
 #include "call_info.h"
-#include "../common/debug.h"
 #include "pipeline_monitorable.h"
 #include "media_types.h"
 
@@ -69,11 +68,7 @@ class MediaPipeline : public PipelineMonitorable
 protected :
 	std::mutex message_mutex_;
 	string rid_;
-	int media_mode_;
-	int send_input_mode_;
-	int send_output_mode_;
-	int receive_input_mode_;
-	int receive_output_mode_;
+	string media_mode_;
 	std::thread pipeline_thread_;
 	vector<PipeMode> pipe_mode_list_;
 	map<int, ContactInfo> contact_info_list_;
@@ -100,8 +95,10 @@ protected :
 	SubElements pipeline_make_udp_src_with_port(GstBin* parent_bin, int bin_index, int client_index, int port);
 	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index, bool is_front);
 	SubElements pipeline_make_tee(GstBin* parent_bin, int bin_index, int client_index);
+	SubElements pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index);
+	SubElements pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index);
 
-	void MediaPipeline::unref_element(GstBin* parent_bin, GstElement* current_element);
+	void unref_element(GstBin* parent_bin, GstElement* current_element);
 	virtual void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	SubElements make_front_device(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements make_front_udp_n(GstBin* parent_bin, int bin_index, int client_index);
@@ -127,6 +124,8 @@ protected :
 	string get_elements_name(element_type etype, int bin_index, int client_index);
 	SubElements get_elements_by_name(GstBin* parent_bin, element_type etype, int bin_index, int client_index);
 	void enable_debugging(void);
+	string get_pipeline_info(int bin_index);
+	string get_pipe_mode_name(int mode);
 public:
 	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb);
 	void makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info, handleptr handler);

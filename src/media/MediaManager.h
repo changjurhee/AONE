@@ -25,6 +25,7 @@ protected:
 	vector<VideoMediaPipeline*> getVideoPipeLine(string rid);
 	vector<AudioMediaPipeline*> getAudioPipeLine(string rid);
 	int get_port_number(string dest_ip, string type);
+	bool checkValidRID(string rid);
 	string get_ip_address(void);
 	vector<string> split(const string& str, char delim);
 	void end_call_with_rid(string rid);

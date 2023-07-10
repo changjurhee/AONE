@@ -3,7 +3,9 @@
 namespace media {
 
 AudioMediaPipeline::AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb) :
-	MediaPipeline(rid, pipe_mode_list, monitor_cb) {};
+	MediaPipeline(rid, pipe_mode_list, monitor_cb) {
+	media_mode_ = "Audio";
+};
 
 SubElements AudioMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index)
 {
@@ -77,7 +79,6 @@ SubElements AudioMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bi
 	SubElements AudioMediaPipeline::pipeline_make_adder(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_ADDER, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("audiomixer", name.c_str());
-	g_printerr(("adiuo" + name + "\n").c_str());
 
 	gst_bin_add(GST_BIN(parent_bin), element);
 	return make_pair(element, element);

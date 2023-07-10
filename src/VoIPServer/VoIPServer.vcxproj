@@ -201,7 +201,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\debug.h" />
     <ClInclude Include="..\common\logger.h" />
     <ClInclude Include="..\media\AudioMediaPipeline.h" />
     <ClInclude Include="..\media\call_info.h" />
@@ -238,7 +237,6 @@
     <ClInclude Include="VoIPServerView.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\debug.cpp" />
     <ClCompile Include="..\common\logger.cpp" />
     <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
     <ClCompile Include="..\media\MediaManager.cpp" />
