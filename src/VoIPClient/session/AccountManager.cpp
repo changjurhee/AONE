@@ -378,7 +378,7 @@ void AccountManager::handleResetPassword(Json::Value msg) {
 	}
 }
 
-void AccountManager::updateMyContact(std::string cid, std::string email, std::string name)
+void AccountManager::updateMyContact(std::string cid, std::string email, std::string name, std::string password)
 {
 	Json::Value root;
 	root["msgId"] = 107;
@@ -387,6 +387,7 @@ void AccountManager::updateMyContact(std::string cid, std::string email, std::st
 	payload["cid"] = cid;
 	payload["email"] = email;
 	payload["name"] = name;
+	payload["password"] = password;
 	root["payload"] = payload;
 	Json::StreamWriterBuilder writerBuilder;
 	std::string jsonString = Json::writeString(writerBuilder, root);
@@ -451,5 +452,20 @@ void AccountManager::handleGetAllMyConference(Json::Value data)
 	}
 	if (uiControl != NULL) {
 		uiControl->notify(MSG_RESPONSE_DATA, 0);
+	}
+}
+
+void AccountManager::handleUpdateMyContact(Json::Value data)
+{
+	int result = 1; //(0:SUCCESS, 1:FAIL)
+	result = data["result"].asInt();
+	if (result == 0) { // SUCCESS
+		std::cout << "Update Result : " << result << std::endl;
+	}
+	else {
+		std::cout << "Update Result : " << result << std::endl;
+	}
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_UPDATE_CONTACT, result);
 	}
 }

@@ -194,7 +194,9 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 				getline(std::cin >> std::ws, email);
 				std::cout << "name : ";
 				getline(std::cin >> std::ws, name);
-				accountManager->updateMyContact(accountManager->myCid, email, name);
+				std::cout << "password : ";
+				getline(std::cin >> std::ws, newpw);
+				accountManager->updateMyContact(accountManager->myCid, email, name, newpw);
 			}
 			break;
 		case 11: //GET ALL CONTACTLIST FROM SERVER

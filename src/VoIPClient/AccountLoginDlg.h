@@ -40,4 +40,5 @@ public:
 
 	std::shared_ptr<userInfo> GetUserInfo() { return spUserInfo; }
 	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnBnClickedMfcbtnResetPw();
 };

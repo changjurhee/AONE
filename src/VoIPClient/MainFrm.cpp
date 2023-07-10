@@ -27,6 +27,7 @@
 #define new DEBUG_NEW
 #endif
 #include "StartDlg.h"
+#include "UpdateUserAccountDlg.h"
 
 // CMainFrame
 
@@ -667,6 +668,8 @@ void CMainFrame::UserLogIn()
 		// Go to main screen (finish modal status)
 	} else if ((KResponse)retValue == KResponse::CREATE_USER) {
 		UserSignIn();
+	} else if ((KResponse)retValue == KResponse::RESET_PASSWORD) {
+		ResetPassword();
 	}
 	else {
 		DestroyWindow();
@@ -682,6 +685,33 @@ void CMainFrame::UserSignIn()
 	} else if ((KResponse)retValue == KResponse::SIGNIN_CANCELED) {
 		UserLogIn();
 	}else {
+		DestroyWindow();
+	}
+}
+
+void CMainFrame::ResetPassword()
+{
+	CResetPasswordDlg resetPwDlg;
+	INT_PTR retValue = resetPwDlg.DoModal();
+	if ((KResponse)retValue == KResponse::RESET_PASSWORD_COMPLETE) {
+		UserLogIn();
+	} else if ((KResponse)retValue == KResponse::RESET_PASSWORD_CANCELED) {
+		UserLogIn();
+	} else {
+		DestroyWindow();
+	}
+}
+
+void CMainFrame::UpdateAccount()
+{
+	CUpdateUserAccountDlg updateDlg;
+	INT_PTR retValue = updateDlg.DoModal();
+	if ((KResponse)retValue == KResponse::UPDATE_USER_COMPLETE) {
+		// Do nothing (Go to mainframe screen)
+	}
+	else if ((KResponse)retValue == KResponse::UPDATE_USER_CANCELED) {
+		// Do nothing (Go to mainframe screen)
+	} else {
 		DestroyWindow();
 	}
 }

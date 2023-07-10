@@ -18,4 +18,5 @@ public:
 	virtual void handleResetPassword(Json::Value data) = 0;	
 	virtual void handleGetAllContact(Json::Value data) = 0;
 	virtual void handleGetAllMyConference(Json::Value data) = 0;
+	virtual void handleUpdateMyContact(Json::Value data) = 0;
 };

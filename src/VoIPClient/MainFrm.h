@@ -34,6 +34,9 @@ public:
 	void Connect(); // Connect to server
 	void UserLogIn(); // User Login
 	void UserSignIn(); // User Signin
+	void ResetPassword(); // Reset Password
+	void UpdateAccount(); // Update user account
+
 	void AddSessionList();
 	void AddContactList();
 
@@ -106,6 +109,7 @@ protected:
 
 public:
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
 };
 
 

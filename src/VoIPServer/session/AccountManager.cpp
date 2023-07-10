@@ -40,6 +40,14 @@ void AccountManager::setSessionControl(SessionControl* control) {
 void AccountManager::handleRegisterContact(Json::Value data, string from)
 {	
 	Json::Value payload;
+	if (data["name"] == "" || data["password"] == "" || data["passwordAnswer"] == "") {
+		// Mandatory items are missing
+		payload["result"] = 2; // Failed
+		payload["reason"] = "Mandatory items are missing";
+		cout << "handleRegisterContact()FAIL/Mandatory Missing/from[" << from << endl;
+		sessionControl->sendData(101, payload, from);
+		return;
+	}
 	// 1. Check if already registered
 	string cid = data["cid"].asString();
 	if (cid.empty()) {
@@ -50,26 +58,15 @@ void AccountManager::handleRegisterContact(Json::Value data, string from)
 	bool cidExists = (contactDb->get(cid) == NULL) ? false : true;
 	bool emailExists = false;
 	string searchCid = contactDb->search("email", data["email"].asString());
-	if (!searchCid.empty()) {
+	if (!searchCid.empty() && data["email"] != "") {
 		emailExists = true;
 	}
-
 	if (!emailExists && !cidExists) {
 		// No user exists : Add registration data to database
 		contactDb->update(cid, data);
-		if (!data["password"].empty() &&
-			!data["passwordQuestion"].empty() &&
-			!data["passwordAnswer"].empty()) {		
-			payload["result"] = 0; // Success
-			payload["reason"] = "Success";
-			cout << "handleRegisterContact()[" << cid << "]OK/from[" << from << endl;
-		}
-		else {
-			// Mandatory items are missing
-			payload["result"] = 2; // Failed
-			payload["reason"] = "Mandatory items are missing";
-			cout << "handleRegisterContact()[" << cid << "]FAIL/Mandatory Missing/from[" << from << endl;
-		}
+		payload["result"] = 0; // Success
+		payload["reason"] = "Success";
+		cout << "handleRegisterContact()[" << cid << "]OK/from[" << from << endl;
 	} else {
 		// User already exists return error )
 		payload["result"] = 1; // Failed
@@ -237,10 +234,14 @@ void AccountManager::handleUpdateMyContact(Json::Value data, string from)
 	string newName = data["name"].asString();
 	if (cid.empty() || contactDb->search("cid", cid).empty()) {
 		cout << "handleUpdateMyContact()[" << cid << "]FAIL/No CID exists" << endl;
+		payload["result"] = 1;
+		sessionControl->sendData(107, payload, from);
 		return;
 	}	
-	if (newEmail.empty()) {
+	if (newEmail.empty()) {		
 		cout << "handleUpdateMyContact()[" << cid << "]FAIL/Email is mandatory" << endl;
+		payload["result"] = 2;
+		sessionControl->sendData(107, payload, from);
 		return;
 	}
 	string emailSearchCid = contactDb->search("email", newEmail);
@@ -249,8 +250,12 @@ void AccountManager::handleUpdateMyContact(Json::Value data, string from)
 		contactDb->update( cid, "name", newName);
 		cout << "handleUpdateMyContact()[" << cid << "]OK" << endl;
 		handleGetAllContact(from);
+		payload["result"] = 0;
+		sessionControl->sendData(107, payload, from);		
 	} else {
 		cout << "handleUpdateMyContact()[" << cid << "]FAIL/Same email exists" << endl;
+		payload["result"] = 3;
+		sessionControl->sendData(107, payload, from);
 	}		
 }
 
