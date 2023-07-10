@@ -218,6 +218,7 @@
     <ClInclude Include="..\media\MediaPipeline.h" />
     <ClInclude Include="..\media\VideoMediaPipeline.h" />
     <ClInclude Include="calendarbar.h" />
+    <ClInclude Include="CallView.h" />
     <ClInclude Include="ClientMediaManager.h" />
     <ClInclude Include="ContactRegisterDlg.h" />
     <ClInclude Include="ContactView.h" />
@@ -264,6 +265,7 @@
     <ClCompile Include="..\media\MediaPipeline.cpp" />
     <ClCompile Include="..\media\VideoMediaPipeline.cpp" />
     <ClCompile Include="calendarbar.cpp" />
+    <ClCompile Include="CallView.cpp" />
     <ClCompile Include="ClientMediaManager.cpp" />
     <ClCompile Include="ContactRegisterDlg.cpp" />
     <ClCompile Include="ContactView.cpp" />
