@@ -212,16 +212,8 @@ BOOL CVoIPClientApp::InitInstance()
 	dlg.DoModal();
 #endif
 
-	CStartDlg startDlg;
-	INT_PTR retValue = startDlg.DoModal();
-	if ((KResponse)retValue == KResponse::CONNECT_COMPLETE) {
-		CVoIPClientDoc* pDoc = (CVoIPClientDoc*)((CMainFrame*)AfxGetMainWnd())->GetActiveDocument();
-		tstring wsip_server = pDoc->GetUser()->server_ip_num;
-		std::string sip_server;
-		sip_server.assign(wsip_server.begin(), wsip_server.end());
-		((CMainFrame*)AfxGetMainWnd())->UserLogIn();
-	}
-
+	// Start connecting to server
+	((CMainFrame*)AfxGetMainWnd())->Connect();
 #if 0
 	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
 	ClientMediaManager test = ClientMediaManager(1);

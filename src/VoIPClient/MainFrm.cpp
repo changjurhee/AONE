@@ -26,6 +26,7 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+#include "StartDlg.h"
 
 // CMainFrame
 
@@ -641,22 +642,48 @@ void CMainFrame::OnUpdateTestDlg(CCmdUI* pCmdUI)
 	pCmdUI->Enable(TRUE);
 }
 
+void CMainFrame::Connect()
+{
+	CStartDlg startDlg;
+	INT_PTR retValue = startDlg.DoModal();
+	if ((KResponse)retValue == KResponse::CONNECT_COMPLETE) {
+		CVoIPClientDoc* pDoc = (CVoIPClientDoc*)GetActiveDocument();
+		tstring wsip_server = pDoc->GetUser()->server_ip_num;
+		std::string sip_server;
+		sip_server.assign(wsip_server.begin(), wsip_server.end());
+		UserLogIn();
+	} else {
+		DestroyWindow();
+	}
+}
+
 void CMainFrame::UserLogIn()
 {
 	CAccountLoginDlg accountLoginDlg;
-	INT_PTR nRet = -1;
-	nRet = accountLoginDlg.DoModal();
-	if (KResponse::CONNECT_FAILED != (KResponse)nRet) {
-		if ((KResponse)nRet == KResponse::LOGIN_COMPLETE) {
-			// TODO Login complete : Go to the main screen 
-			MessageBox(_T("Login Complete"));
-
-		} else if ((KResponse)nRet == KResponse::CREATE_USER) {
-			AddContactList();
-		}
+	INT_PTR retValue = accountLoginDlg.DoModal();
+	if ((KResponse)retValue == KResponse::LOGIN_COMPLETE) {
+		CVoIPClientDoc* pDoc = (CVoIPClientDoc*)GetActiveDocument();
+		SetWindowText(FormatString(_T("MOOZ %s"), pDoc->GetUser()->email.c_str()).data());
+		// Go to main screen (finish modal status)
+	} else if ((KResponse)retValue == KResponse::CREATE_USER) {
+		UserSignIn();
 	}
-	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
-	SetWindowText(FormatString(_T("MOOZ %s"), pDoc->GetUser()->email.c_str()).data());
+	else {
+		DestroyWindow();
+	}
+}
+
+void CMainFrame::UserSignIn()
+{
+	CManageUserAccountDlg createNewDlg;
+	INT_PTR retValue = createNewDlg.DoModal();
+	if ((KResponse)retValue == KResponse::SIGNIN_COMPLETE) {
+		UserLogIn();
+	} else if ((KResponse)retValue == KResponse::SIGNIN_CANCELED) {
+		UserLogIn();
+	}else {
+		DestroyWindow();
+	}
 }
 
 void CMainFrame::AddSessionList()

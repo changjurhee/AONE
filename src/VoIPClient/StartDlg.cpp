@@ -9,6 +9,10 @@
 
 #include "afxdialogex.h"
 #include "StartDlg.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 #include "session/UiController.h"
 
 // CStartDlg 대화 상자
@@ -19,7 +23,6 @@ CStartDlg::CStartDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DLG_START, pParent)
 	, m_sIpAddressServer(_T("127.0.0.1"))
 {
-
 }
 
 CStartDlg::~CStartDlg()
@@ -32,37 +35,21 @@ void CStartDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_IPADDRESS_SERVER, m_sIpAddressServer);
 }
 
-
 BEGIN_MESSAGE_MAP(CStartDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCBTN_START, &CStartDlg::OnBnClickedMfcbtnStart)
 	ON_MESSAGE(UWM_UI_CONTROLLER, &CStartDlg::processUiControlNotify)
 	ON_WM_CTLCOLOR()
 	ON_WM_NCPAINT()
+	ON_WM_SYSCOMMAND()
 END_MESSAGE_MAP()
 
-
 // CStartDlg 메시지 처리기
-
 CVoIPClientDoc* CStartDlg::GetDocument() const
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	CVoIPClientDoc* m_pDocument = (CVoIPClientDoc*)pFrame->GetActiveDocument();
 	return (CVoIPClientDoc*)m_pDocument;
 }
-
-void CStartDlg::OnBnClickedMfcbtnStart()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(TRUE);
-	
-	// @todo 체크 결과 정상이면, 
-	std::shared_ptr<userInfo> spUserInfo = GetDocument()->GetUser();
-	spUserInfo->server_ip_num = tstring(m_sIpAddressServer);
-	GetDocument()->SetUser(spUserInfo);
-
-	UiController::getInstance()->req_Connect(this, std::string(CT2CA(m_sIpAddressServer)));
-}
-
 
 HBRUSH CStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
@@ -87,6 +74,42 @@ void CStartDlg::OnNcPaint()
 	ReleaseDC(pDC);
 }
 
+BOOL CStartDlg::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_KEYDOWN) {
+		if (pMsg->wParam == VK_RETURN  ) {
+			OnBnClickedMfcbtnStart();
+			return TRUE;
+		} else if (pMsg->wParam == VK_ESCAPE) {
+			return FALSE;
+		}
+	}
+	return CDialog::PreTranslateMessage(pMsg);
+}
+
+void CStartDlg::OnSysCommand(UINT nID, LPARAM lParam)
+{
+	if (nID == SC_CLOSE) {
+		EndDialog((INT_PTR)KResponse::CONNECT_FAILED);
+	}
+	else {
+		CDialogEx::OnSysCommand(nID, lParam);
+	}
+}
+
+void CStartDlg::OnBnClickedMfcbtnStart()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+
+	// @todo 체크 결과 정상이면, 
+	std::shared_ptr<userInfo> spUserInfo = GetDocument()->GetUser();
+	spUserInfo->server_ip_num = tstring(m_sIpAddressServer);
+	GetDocument()->SetUser(spUserInfo);
+
+	UiController::getInstance()->req_Connect(this, std::string(CT2CA(m_sIpAddressServer)));
+}
+
 LRESULT CStartDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 {
 	cout << "processUiControlNotify()/WPARAM:" << wParam << "/LPARAM:" << lParam << endl;
@@ -108,4 +131,3 @@ LRESULT CStartDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 	}
 	return LRESULT();
 }
-

@@ -20,15 +20,19 @@ public:
 public:
 	CVoIPClientDoc* GetDocument() const;
 
+private:
+    CString m_sIpAddressServer;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CString m_sIpAddressServer;
+	BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnBnClickedMfcbtnStart();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnNcPaint();
 
-	LRESULT CStartDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam);
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
 };

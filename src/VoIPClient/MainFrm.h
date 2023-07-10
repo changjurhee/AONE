@@ -31,7 +31,9 @@ public:
 
 // 작업입니다.
 public:
-	void UserLogIn();
+	void Connect(); // Connect to server
+	void UserLogIn(); // User Login
+	void UserSignIn(); // User Signin
 	void AddSessionList();
 	void AddContactList();
 

@@ -14,6 +14,7 @@ Json::FastWriter fastWriter;
 
 CallsManager::CallsManager() {
 	sessionControl = nullptr;
+	uiControl = nullptr;
 	call = NULL;
 }
 
@@ -53,14 +54,15 @@ void CallsManager::startOutgoingCall(std::string to) {
 	call = new Call();
 	call->setContactId(to);
 	call->setCallState(CallState::STATE_DIALING);
-
 	std::cout << "(STATE_DIALING) startOutgoingCall... (" << call->getContactId() << ")" << std::endl;
-	std::this_thread::sleep_for(std::chrono::milliseconds(500)); //TEST
 
 	Json::Value payload;
 	payload["to"] = to;
-
 	sessionControl->sendData(301, payload);
+
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_DIALING);
+	}
 }
 
 void CallsManager::answerCall() {
@@ -80,7 +82,7 @@ void CallsManager::answerCall() {
 	payload["rid"] = call->getCallId();
 	payload["result"] = 1;
 	payload["result_detail"] = "ANSWER";
-	sessionControl->sendData(302, payload);
+	sessionControl->sendData(303, payload);
 }
 
 void CallsManager::rejectCall() {
@@ -102,7 +104,7 @@ void CallsManager::rejectCall() {
 	payload["result_detail"] = "REJECT";
 	payload["cause"] = 1;
 	payload["cause_detail"] = "REJECTED";
-	sessionControl->sendData(302, payload);
+	sessionControl->sendData(303, payload);
 }
 
 void CallsManager::disconnectCall() {
@@ -134,12 +136,20 @@ void CallsManager::onSuccessfulOutgoingCall(Json::Value data) {
 	media["serverIp"] = call->getServerIP();
 	media["myIp"] = data["myIp"].asString();
 	ClientMediaManager::getInstance()->startCall(media);
+
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_ACTIVE);
+	}
 }
 
 void CallsManager::onFailedOutgoingCall(Json::Value data) {
 	int cause = data["cause"].asInt();
 	call->setCallState(CallState::STATE_IDLE);
 	std::cout << "[Received] -> (STATE_IDLE) onFailedOutgoingCall cause: " << cause << std::endl;
+
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_IDLE);
+	}
 }
 
 void CallsManager::onSuccessfulIncomingCall(Json::Value data) {
@@ -150,11 +160,19 @@ void CallsManager::onSuccessfulIncomingCall(Json::Value data) {
 	media["serverIp"] = call->getServerIP();
 	media["myIp"] = data["myIp"].asString();
 	ClientMediaManager::getInstance()->startCall(media);
+
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_ACTIVE);
+	}
 }
 
 void CallsManager::onRejectedIncomingCall() {
 	call->setCallState(CallState::STATE_IDLE);
 	std::cout << "[Received] -> (STATE_IDLE) onRejectedIncomingCall" << std::endl;
+
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_IDLE);
+	}
 }
 
 void CallsManager::joinConference(std::string callId) {
@@ -175,12 +193,15 @@ void CallsManager::joinConference(std::string callId) {
 	call->setCallState(CallState::STATE_DIALING);
 
 	std::cout << "(STATE_DIALING) joinConference... (" << callId << ")" << std::endl;
-	std::this_thread::sleep_for(std::chrono::milliseconds(500)); //TEST
 
 	Json::Value payload;
 	payload["rid"] = callId;
 
 	sessionControl->sendData(208, payload);
+
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_DIALING);
+	}
 }
 
 void CallsManager::onSuccessfulJoinConference(Json::Value data) {
@@ -191,12 +212,20 @@ void CallsManager::onSuccessfulJoinConference(Json::Value data) {
 	media["serverIp"] = data["serverIp"].asString();
 	media["myIp"] = data["myIp"].asString();
 	ClientMediaManager::getInstance()->startCall(media);
+
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_ACTIVE);
+	}
 }
 
 void CallsManager::onFailedJoinConference(Json::Value data) {
 	int cause = data["cause"].asInt();
 	call->setCallState(CallState::STATE_IDLE);
 	std::cout << "[Received] -> (STATE_IDLE) onFailedJoinConference cause: " << cause << std::endl;
+
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_IDLE);
+	}
 }
 
 void CallsManager::exitConference() {
@@ -228,6 +257,10 @@ void CallsManager::setUiControl(IUiController* control)
 	uiControl = control;
 }
 
+void CallsManager::releaseCall() {
+	onDisconnected();
+}
+
 void CallsManager::onIncomingCall(Json::Value data) {
 	if (sessionControl == nullptr) {
 		std::cerr << "Not register sessionControl" << std::endl;
@@ -243,7 +276,7 @@ void CallsManager::onIncomingCall(Json::Value data) {
 		payload["result_detail"] = "REJECT";
 		payload["cause"] = 2;
 		payload["cause_detail"] = "BUSY";
-		sessionControl->sendData(302, payload);
+		sessionControl->sendData(303, payload);
 		return;
 	}
 	if (call != NULL) {
@@ -256,8 +289,19 @@ void CallsManager::onIncomingCall(Json::Value data) {
 	call->setCallState(CallState::STATE_RINGING);
 	std::cout << "[Received] -> (STATE_RINGING) Calling from " << from << std::endl;
 	if (uiControl != NULL) {
-		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_RINGING);
 	}
+}
+
+void CallsManager::onOutgoingCall(Json::Value data) {
+	if (call->getCallState() != CallState::STATE_DIALING) {
+		return;
+	}
+
+	std::string connId = data["rid"].asString();
+	call->setCallId(connId);
+
+	std::cout << "onOutgoingCall: " << call->getCallId() << std::endl;
 }
 
 void CallsManager::onOutgoingCallResult(Json::Value data) {
@@ -267,9 +311,6 @@ void CallsManager::onOutgoingCallResult(Json::Value data) {
 	}
 	else if (result == 2) { // 2:fail
 		onFailedOutgoingCall(data);
-	}
-	if (uiControl != NULL) {
-		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
 	}
 }
 
@@ -281,25 +322,31 @@ void CallsManager::onIncomingCallResult(Json::Value data) {
 	else if (result == 2) { // 2:fail
 		onRejectedIncomingCall();
 	}
-	if (uiControl != NULL) {
-		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
-	}
 }
 
-void CallsManager::onDisconnected(Json::Value data) {
+void CallsManager::onDisconnected() {
+	if (call == NULL) {
+		return;
+	}
+
 	call->setCallState(CallState::STATE_DISCONNECTED);
 	std::cout << "[Received] -> (STATE_DISCONNECTED) onDisconnected" << std::endl;
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(300));
-	call->setCallState(CallState::STATE_IDLE);
-	std::cout << "[Received] -> (STATE_IDLE) Call CLEAR " << std::endl;
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_DISCONNECTED);
+	}
 
 	Json::Value media;
 	media["rid"] = call->getCallId();
 	ClientMediaManager::getInstance()->endCall(media);
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	call->setCallState(CallState::STATE_IDLE);
+
 	if (uiControl != NULL) {
-		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_IDLE);
 	}
+	std::cout << "[Received] -> (STATE_IDLE) Call CLEAR " << std::endl;
 }
 
 void CallsManager::onJoinConferenceResult(Json::Value data) {
@@ -311,24 +358,26 @@ void CallsManager::onJoinConferenceResult(Json::Value data) {
 	else if (result == 2) {
 		onFailedJoinConference(data);
 	}
-	if (uiControl != NULL) {
-		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
-	}
 }
 
 void CallsManager::onExitConference(Json::Value data) {
 	call->setCallState(CallState::STATE_DISCONNECTED);
 	std::cout << "[Received] -> (STATE_DISCONNECTED) onExitConference" << std::endl;
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(300));
-	call->setCallState(CallState::STATE_IDLE);
-	std::cout << "[Received] -> (STATE_IDLE) ConferenceCall CLEAR " << std::endl;
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_DISCONNECTED);
+	}
 
 	Json::Value media;
 	media["rid"] = call->getCallId();
 	ClientMediaManager::getInstance()->endCall(media);
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	call->setCallState(CallState::STATE_IDLE);
+	std::cout << "[Received] -> (STATE_IDLE) ConferenceCall CLEAR " << std::endl;
+
 	if (uiControl != NULL) {
-		uiControl->notify(MSG_RESPONSE_CALL, 0); // TBD
+		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_IDLE);
 	}
 }
 
