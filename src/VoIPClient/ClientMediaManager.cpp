@@ -82,9 +82,9 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 
 	Pipelines pipelines;
 	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_sink_pipe_mode_list_, nullptr));
-	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_src_pipe_mode_list_, this));
-	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_sink_pipe_mode_list_, this));
-	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_src_pipe_mode_list_, nullptr));
+//	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_src_pipe_mode_list_, this));
+//	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_sink_pipe_mode_list_, this));
+//	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_src_pipe_mode_list_, nullptr));
 
 	pipelineMap_.insert(make_pair(rid, pipelines));
 

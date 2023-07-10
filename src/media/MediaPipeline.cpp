@@ -222,6 +222,8 @@ SubElements MediaPipeline::make_back_udp_n(GstBin* parent_bin, int bin_index, in
 	SubElements tee_pair = pipeline_make_tee(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, tee_pair);
 
+	connect_subElements(get_elements_by_name(parent_bin, TYPE_SRTPENC, bin_index, client_index), get_elements_by_name(parent_bin, TYPE_SRTPENC_CAPS, bin_index, client_index));
+
 	return ret_sub_elements;
 }
 
@@ -387,11 +389,11 @@ SubElements MediaPipeline::add_client_at_src(GstBin * parent_bin, int bin_index,
 	SubElements udp_src_pair = pipeline_make_udp_src(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, udp_src_pair);
 
-	SubElements jitter_pair = pipeline_make_jitter_buffer(parent_bin, bin_index, client_index);
-	ret_sub_elements = connect_subElements(ret_sub_elements, jitter_pair);
-
 	SubElements restoration_pair = pipeline_make_restoration(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, restoration_pair);
+
+	SubElements jitter_pair = pipeline_make_jitter_buffer(parent_bin, bin_index, client_index);
+	ret_sub_elements = connect_subElements(ret_sub_elements, jitter_pair);
 
 	SubElements decoding_pair = pipeline_make_decoding(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, decoding_pair);
