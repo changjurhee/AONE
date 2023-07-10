@@ -13,4 +13,4 @@ struct ConferenceData {
 	long dataAndTime;
 	long duration;
 	std::list<std::string> participants;
-};
+}; 
