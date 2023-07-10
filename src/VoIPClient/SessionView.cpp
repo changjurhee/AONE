@@ -147,6 +147,8 @@ void CSessionView::FillSessionView()
 		tmp_time = FormatString(_T("%d, %d", p.dataAndTime, p.duration));
 		m_wndSessionView.InsertItem(tmp_time.data(), 3, 3, hRoom);
 		
+		CString res = GetDateTime(p.dataAndTime, p.duration);
+
 		HTREEITEM hParticipant = m_wndSessionView.InsertItem(_T("Participant"), 0, 0, hRoom);
 		for (auto participant : p.participants) {
 			tstring tmp_name;
