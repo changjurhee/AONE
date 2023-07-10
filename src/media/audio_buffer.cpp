@@ -6,7 +6,8 @@ AudioBuffer::AudioBuffer(int sample_rate, int channels, int bits_per_sample, cha
 	sample_rate_(sample_rate),
 	channels_(channels),
 	bits_per_sample_(bits_per_sample),
-	buf_(buf, buf + size)
+	buf_(buf, buf + size),
+	size_(size)
 {
 }
 

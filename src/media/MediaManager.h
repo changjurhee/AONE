@@ -33,8 +33,8 @@ public:
 
 private:
 	// media::PipelineMonitorable::Callback implementation.
-	void OnRtpStats(const VideoPresetType& current_preset, const PipelineMonitorable::RtpStats& stats);
-	void OnAudioBuffer(const AudioBuffer& buffer);
+	virtual void OnRtpStats(const VideoPresetType& current_preset, const PipelineMonitorable::RtpStats& stats) override ;
+	virtual bool OnAudioBuffer(const AudioBuffer& buffer, size_t frames_per_buffer) override ;
 };
 
 } // namespace media
