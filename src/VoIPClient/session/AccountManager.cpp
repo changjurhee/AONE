@@ -181,11 +181,11 @@ void AccountManager::getAllContact() {
 }
 
 void AccountManager::createConference(long dateAndTime, long duration, std::list<std::string>& participants) {
-
 	Json::Value payload;
 	payload["dateAndTime"] = (Json::UInt64)dateAndTime;
 	payload["duration"] = (Json::UInt64)duration;
-	int index = 0;
+	payload["participants"][0] = myCid;
+	int index = 1;
 	for (const auto& element : participants) {
 		payload["participants"][index++] = element;
 	}
