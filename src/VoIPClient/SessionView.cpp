@@ -131,42 +131,52 @@ void CSessionView::OnSize(UINT nType, int cx, int cy)
 
 void CSessionView::FillSessionView()
 {
-	auto ConfData = UiController::getInstance()->get_MyConferences();
+	m_wndSessionView.DeleteAllItems();
 
-	HTREEITEM hRoot = m_wndSessionView.InsertItem(_T("FakeApp 클래스"), 0, 0);
+	auto ConfDataList = UiController::getInstance()->get_MyConferences();
+
+	HTREEITEM hRoot = m_wndSessionView.InsertItem(_T("Session List"), 2, 2);
 	m_wndSessionView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
+	
+	for (ConferenceData p : ConfDataList) {
+		tstring tmp_rid, tmp_time;
 
-	HTREEITEM hClass = m_wndSessionView.InsertItem(_T("CFakeAboutDlg"), 1, 1, hRoot);
-	m_wndSessionView.InsertItem(_T("CFakeAboutDlg()"), 3, 3, hClass);
+		tmp_rid.assign(p.rid.begin(), p.rid.end());
+		HTREEITEM hRoom = m_wndSessionView.InsertItem(tmp_rid.data(), 1, 1, hRoot);
 
-	m_wndSessionView.Expand(hRoot, TVE_EXPAND);
+		tmp_time = FormatString(_T("%d, %d", p.dataAndTime, p.duration));
+		m_wndSessionView.InsertItem(tmp_time.data(), 3, 3, hRoom);
+		
+		HTREEITEM hParticipant = m_wndSessionView.InsertItem(_T("Participant"), 0, 0, hRoom);
+		for (auto participant : p.participants) {
+			tstring tmp_name;
+			tmp_name.assign(participant.begin(), participant.end());
+			m_wndSessionView.InsertItem(tmp_name.data(), 2, 2, hParticipant);
+		}
+		m_wndSessionView.Expand(hRoot, TVE_EXPAND);
+		m_wndSessionView.Expand(hRoom, TVE_EXPAND);
+		m_wndSessionView.Expand(hParticipant, TVE_EXPAND);
+	}
 
-	hClass = m_wndSessionView.InsertItem(_T("CFakeApp"), 1, 1, hRoot);
-	m_wndSessionView.InsertItem(_T("CFakeApp()"), 3, 3, hClass);
-	m_wndSessionView.InsertItem(_T("InitInstance()"), 3, 3, hClass);
-	m_wndSessionView.InsertItem(_T("OnAppAbout()"), 3, 3, hClass);
+#ifdef DEBUG
+	if (ConfDataList.size() == 0) {
+		tstring tmp_rid = _T("hello"), tmp_time;
 
-	hClass = m_wndSessionView.InsertItem(_T("CFakeAppDoc"), 1, 1, hRoot);
-	m_wndSessionView.InsertItem(_T("CFakeAppDoc()"), 4, 4, hClass);
-	m_wndSessionView.InsertItem(_T("~CFakeAppDoc()"), 3, 3, hClass);
-	m_wndSessionView.InsertItem(_T("OnNewDocument()"), 3, 3, hClass);
+		HTREEITEM hRoom = m_wndSessionView.InsertItem(tmp_rid.data(), 1, 1, hRoot);
 
-	hClass = m_wndSessionView.InsertItem(_T("CFakeAppView"), 1, 1, hRoot);
-	m_wndSessionView.InsertItem(_T("CFakeAppView()"), 4, 4, hClass);
-	m_wndSessionView.InsertItem(_T("~CFakeAppView()"), 3, 3, hClass);
-	m_wndSessionView.InsertItem(_T("GetDocument()"), 3, 3, hClass);
-	m_wndSessionView.Expand(hClass, TVE_EXPAND);
+		tmp_time = FormatString(_T("%d, %d", 1, 2));
+		m_wndSessionView.InsertItem(tmp_time.data(), 3, 3, hRoom);
 
-	hClass = m_wndSessionView.InsertItem(_T("CFakeAppFrame"), 1, 1, hRoot);
-	m_wndSessionView.InsertItem(_T("CFakeAppFrame()"), 3, 3, hClass);
-	m_wndSessionView.InsertItem(_T("~CFakeAppFrame()"), 3, 3, hClass);
-	m_wndSessionView.InsertItem(_T("m_wndMenuBar"), 6, 6, hClass);
-	m_wndSessionView.InsertItem(_T("m_wndToolBar"), 6, 6, hClass);
-	m_wndSessionView.InsertItem(_T("m_wndStatusBar"), 6, 6, hClass);
+		HTREEITEM hParticipant = m_wndSessionView.InsertItem(_T("Participant"), 0, 0, hRoom);
+		tstring tmp_name = _T("hog.gildong"), tmp_name2 = _T("steve.jobs");
+		m_wndSessionView.InsertItem(tmp_name.data(), 2, 2, hParticipant);
+		m_wndSessionView.InsertItem(tmp_name2.data(), 2, 2, hParticipant);
 
-	hClass = m_wndSessionView.InsertItem(_T("Globals"), 2, 2, hRoot);
-	m_wndSessionView.InsertItem(_T("theFakeApp"), 5, 5, hClass);
-	m_wndSessionView.Expand(hClass, TVE_EXPAND);
+		m_wndSessionView.Expand(hRoot, TVE_EXPAND);
+		m_wndSessionView.Expand(hRoom, TVE_EXPAND);
+		m_wndSessionView.Expand(hParticipant, TVE_EXPAND);
+	}
+#endif // DEBUG
 
 	AdjustLayout();
 }
@@ -348,6 +358,11 @@ LRESULT CSessionView::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam)
 	{
+	case MSG_RESPONSE_DATA:
+		if (lParam == 0) {
+			FillSessionView();
+		}
+		break;
 	case MSG_RESPONSE_LOGIN:
 		if (lParam == 0) {
 			FillSessionView();

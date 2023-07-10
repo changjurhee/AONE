@@ -173,20 +173,41 @@ void CContactView::OnSize(UINT nType, int cx, int cy)
 
 void CContactView::FillContactView()
 {
+	m_wndContactView.DeleteAllItems();
+
 	auto pAccountList = UiController::getInstance()->get_MyContacts();
 
 	HTREEITEM hRoot = m_wndContactView.InsertItem(_T("Contact List"), 2, 2);
 	m_wndContactView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
 
 	for (ContactData p : pAccountList) {
-		HTREEITEM hSrc = m_wndContactView.InsertItem(FormatString(_T("%s"), p.cid.c_str()).data(), 1, 1, hRoot);
+		tstring tmp_cid, tmp_email, tmp_name;
+		
+		tmp_cid.assign(p.cid.begin(), p.cid.end());
+		HTREEITEM hSrc = m_wndContactView.InsertItem(tmp_cid.data(), 1, 1, hRoot);
 
-		m_wndContactView.InsertItem(FormatString(_T("%s"), p.email).data(), 0, 0, hSrc);
-		m_wndContactView.InsertItem(FormatString(_T("%s"), p.name.c_str()).data(), 3, 3, hSrc);
+		tmp_email.assign(p.email.begin(), p.email.end());
+		m_wndContactView.InsertItem(tmp_email.data(), 0, 0, hSrc);
+
+		tmp_name.assign(p.name.begin(), p.name.end());
+		m_wndContactView.InsertItem(tmp_name.data(), 3, 3, hSrc);
 		
 		m_wndContactView.Expand(hRoot, TVE_EXPAND);
 		m_wndContactView.Expand(hSrc, TVE_EXPAND);
 	}
+
+#ifdef DEBUG
+	if (pAccountList.size() == 0) {
+		tstring tmp_cid = _T("hello"), tmp_email = _T("hello@g.com"), tmp_name = _T("hello");
+
+		HTREEITEM hSrc = m_wndContactView.InsertItem(tmp_cid.data(), 1, 1, hRoot);
+		m_wndContactView.InsertItem(tmp_email.data(), 0, 0, hSrc);
+		m_wndContactView.InsertItem(tmp_name.data(), 3, 3, hSrc);
+
+		m_wndContactView.Expand(hRoot, TVE_EXPAND);
+		m_wndContactView.Expand(hSrc, TVE_EXPAND);
+	}
+#endif // DEBUG
 
 	AdjustLayout();
 }
@@ -342,6 +363,11 @@ LRESULT CContactView::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam)
 	{
+	case MSG_RESPONSE_DATA:
+		if (lParam == 0) {
+			FillContactView();
+		}
+		break;
 	case MSG_RESPONSE_LOGIN:
 		if (lParam == 0) {
 			FillContactView();
