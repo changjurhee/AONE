@@ -294,9 +294,8 @@ void CSessionView::OnClassProperties()
 
 void CSessionView::OnNewSession()
 {
-	// @todo get element id 
-
-	UiController::getInstance()->request_JoinConference(this, "hello");
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	pFrame->AddSessionList();
 }
 
 void CSessionView::OnJoinSession()
