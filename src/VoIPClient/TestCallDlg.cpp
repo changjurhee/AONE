@@ -3,6 +3,9 @@
 
 #include "pch.h"
 #include "VoIPClient.h"
+#include "MainFrm.h"
+#include "VoIPClientDoc.h"
+
 #include "afxdialogex.h"
 #include "TestCallDlg.h"
 
@@ -13,10 +16,10 @@ using namespace media;
 
 // CTestCallDlg 대화 상자
 
-IMPLEMENT_DYNAMIC(CTestCallDlg, CDialog)
+IMPLEMENT_DYNAMIC(CTestCallDlg, CDialogEx)
 
 CTestCallDlg::CTestCallDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_DLG_CALL_VIEW, pParent)
+	: CDialogEx(IDD_DLG_CALL_VIEW, pParent)
 {
 
 }
@@ -27,12 +30,12 @@ CTestCallDlg::~CTestCallDlg()
 
 void CTestCallDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+    CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_DISPLAY, mDisplayBox);
 }
 
 
-BEGIN_MESSAGE_MAP(CTestCallDlg, CDialog)
+BEGIN_MESSAGE_MAP(CTestCallDlg, CDialogEx)
     ON_BN_CLICKED(IDC_Client_StartCall, &CTestCallDlg::OnBnClickedClientStartcall)
     ON_BN_CLICKED(IDC_Client_EndCall, &CTestCallDlg::OnBnClickedClientEndcall)
     ON_BN_CLICKED(IDC_Server_StartCall, &CTestCallDlg::OnBnClickedServerStartcall)
@@ -40,10 +43,42 @@ BEGIN_MESSAGE_MAP(CTestCallDlg, CDialog)
     ON_BN_CLICKED(IDC_Server_AddClient, &CTestCallDlg::OnBnClickedServerAddclient)
     ON_BN_CLICKED(IDC_Server_RemoveClient, &CTestCallDlg::OnBnClickedServerRemoveclient)
     ON_BN_CLICKED(IDC_SET_HANDLER, &CTestCallDlg::OnBnClickedSetHandler)
+    ON_WM_CTLCOLOR()
+    ON_WM_NCPAINT()
 END_MESSAGE_MAP()
 
 
 // CTestCallDlg 메시지 처리기
+
+CVoIPClientDoc* CTestCallDlg::GetDocument() const
+{
+    CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+    CVoIPClientDoc* m_pDocument = (CVoIPClientDoc*)pFrame->GetActiveDocument();
+    return (CVoIPClientDoc*)m_pDocument;
+}
+
+HBRUSH CTestCallDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+    HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+    // TODO:  여기서 DC의 특성을 변경합니다.
+    // TODO:  기본값이 적당하지 않으면 다른 브러시를 반환합니다.
+    return (HBRUSH)GetStockObject(WHITE_BRUSH);
+}
+
+void CTestCallDlg::OnNcPaint()
+{
+    // TODO: 여기에 메시지 처리기 코드를 추가합니다.
+    // 그리기 메시지에 대해서는 CDialogEx::OnNcPaint()을(를) 호출하지 마십시오.
+    CDC* pDC = GetWindowDC();
+    CRect rect;
+    GetWindowRect(&rect);
+    rect.OffsetRect(-rect.left, -rect.top);
+
+    CBrush brush(DKGRAY_BRUSH);
+    pDC->FrameRect(&rect, &brush);
+    ReleaseDC(pDC);
+}
 
 void CTestCallDlg::OnBnClickedClientStartcall()
 {
@@ -232,3 +267,4 @@ void CTestCallDlg::OnBnClickedSetHandler()
     test->setViewHandler((handleptr)mDisplayBox.GetSafeHwnd());
 
 }
+

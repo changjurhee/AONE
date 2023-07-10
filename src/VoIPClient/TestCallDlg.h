@@ -4,7 +4,7 @@
 
 // CTestCallDlg 대화 상자
 
-class CTestCallDlg : public CDialog
+class CTestCallDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CTestCallDlg)
 
@@ -16,6 +16,8 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DLG_CALL_VIEW };
 #endif
+public:
+	CVoIPClientDoc* GetDocument() const;
 
 	CStatic mDisplayBox;
 
@@ -30,4 +32,7 @@ protected:
 	afx_msg void OnBnClickedServerAddclient();
 	afx_msg void OnBnClickedServerRemoveclient();
 	afx_msg void OnBnClickedSetHandler();
+public:
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg void OnNcPaint();
 };

@@ -15,6 +15,7 @@
 #include "StartDlg.h"
 #include "AccountLoginDlg.h"
 #include "ManageUserAccountDlg.h"
+#include "TestCallDlg.h"
 
 #include "ClientMediaManager.h"
 #include "ServerMediaManager.h"
@@ -205,6 +206,11 @@ BOOL CVoIPClientApp::InitInstance()
 		return FALSE;
 
 	m_pMainWnd->ShowWindow(SW_HIDE);
+	
+#if 0
+	CTestCallDlg dlg;
+	dlg.DoModal();
+#endif
 
 	CStartDlg startDlg;
 	INT_PTR retValue = startDlg.DoModal();
