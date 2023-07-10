@@ -3,8 +3,8 @@
 //
 
 #pragma once
-#include "FileView.h"
-#include "ClassView.h"
+#include "ContactView.h"
+#include "SessionView.h"
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
 #include "CalendarBar.h"
@@ -26,10 +26,19 @@ protected: // serialization에서만 만들어집니다.
 // 특성입니다.
 protected:
 	CSplitterWnd m_wndSplitter;
+
 public:
 
 // 작업입니다.
 public:
+	void Connect(); // Connect to server
+	void UserLogIn(); // User Login
+	void UserSignIn(); // User Signin
+	void ResetPassword(); // Reset Password
+	void UpdateAccount(); // Update user account
+
+	void AddSessionList();
+	void AddContactList();
 
 // 재정의입니다.
 public:
@@ -50,8 +59,8 @@ protected:  // 컨트롤 모음이 포함된 멤버입니다.
 	CMFCToolBar       m_wndToolBar;
 	CMFCStatusBar     m_wndStatusBar;
 	CMFCToolBarImages m_UserImages;
-	CFileView         m_wndFileView;
-	CClassView        m_wndClassView;
+	CContactView         m_wndContactView;
+	CSessionView        m_wndSessionView;
 	COutputWnd        m_wndOutput;
 	CPropertiesWnd    m_wndProperties;
 	COutlookBar       m_wndNavigationBar;
@@ -78,6 +87,15 @@ protected:
 	afx_msg void OnUpdateViewCaptionBar(CCmdUI* pCmdUI);
 	afx_msg void OnOptions();
 	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
+	afx_msg void OnUpdateUserLogIn(CCmdUI* pCmdUI);
+	afx_msg void OnUserLogIn();
+	afx_msg void OnUpdateUserLogOut(CCmdUI* pCmdUI);
+	afx_msg void OnUserLogOut();
+	afx_msg void OnUpdateTestDlg(CCmdUI* pCmdUI);
+	afx_msg void OnTestDlg();
+	afx_msg void OnUpdateResetPassword(CCmdUI* pCmdUI);
+	afx_msg void OnResetPassword();
+	
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();
@@ -90,6 +108,10 @@ protected:
 	CMFCOutlookBarTabCtrl* FindOutlookParent(CWnd* pWnd);
 	CMFCOutlookBarTabCtrl* m_pCurrOutlookWnd;
 	CMFCOutlookBarPane*    m_pCurrOutlookPage;
+
+public:
+	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
 };
 
 

@@ -11,6 +11,12 @@
 
 #include "VoIPClientDoc.h"
 #include "VoIPClientView.h"
+
+#include "StartDlg.h"
+#include "AccountLoginDlg.h"
+#include "ManageUserAccountDlg.h"
+#include "TestCallDlg.h"
+
 #include "ClientMediaManager.h"
 #include "ServerMediaManager.h"
 #include "common/logger.h"
@@ -136,18 +142,23 @@ BOOL CVoIPClientApp::InitInstance()
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
 		RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
 
+	// Media
+	Logger::GetInstance()->SetLogLevel(LogLevel::LL_DEBUG);
+	LOG_DEBUG("waiting something...");
+
 	// 애플리케이션의 문서 템플릿을 등록합니다.  문서 템플릿은
 	//  문서, 프레임 창 및 뷰 사이의 연결 역할을 합니다.
 	CSingleDocTemplate* pDocTemplate;
 	pDocTemplate = new CSingleDocTemplate(
 		IDR_MAINFRAME,
-		//IDI_MASK,
 		RUNTIME_CLASS(CVoIPClientDoc),
 		RUNTIME_CLASS(CMainFrame),       // 주 SDI 프레임 창입니다.
 		RUNTIME_CLASS(CVoIPClientView));
 	if (!pDocTemplate)
 		return FALSE;
+
 	AddDocTemplate(pDocTemplate);
+
 	// COleTemplateServer를 문서 템플릿에 연결합니다.
 	//  COleTemplateServer는 OLE 컨테이너를 요청하는 대신 문서 템플릿에
 	//  지정된 정보를 사용하여 새 문서를
@@ -194,30 +205,34 @@ BOOL CVoIPClientApp::InitInstance()
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 
+	m_pMainWnd->ShowWindow(SW_HIDE);
+	
+#if 0
+	CTestCallDlg dlg;
+	dlg.DoModal();
+#endif
+
+	// Start connecting to server
+	((CMainFrame*)AfxGetMainWnd())->Connect();
+#if 0
+	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
+	ClientMediaManager test = ClientMediaManager(1);
+	ContactInfo contact_info;
+	OperatingInfo operate_info;
+	contact_info.dest_ip = sip_server; // "127.0.0.1";
+	contact_info.dest_video_port = 5001;
+	contact_info.dest_audio_port = 5002;
+	contact_info.org_video_port = 5001;
+	contact_info.org_audio_port = 5002;
+
+	test.startCall(contact_info, operate_info);
+#endif
+
+
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 	m_pMainWnd->UpdateWindow();
-	
-	// SessionManager create
-	SessionManager::getInstance();
 
-#if 1
-	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
-	media::ClientMediaManager* client = media::ClientMediaManager::getInstance();
-	client->setSessionCallback(CallsManager::getInstance());
-	media::ServerMediaManager* server = media::ServerMediaManager::getInstance();
-
-	//Json::Value client_join_info;
-	//client_join_info["rid"] = "TEST_ID";
-	//client_join_info["serverip"] = "127.0.0.1";
-	//client_join_info["myip"] = "127.0.0.1";
-	//client_join_info["videocodec"] = "TEST_ID";
-	//client_join_info["audiocodec"] = "TEST_ID";
-	//client_join_info["encryption_alg"] = "TEST_ID";
-	//client_join_info["encryption_key"] = "TEST_ID";
-
-	//test->startCall(client_join_info);
-#endif
 	return TRUE;
 }
 

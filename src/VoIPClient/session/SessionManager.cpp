@@ -17,7 +17,7 @@ SessionManager::SessionManager() {
 
 	callsManager = CallsManager::getInstance();
 	accountManager = AccountManager::getInstance();
-	myIp = "";
+	myIpAddr = "";
 }
 
 SessionManager* SessionManager::getInstance() {
@@ -62,16 +62,18 @@ void SessionManager::release() {
 
 void SessionManager::getMyIp()
 {
-	struct addrinfo* _addrinfo;
-	struct addrinfo* _res;
-	char _address[INET6_ADDRSTRLEN];
-	char szHostName[255];
-	gethostname(szHostName, sizeof(szHostName));
-	getaddrinfo(szHostName, NULL, 0, &_addrinfo);
-	for (_res = _addrinfo; _res != NULL; _res = _res->ai_next) {
-		if (_res->ai_family == AF_INET) {
-			if (NULL != inet_ntop(AF_INET, &((struct sockaddr_in*)_res->ai_addr)->sin_addr, _address, sizeof(_address))) {
-				myIp = _address;
+	if (myIpAddr.length() <= 0) {
+		struct addrinfo* _addrinfo;
+		struct addrinfo* _res;
+		char _address[INET6_ADDRSTRLEN];
+		char szHostName[255];
+		gethostname(szHostName, sizeof(szHostName));
+		getaddrinfo(szHostName, NULL, 0, &_addrinfo);
+		for (_res = _addrinfo; _res != NULL; _res = _res->ai_next) {
+			if (_res->ai_family == AF_INET) {
+				if (NULL != inet_ntop(AF_INET, &((struct sockaddr_in*)_res->ai_addr)->sin_addr, _address, sizeof(_address))) {
+					myIpAddr = _address;
+				}
 			}
 		}
 	}
@@ -81,7 +83,6 @@ void SessionManager::proc_recv() {
 
 	Json::Value root;
 	Json::Reader reader;
-	getMyIp();
 
 	char buf[PACKET_SIZE];
 	Json::Reader jsonReader;
@@ -90,11 +91,12 @@ void SessionManager::proc_recv() {
 		SSIZE_T bytesRead = recv(clientSocket, buf, PACKET_SIZE, 0);
 		if (bytesRead == -1) {
 			std::cerr << "Failed to receive response." << std::endl;
-			//TODO FIX
+			callsManager->releaseCall();
 			break;
 		}
 		if (bytesRead == 0) {
 			std::cout << "Disconnected to server." << std::endl;
+			callsManager->releaseCall();
 			break;
 		}
 
@@ -102,12 +104,6 @@ void SessionManager::proc_recv() {
 		
 		std::string msg(buf);
 		std::string msgStr;
-		if (msg.find("onLoginSuccess") != std::string::npos) {
-			msgStr = "onLoginSuccess";
-			std::vector<std::string> tokens = split(msg, ',');
-			accountManager->onLoginSuccess(tokens.back());
-		}
-
 		//-------------------------------------------------------------
 		// JSON payload parser
 		Json::Value jsonData;
@@ -135,6 +131,9 @@ void SessionManager::proc_recv() {
 			case 106: // 106 : GET_ALL_CONTACT
 				accountManager->handleGetAllContact(payloads);
 				break;
+			case 107: // 107 : UPDATE_MY_CONTACT
+				accountManager->handleUpdateMyContact(payloads);
+				break;
 			case 205: // 205 : GET_ALL_CONFERENCE
 				msgStr = "GET_ALL_CONFERENCE";
 				accountManager->handleGetAllMyConference(payloads);
@@ -142,32 +141,36 @@ void SessionManager::proc_recv() {
 			case 208: // 208 : JOIN_CONFERENCE
 				msgStr = "JOIN_CONFERENCE";
 				payloads["serverIp"] = serverIP;
-				payloads["myIp"] = myIp;
+				payloads["myIp"] = myIpAddr;
 				callsManager->onJoinConferenceResult(payloads);
 				break;
 			case 209: // 209 : EXIT_CONFERENCE
 				msgStr = "EXIT_CONFERENCE";
 				callsManager->onExitConference(payloads);
 				break;
-			case 301: // 301 : OUTGOING_CALL_RESULT
+			case 301: // 301 : OUTGOING_CALL
+				msgStr = "OUTGOING_CALL";
+				callsManager->onOutgoingCall(payloads);
+				break;
+			case 302: // 302 : OUTGOING_CALL_RESULT
 				msgStr = "OUTGOING_CALL_RESULT";
 				payloads["serverIp"] = serverIP;
-				payloads["myIp"] = myIp;
+				payloads["myIp"] = myIpAddr;
 				callsManager->onOutgoingCallResult(payloads);
 				break;
-			case 302: // 302 : INCOMING_CALL
+			case 303: // 303 : INCOMING_CALL
 				msgStr = "INCOMING_CALL";
 				payloads["serverIp"] = serverIP;
 				callsManager->onIncomingCall(payloads);
 				break;
-			case 303: // 303 : INCOMING_CALL_RESULT
+			case 304: // 304 : INCOMING_CALL_RESULT
 				msgStr = "INCOMING_CALL_RESULT";
-				payloads["myIp"] = myIp;
+				payloads["myIp"] = myIpAddr;
 				callsManager->onIncomingCallResult(payloads);
 				break;
 			case 305: // 305 : DISCONNECT_CALL
 				msgStr = "DISCONNECT_CALL";
-				callsManager->onDisconnected(payloads);
+				callsManager->onDisconnected();
 				break;
 			case 402: // 402 : 
 				msgStr = "NOTIFY_VIDEO_QUALITY";
@@ -186,15 +189,18 @@ void SessionManager::proc_recv() {
 void SessionManager::openSocket() {
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa)) {
-		std::cout << "WSA error";
+		accountManager->handleConnect(1); // Connection failed
+		callsManager->releaseCall();
+		std::cout << std::endl << "WSA error";
 		WSACleanup();
 		return;
 	}
-
+	getMyIp();
 	clientSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (clientSocket == INVALID_SOCKET) {
-		std::cout << std::endl;
-		std::cout << "socket error";
+		accountManager->handleConnect(1); // Connection failed
+		callsManager->releaseCall();
+		std::cout << std::endl << "socket error";
 		closesocket(clientSocket);
 		WSACleanup();
 		return;
@@ -206,6 +212,7 @@ void SessionManager::openSocket() {
 	inet_pton(AF_INET, serverIP, &(addr.sin_addr.s_addr));
 
 	if (connect(clientSocket, (SOCKADDR*)&addr, sizeof(addr)) == -1) {
+		accountManager->handleConnect(1); // Connection failed
 		std::cout << std::endl;
 		std::cerr << "Failed to connect server." << std::endl;
 		closesocket(clientSocket);
@@ -213,7 +220,7 @@ void SessionManager::openSocket() {
 		return;
 	}
 	std::cout << "Connected to server!" << std::endl;
-
+	accountManager->handleConnect(0); // Connected to server
 	std::thread recvThread(&SessionManager::proc_recv, instance);
 	recvThread.join();
 

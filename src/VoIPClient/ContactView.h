@@ -3,7 +3,7 @@
 
 #include "ViewTree.h"
 
-class CFileViewToolBar : public CMFCToolBar
+class CContactViewToolBar : public CMFCToolBar
 {
 	virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
 	{
@@ -13,11 +13,11 @@ class CFileViewToolBar : public CMFCToolBar
 	virtual BOOL AllowShowOnList() const { return FALSE; }
 };
 
-class CFileView : public CDockablePane
+class CContactView : public CDockablePane
 {
 // 생성입니다.
 public:
-	CFileView() noexcept;
+	CContactView() noexcept;
 
 	void AdjustLayout();
 	void OnChangeVisualStyle();
@@ -25,16 +25,21 @@ public:
 // 특성입니다.
 protected:
 
-	CViewTree m_wndFileView;
-	CImageList m_FileViewImages;
-	CFileViewToolBar m_wndToolBar;
+	CViewTree m_wndContactView;
+	CImageList m_ContactViewImages;
+	CContactViewToolBar m_wndToolBar;
+	UINT m_nCurrSort;
 
-protected:
-	void FillFileView();
+public:
+	void FillContactView();
 
 // 구현입니다.
 public:
-	virtual ~CFileView();
+	virtual ~CContactView();
+
+	// 재정의입니다.
+public:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -49,7 +54,16 @@ protected:
 	afx_msg void OnEditClear();
 	afx_msg void OnPaint();
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
+	afx_msg void OnNewUser();
+	afx_msg void OnDeleteUser();
+	afx_msg void OnJoinUser();
+	afx_msg void OnSort(UINT id);
+	afx_msg void OnUpdateSort(CCmdUI* pCmdUI);
 
 	DECLARE_MESSAGE_MAP()
+
+	// Handle UI notification from modules
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
+
 };
 

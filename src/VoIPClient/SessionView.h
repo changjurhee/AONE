@@ -13,22 +13,22 @@ class CClassToolBar : public CMFCToolBar
 	virtual BOOL AllowShowOnList() const { return FALSE; }
 };
 
-class CClassView : public CDockablePane
+class CSessionView : public CDockablePane
 {
 public:
-	CClassView() noexcept;
-	virtual ~CClassView();
+	CSessionView() noexcept;
+	virtual ~CSessionView();
 
 	void AdjustLayout();
 	void OnChangeVisualStyle();
+	void FillSessionView();
 
 protected:
 	CClassToolBar m_wndToolBar;
-	CViewTree m_wndClassView;
-	CImageList m_ClassViewImages;
+	CViewTree m_wndSessionView;
+	CImageList m_SessionViewImages;
 	UINT m_nCurrSort;
 
-	void FillClassView();
 
 // 재정의입니다.
 public:
@@ -42,7 +42,8 @@ protected:
 	afx_msg void OnClassAddMemberVariable();
 	afx_msg void OnClassDefinition();
 	afx_msg void OnClassProperties();
-	afx_msg void OnNewFolder();
+	afx_msg void OnNewSession();
+	afx_msg void OnJoinSession();
 	afx_msg void OnPaint();
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
 	afx_msg LRESULT OnChangeActiveTab(WPARAM, LPARAM);
@@ -50,5 +51,8 @@ protected:
 	afx_msg void OnUpdateSort(CCmdUI* pCmdUI);
 
 	DECLARE_MESSAGE_MAP()
+
+	// Handle UI notification from modules
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
 };
 

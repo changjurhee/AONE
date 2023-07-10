@@ -6,6 +6,7 @@
 #include "SessionControl.h"
 #include "ICallsManager.h"
 #include "IAccountManager.h"
+#include "IUiController.h"
 
 constexpr auto PACKET_SIZE = 10240;
 
@@ -16,7 +17,7 @@ private:
 	char serverIP[20];
 	int serverPort;
 
-	std::string myIp;
+	std::string myIpAddr;
 
 	ICallsManager* callsManager;
 	IAccountManager* accountManager;

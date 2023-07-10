@@ -1,0 +1,247 @@
+﻿// SessionRegisterDlg.cpp: 구현 파일
+//
+
+#include "pch.h"
+#include "VoIPClient.h"
+
+#include "MainFrm.h"
+#include "VoIPClientDoc.h"
+
+#include "afxdialogex.h"
+#include "SessionRegisterDlg.h"
+
+#include "session/UiController.h"
+
+// CSessionRegisterDlg 대화 상자
+
+IMPLEMENT_DYNAMIC(CSessionRegisterDlg, CDialogEx)
+
+CSessionRegisterDlg::CSessionRegisterDlg(CWnd* pParent /*=nullptr*/)
+	: CDialogEx(IDD_DLG_SESSION_REGISTER, pParent)
+	, m_nIndexContact(0)
+	, m_nIndexParticipants(0)
+	, m_Date(COleDateTime::GetCurrentTime())
+	, m_StartTime(COleDateTime::GetCurrentTime())
+	, m_endTime(COleDateTime::GetCurrentTime())
+{
+
+}
+
+CSessionRegisterDlg::~CSessionRegisterDlg()
+{
+}
+
+void CSessionRegisterDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LT_CONTACT, m_ltContact);
+	DDX_Control(pDX, IDC_LT_PARTICIPANTS, m_ltParticipants);
+	DDX_DateTimeCtrl(pDX, IDC_DP_DATE, m_Date);
+	DDX_DateTimeCtrl(pDX, IDC_DP_TIME_START, m_StartTime);
+	DDX_DateTimeCtrl(pDX, IDC_DP_TIME_END, m_endTime);
+}
+
+
+BEGIN_MESSAGE_MAP(CSessionRegisterDlg, CDialogEx)
+	ON_WM_CTLCOLOR()
+	ON_BN_CLICKED(IDOK, &CSessionRegisterDlg::OnBnClickedOk)
+	ON_NOTIFY(NM_CLICK, IDC_LT_CONTACT, &CSessionRegisterDlg::OnNMClickLtContact)
+	ON_NOTIFY(NM_CLICK, IDC_LT_PARTICIPANTS, &CSessionRegisterDlg::OnNMClickLtParticipants)
+	ON_NOTIFY(NM_THEMECHANGED, IDC_DP_DATE, &CSessionRegisterDlg::OnNMThemeChangedDpDate)
+	ON_NOTIFY(NM_THEMECHANGED, IDC_DP_TIME_START, &CSessionRegisterDlg::OnNMThemeChangedDpTimeStart)
+	ON_NOTIFY(NM_THEMECHANGED, IDC_DP_TIME_END, &CSessionRegisterDlg::OnNMThemeChangedDpTimeEnd)
+	ON_BN_CLICKED(IDC_MFCBTN_RIGHT, &CSessionRegisterDlg::OnBnClickedMfcbtnRight)
+	ON_BN_CLICKED(IDC_MFCBTN_LEFT, &CSessionRegisterDlg::OnBnClickedMfcbtnLeft)
+	ON_MESSAGE(UWM_UI_CONTROLLER, processUiControlNotify)
+END_MESSAGE_MAP()
+
+
+// CSessionRegisterDlg 메시지 처리기
+
+CVoIPClientDoc* CSessionRegisterDlg::GetDocument() const
+{
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	CVoIPClientDoc* m_pDocument = (CVoIPClientDoc*)pFrame->GetActiveDocument();
+	return (CVoIPClientDoc*)m_pDocument;
+}
+
+HBRUSH CSessionRegisterDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO:  여기서 DC의 특성을 변경합니다.
+	// TODO:  기본값이 적당하지 않으면 다른 브러시를 반환합니다.
+	return (HBRUSH)GetStockObject(WHITE_BRUSH);
+}
+
+void CSessionRegisterDlg::OnBnClickedOk()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+	/*constexpr long long RESOLUTION_TIME = 10000000;
+	std::tm tm_start = {};
+	std::tm tm_end = {};
+	std::string st_time = FormatString("%d %d %d %d %d %d", m_Date.GetYear(), m_Date.GetMonth(), m_Date.GetDay(), m_StartTime.GetHour(), m_StartTime.GetMinute(), m_StartTime.GetSecond());
+	std::string ed_time = FormatString("%d %d %d %d %d %d", m_Date.GetYear(), m_Date.GetMonth(), m_Date.GetDay(), m_endTime.GetHour(), m_endTime.GetMinute(), m_endTime.GetSecond());
+
+	std::stringstream ss_s(st_time);
+	std::stringstream ss_e(ed_time);
+	ss_s >> std::get_time(&tm_start, "%Y %m %d %H %M %S");
+	ss_e>> std::get_time(&tm_end, "%Y %m %d %H %M %S");
+	auto tp_s = std::chrono::system_clock::from_time_t(std::mktime(&tm_start));
+	auto tp_e = std::chrono::system_clock::from_time_t(std::mktime(&tm_end));
+	std::chrono::seconds duration_second = std::chrono::duration_cast<std::chrono::seconds>(tp_e - tp_s);
+
+	std::cout << tp_s.time_since_epoch().count() / RESOLUTION_TIME << "\n";
+	std::cout << tp_e.time_since_epoch().count() / RESOLUTION_TIME << "\n";
+	std::cout << duration_second.count()  << "\n";*/
+
+	stOleToDate res = SetDateTime(m_Date, m_StartTime, m_endTime);
+
+	int num = m_ltParticipants.GetItemCount();
+	std::list<std::string> Participants;
+
+	for (int i = 0; i < num; i++) {
+		Participants.push_back(std::string(CT2CA(m_ltParticipants.GetItemText(i, 0))));
+	}
+
+	if(num != 0) UiController::getInstance()->request_CreateConference(this, res.dataAndTime, res.duration, Participants);
+}
+
+
+void CSessionRegisterDlg::OnNMClickLtContact(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0;
+	m_nIndexContact = pNMItemActivate->iItem;
+}
+
+
+void CSessionRegisterDlg::OnNMClickLtParticipants(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0;
+	m_nIndexParticipants = pNMItemActivate->iItem;
+}
+
+
+void CSessionRegisterDlg::OnNMThemeChangedDpDate(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	// 이 기능을 사용하려면 Windows XP 이상이 필요합니다.
+	// _WIN32_WINNT 기호는 0x0501보다 크거나 같아야 합니다.
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0;
+}
+
+
+void CSessionRegisterDlg::OnNMThemeChangedDpTimeStart(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	// 이 기능을 사용하려면 Windows XP 이상이 필요합니다.
+	// _WIN32_WINNT 기호는 0x0501보다 크거나 같아야 합니다.
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0;
+}
+
+
+void CSessionRegisterDlg::OnNMThemeChangedDpTimeEnd(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	// 이 기능을 사용하려면 Windows XP 이상이 필요합니다.
+	// _WIN32_WINNT 기호는 0x0501보다 크거나 같아야 합니다.
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0;
+}
+
+
+void CSessionRegisterDlg::OnBnClickedMfcbtnRight()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	int num = m_ltParticipants.GetItemCount();
+
+	tstring tmp_cid(m_ltContact.GetItemText(m_nIndexContact, 0));
+	tstring tmp_email(m_ltContact.GetItemText(m_nIndexContact, 1));
+	tstring tmp_name(m_ltContact.GetItemText(m_nIndexContact, 2));
+
+	m_ltParticipants.InsertItem(num, tmp_cid.data());
+	m_ltParticipants.SetItem(num, 1, LVIF_TEXT, tmp_email.data(), NULL, NULL, NULL, NULL);
+	m_ltParticipants.SetItem(num, 2, LVIF_TEXT, tmp_name.data(), NULL, NULL, NULL, NULL);
+
+	m_ltContact.LockWindowUpdate();
+	m_ltContact.DeleteItem(m_nIndexContact);
+	m_ltContact.UnlockWindowUpdate();
+}
+
+
+void CSessionRegisterDlg::OnBnClickedMfcbtnLeft()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	int num = m_ltContact.GetItemCount();
+
+	tstring tmp_cid(m_ltParticipants.GetItemText(m_nIndexParticipants, 0));
+	tstring tmp_email(m_ltParticipants.GetItemText(m_nIndexParticipants, 1));
+	tstring tmp_name(m_ltParticipants.GetItemText(m_nIndexParticipants, 2));
+
+	m_ltContact.InsertItem(num, tmp_cid.data());
+	m_ltContact.SetItem(num, 1, LVIF_TEXT, tmp_email.data(), NULL, NULL, NULL, NULL);
+	m_ltContact.SetItem(num, 2, LVIF_TEXT, tmp_name.data(), NULL, NULL, NULL, NULL);
+
+	m_ltParticipants.LockWindowUpdate();
+	m_ltParticipants.DeleteItem(m_nIndexParticipants);
+	m_ltParticipants.UnlockWindowUpdate();
+}
+
+
+BOOL CSessionRegisterDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  여기에 추가 초기화 작업을 추가합니다.
+	CRect rt;
+	m_ltContact.GetWindowRect(&rt);
+	m_ltContact.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
+
+	m_ltContact.InsertColumn(0, TEXT("cid"), LVCFMT_CENTER, rt.Width() * 0.2);
+	m_ltContact.InsertColumn(1, TEXT("email"), LVCFMT_CENTER, rt.Width() * 0.5);
+	m_ltContact.InsertColumn(2, TEXT("name"), LVCFMT_CENTER, rt.Width() * 0.3);
+
+	m_ltParticipants.GetWindowRect(&rt);
+	m_ltParticipants.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
+
+	m_ltParticipants.InsertColumn(0, TEXT("cid"), LVCFMT_CENTER, rt.Width() * 0.2);
+	m_ltParticipants.InsertColumn(1, TEXT("email"), LVCFMT_CENTER, rt.Width() * 0.5);
+	m_ltParticipants.InsertColumn(2, TEXT("name"), LVCFMT_CENTER, rt.Width() * 0.3);
+
+	auto result_list = UiController::getInstance()->get_MyContacts();
+
+	m_ltContact.DeleteAllItems();
+
+	for (ContactData p : result_list) {
+		tstring tmp_cid, tmp_email, tmp_name;
+
+		int num = m_ltContact.GetItemCount();
+
+		tmp_cid.assign(p.cid.begin(), p.cid.end());
+		tmp_email.assign(p.email.begin(), p.email.end());
+		tmp_name.assign(p.name.begin(), p.name.end());
+
+		m_ltContact.InsertItem(num, tmp_cid.data());
+		m_ltContact.SetItem(num, 1, LVIF_TEXT, tmp_email.data(), NULL, NULL, NULL, NULL);
+		m_ltContact.SetItem(num, 2, LVIF_TEXT, tmp_name.data(), NULL, NULL, NULL, NULL);
+	}
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
+}
+
+LRESULT CSessionRegisterDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+	default:
+		break;
+	}
+
+	return LRESULT();
+}

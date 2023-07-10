@@ -119,6 +119,11 @@ void COutputWnd::FillDebugWindow()
 	m_wndOutputDebug.AddString(_T("표시 방법을 원하는 대로 변경할 수 있습니다."));
 }
 
+void COutputWnd::FillDebug(tstring str)
+{
+	m_wndOutputDebug.AddString(str.c_str());
+}
+
 void COutputWnd::FillFindWindow()
 {
 	m_wndOutputFind.AddString(_T("여기에 찾기 출력이 표시됩니다."));

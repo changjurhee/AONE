@@ -11,7 +11,12 @@
 #include "framework.h"
 #include <memory>
 #include <string>
+#include <sstream>
 #include <string_view>
+#include <chrono>
+#include <iomanip>
+
+#include "common/logger.h"
 
 using tstring = std::basic_string<TCHAR>;
 using tstring_view = std::basic_string_view<TCHAR>;
@@ -39,5 +44,80 @@ static std::string FormatString(const std::string_view& rsFormat, TypeTs ... Var
 	return std::string(sMessage);
 }
 #pragma warning(pop)
+
+struct stOleToDate {
+	long long dataAndTime;
+	long long duration;
+};
+
+struct stDateToOle {
+	COleDateTime m_Date;
+	COleDateTime m_StartTime;
+	COleDateTime m_endTime;
+};
+
+constexpr long long RESOLUTION_TIME = 10000000;
+
+static stOleToDate SetDateTime(COleDateTime m_Date, COleDateTime m_StartTime, COleDateTime m_endTime) {
+	std::tm tm_start = {};
+	std::tm tm_end = {};
+	std::string st_time = FormatString("%d %d %d %d %d %d", m_Date.GetYear(), m_Date.GetMonth(), m_Date.GetDay(), m_StartTime.GetHour(), m_StartTime.GetMinute(), m_StartTime.GetSecond());
+	std::string ed_time = FormatString("%d %d %d %d %d %d", m_Date.GetYear(), m_Date.GetMonth(), m_Date.GetDay(), m_endTime.GetHour(), m_endTime.GetMinute(), m_endTime.GetSecond());
+
+	std::stringstream ss_s(st_time);
+	std::stringstream ss_e(ed_time);
+	ss_s >> std::get_time(&tm_start, "%Y %m %d %H %M %S");
+	ss_e >> std::get_time(&tm_end, "%Y %m %d %H %M %S");
+	auto tp_s = std::chrono::system_clock::from_time_t(std::mktime(&tm_start));
+	auto tp_e = std::chrono::system_clock::from_time_t(std::mktime(&tm_end));
+	std::chrono::seconds duration_second = std::chrono::duration_cast<std::chrono::seconds>(tp_e - tp_s);
+
+	std::cout << tp_s.time_since_epoch().count() / RESOLUTION_TIME << "\n";
+	std::cout << tp_e.time_since_epoch().count() / RESOLUTION_TIME << "\n";
+	std::cout << duration_second.count() << "\n";
+
+	stOleToDate res;
+	res.dataAndTime = tp_s.time_since_epoch().count() / RESOLUTION_TIME;
+	res.duration = duration_second.count();
+
+	return res;
+}
+
+static CString GetDateTime(long long dataAndTime, long long duration) {
+	stDateToOle res;
+	std::chrono::seconds dur(dataAndTime);
+	std::chrono::time_point<std::chrono::system_clock> dt(dur);
+	
+	COleDateTime t(1999, 0, 0, 0, 0, dataAndTime);
+
+	CString str = t.Format(_T("%Y %m %d %H %M %S"));
+	
+	return str;
+}
+
+enum class KResponse : INT_PTR {
+	CONNECT_COMPLETE, 
+	CONNECT_FAILED,
+	LOGIN_COMPLETE,
+	LOGIN_FAILED, 
+	SIGNIN_COMPLETE, 
+	SIGNIN_CANCELED,
+	RESET_PASSWORD_COMPLETE, 
+	RESET_PASSWORD_CANCELED, 
+	UPDATE_USER_COMPLETE, 
+	UPDATE_USER_CANCELED,
+	
+
+	CREATE_USER,
+	UPDATE_USER,
+	RESET_PASSWORD, 
+	START,
+};
+
+struct userInfo {
+	tstring email;
+	tstring password;
+	tstring server_ip_num;
+};
 
 #endif //PCH_H

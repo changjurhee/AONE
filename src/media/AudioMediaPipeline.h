@@ -28,6 +28,19 @@ public:
 	void setVideoQuality(int video_quality_index) override;
 	//void add_client(ContactInfo* client_info);
 	//void remove_client(ContactInfo* client_info);
+
+private:
+	static GstPadProbeReturn ProbeForProcessingVad(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
+		AudioMediaPipeline* pipeline = static_cast<AudioMediaPipeline*>(user_data);
+
+		if (pipeline->ProcessVad(info))
+			return GST_PAD_PROBE_OK;
+		else
+			// silent so the buffer should be dropped.
+			return GST_PAD_PROBE_DROP;
+	}
+
+	bool ProcessVad(GstPadProbeInfo* info);
 };
 
 } // namespace media
