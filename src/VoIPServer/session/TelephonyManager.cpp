@@ -69,7 +69,7 @@ void TelephonyManager::onAnswer(Json::Value data) {
 	Json::Value media;
 	media["rid"] = connId;
 	media["conferenceSize"] = 2;
-	media["myIp"] = payload["myIp"].asString();
+	media["myIp"] = data["myIp"].asString();
 	ServerMediaManager::getInstance()->startCall(media);
 
 	Json::Value clientMedia;
