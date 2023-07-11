@@ -189,6 +189,8 @@ void CVoIPClientView::OnPaint()
 	dc.BitBlt(StartPos.x - bmpInfo.bmWidth / 2, StartPos.y - bmpInfo.bmHeight / 2, bmpInfo.bmWidth, bmpInfo.bmHeight, &MemDC, 0, 0, SRCCOPY);
 
 	MemDC.SelectObject(pOldBmp);
+
+	m_DisplayBox.SetWindowPos(NULL, StartPos.x - bmpInfo.bmWidth / 2, StartPos.y - bmpInfo.bmHeight / 2, bmpInfo.bmWidth, bmpInfo.bmHeight, SWP_DRAWFRAME);
 }
 
 
@@ -226,6 +228,12 @@ int CVoIPClientView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (!m_btnEchoCancel.Create(_T("ECHO"), dwViewStyle, CRect(10 + 2 * 100, 10, 100 + 2 * 100, 36), this, ID_CV_CHK_ECHO))
 	{
 		TRACE0("ECHO 버튼을 만들지 못했습니다.\n");
+		return -1;      // 만들지 못했습니다.
+	}
+
+	if (!m_DisplayBox.Create(_T("Display"), dwViewStyle, CRect(10 + 3 * 100, 10, 100 + 3 * 100, 36), this, IDC_CLIENT_VIEW_DISPLAY))
+	{
+		TRACE0("Display을 만들지 못했습니다.\n");
 		return -1;      // 만들지 못했습니다.
 	}
 	
