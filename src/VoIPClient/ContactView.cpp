@@ -6,6 +6,7 @@
 #include "ContactView.h"
 #include "Resource.h"
 #include "VoIPClient.h"
+#include "MessageBoxDlg.h"
 
 #include "session/UiController.h"
 
@@ -303,7 +304,7 @@ void CContactView::OnDeleteUser()
 	if (ht == m_wndContactView.GetRootItem()) return;
 	if (MessageBox(_T("Do you want to delete the User ?"), _T("Delete User"), MB_OKCANCEL) == IDOK)
 	{
-		CString stmp = m_wndContactView.GetItemText(m_wndContactView.GetParentItem(ht));
+		CString stmp = m_wndContactView.GetItemText(m_wndContactView.ItemHasChildren(ht) == 0 ? m_wndContactView.GetParentItem(ht) : ht);
 		UiController::getInstance()->req_DeleteMyContact(this, std::string(CT2CA(stmp)));
 	}
 }
@@ -314,8 +315,12 @@ void CContactView::OnJoinUser()
 	if (ht == m_wndContactView.GetRootItem()) return;
 	if (MessageBox(_T("Do you want to Call the User ?"), _T("Call User"), MB_OKCANCEL) == IDOK)
 	{
-		CString stmp = m_wndContactView.GetItemText(m_wndContactView.GetParentItem(ht));
+		CString stmp = m_wndContactView.GetItemText(m_wndContactView.ItemHasChildren(ht) == 0 ? m_wndContactView.GetParentItem(ht) : ht);
 		UiController::getInstance()->request_OutgoingCall(this, std::string(CT2CA(stmp)));
+
+		// outgoing 
+		CMessageBoxDlg dlg(this, (int)CMessageBoxDlg::Msg::OUTGOING, stmp);
+		dlg.DoModal();
 	}
 }
 

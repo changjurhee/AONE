@@ -552,7 +552,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "확인",IDOK,198,155,50,14
     PUSHBUTTON      "취소",IDCANCEL,252,155,50,14
-    LTEXT           "Static",IDC_STATIC,88,56,138,37
+    LTEXT           "Static",IDC_ST_MSG,83,47,138,37
 END
 
 
