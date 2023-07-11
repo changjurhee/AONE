@@ -115,6 +115,9 @@
     <ClCompile Include="MessageBoxDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\media\media_config.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountLoginDlg.h">
@@ -269,6 +272,9 @@
     </ClInclude>
     <ClInclude Include="MessageBoxDlg.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\media_config.h">
+      <Filter>media</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

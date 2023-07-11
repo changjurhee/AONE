@@ -93,7 +93,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\..\Demo\webrtcVAD\webrtcVAD\webrtc\inc;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib;$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\..\Demo\webrtcVAD\webrtcVAD\webrtc\inc;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib;$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -177,7 +177,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\..\Demo\webrtcVAD\webrtcVAD\webrtc\inc;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\..\Demo\webrtcVAD\webrtcVAD\webrtc\inc;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -207,10 +207,12 @@
     <ClInclude Include="..\media\call_info.h" />
     <ClInclude Include="..\media\MediaManager.h" />
     <ClInclude Include="..\media\MediaPipeline.h" />
+    <ClInclude Include="..\media\media_config.h" />
     <ClInclude Include="..\media\media_types.h" />
     <ClInclude Include="..\media\VideoMediaPipeline.h" />
     <ClInclude Include="calendarbar.h" />
     <ClInclude Include="ClassView.h" />
+    <ClInclude Include="CommandLineInterface.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IServerMediaManager.h" />
@@ -245,10 +247,12 @@
     <ClCompile Include="..\media\audio_buffer.cpp" />
     <ClCompile Include="..\media\MediaManager.cpp" />
     <ClCompile Include="..\media\MediaPipeline.cpp" />
+    <ClCompile Include="..\media\media_config.cpp" />
     <ClCompile Include="..\media\media_types.cpp" />
     <ClCompile Include="..\media\VideoMediaPipeline.cpp" />
     <ClCompile Include="calendarbar.cpp" />
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="CommandLineInterface.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="OutputWnd.cpp" />

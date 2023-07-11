@@ -1,5 +1,6 @@
 #include "SUiController.h"
 #include <algorithm>
+#include <VoIPServer/CommandLineInterface.h>
 
 using namespace std;
 
@@ -45,6 +46,18 @@ void SUiController::postMessage(WPARAM wPram, LPARAM lParam)
 			cout << "SUiController::postMessage() = " << lParam << endl;
 		}
 	}
+}
+
+void SUiController::startCliThread()
+{
+	CommandLineInterface* cli = CommandLineInterface::getInstance();
+	cli->startCli();
+}
+
+void SUiController::startCommandLineInterface()
+{
+	std::thread commandline(&SUiController::startCliThread, this);
+	commandline.detach();
 }
 
 void SUiController::notify(int type, int result)

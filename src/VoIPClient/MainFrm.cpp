@@ -626,6 +626,7 @@ void CMainFrame::OnUpdateUserLogIn(CCmdUI* pCmdUI)
 
 void CMainFrame::OnUserLogOut()
 {
+	UiController::getInstance()->req_Logout(this);
 	ShowWindow(SW_HIDE);
 	UserLogIn();
 	ShowWindow(SW_SHOW);

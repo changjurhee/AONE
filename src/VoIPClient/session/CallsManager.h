@@ -6,6 +6,13 @@
 #include "ISessionMediaCallback.h"
 #include "../../json/json.h"
 
+#define MEDIA_ENABLED true
+
+namespace media {
+	class ClientMediaManager;
+}
+using namespace media;
+
 class CallsManager : public ICallsManager, public ISessionMediaCallback {
 private:
 	static CallsManager* instance;
@@ -13,6 +20,7 @@ private:
 	Call* call;
 	SessionControl* sessionControl;
 	IUiController* uiControl;
+	ClientMediaManager* mediaManager = nullptr;
 
 	CallsManager();
 

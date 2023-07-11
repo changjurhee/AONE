@@ -10,6 +10,13 @@
 #include "ContactDb.h"
 #include "../../json/json.h"
 
+#define MEDIA_ENABLED true
+
+namespace media {
+	class ServerMediaManager;
+}
+using namespace media;
+
 class TelephonyManager : public ITelephonyManager, public ISessionMediaCallback {
 private:
 	static TelephonyManager* instance;
@@ -20,6 +27,7 @@ private:
 	ISUiController* uiControl;
 	ConferenceDb* conferenceDb; // Conference Database
 	ContactDb* contactDb;
+	ServerMediaManager* mediaManager = nullptr;
 
 	TelephonyManager();
 
@@ -47,6 +55,7 @@ public:
 	void handleDisconnect(Json::Value data) override;
 	void releaseConnection(std::string cid) override;
 	void handleCreateConference(Json::Value data) override;
+	void removeConferenceSilent(Json::Value data) override;
 	void handleJoinConference(Json::Value data) override;
 	void handleExitConference(Json::Value data) override;
 	void handleRequestVideoQualityChange(Json::Value data) override;

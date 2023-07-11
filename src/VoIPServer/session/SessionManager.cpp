@@ -220,6 +220,7 @@ void SessionManager::HandleClient(int clientSocket) {
 			case 207: // 207 : DELETE_CONFERENCE
 				msgStr = "DELETE_CONFERENCE";
 				accountManager->handleDeleteConference(payloads, contactId);
+				telephonyManager->removeConferenceSilent(payloads);
 				break;
 			case 208: // 208 : JOIN_CONFERENCE
 				msgStr = "JOIN_CONFERENCE";

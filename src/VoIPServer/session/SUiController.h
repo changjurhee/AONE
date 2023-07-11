@@ -30,7 +30,8 @@ public:
 	void releaseInstance();
 	void setCallbackWnd(CWnd* wnd);
 	void postMessage(WPARAM wPram, LPARAM lParam);
-
+	void startCommandLineInterface();
+	void startCliThread();
 	//-----------------------------------------
 	// Post Message back to UI
 	void notify(int type, int result) override;

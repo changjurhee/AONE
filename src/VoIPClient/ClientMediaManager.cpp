@@ -84,10 +84,10 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 	LOG_INFO("In");
 
 	Pipelines pipelines;
-	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_sink_pipe_mode_list_, nullptr));
-	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_src_pipe_mode_list_, this));
-	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_sink_pipe_mode_list_, this));
-	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_src_pipe_mode_list_, nullptr));
+	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_sink_pipe_mode_list_, nullptr, nullptr));
+	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_src_pipe_mode_list_, this, nullptr));
+	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_sink_pipe_mode_list_, nullptr, this));
+	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_src_pipe_mode_list_, nullptr, nullptr));
 
 	pipelineMap_[rid] = pipelines;
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
