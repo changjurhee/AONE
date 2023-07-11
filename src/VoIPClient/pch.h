@@ -50,20 +50,13 @@ struct stOleToDate {
 	long long duration;
 };
 
-struct stDateToOle {
-	COleDateTime m_Date;
-	COleDateTime m_StartTime;
-	COleDateTime m_endTime;
-};
-
-constexpr long long RESOLUTION_TIME = 10000000;
-
 using time_point = std::chrono::system_clock::time_point;
 static std::string serializeTimePoint(const time_point& time, const std::string& format)
 {
 	std::time_t tt = std::chrono::system_clock::to_time_t(time);
 	std::tm tm;
-	gmtime_s(&tm, &tt);
+	localtime_s(&tm, &tt);
+	//gmtime_s(&tm, &tt);
 	std::stringstream ss;
 	ss << std::put_time(&tm, format.c_str());
 	return ss.str();
@@ -74,6 +67,8 @@ static stOleToDate SetDateTime(COleDateTime m_Date, COleDateTime m_StartTime, CO
 	std::tm tm_end = {};
 	std::string st_time = FormatString("%d %d %d %d %d %d", m_Date.GetYear(), m_Date.GetMonth(), m_Date.GetDay(), m_StartTime.GetHour(), m_StartTime.GetMinute(), m_StartTime.GetSecond());
 	std::string ed_time = FormatString("%d %d %d %d %d %d", m_Date.GetYear(), m_Date.GetMonth(), m_Date.GetDay(), m_endTime.GetHour(), m_endTime.GetMinute(), m_endTime.GetSecond());
+	
+	std::cout << st_time << " " << ed_time << "\n";
 
 	std::stringstream ss_s(st_time);
 	std::stringstream ss_e(ed_time);

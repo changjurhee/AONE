@@ -72,20 +72,23 @@ void CContactRegisterDlg::OnBnClickedMfcbtnSearch()
 	auto result_list = UiController::getInstance()->get_SearchResult(std::string(CT2CA(m_sSearchName)));
 
 	m_ltContactNames.DeleteAllItems();
+	int num = m_ltContactNames.GetItemCount();
 
+	m_ltContactNames.LockWindowUpdate();
 	for (ContactData p : result_list) {
 		tstring tmp_cid, tmp_email, tmp_name;
-
-		int num = m_ltContactNames.GetItemCount();
 
 		tmp_cid.assign(p.cid.begin(), p.cid.end());
 		tmp_email.assign(p.email.begin(), p.email.end());
 		tmp_name.assign(p.name.begin(), p.name.end());
 
 		m_ltContactNames.InsertItem(num, tmp_cid.data());
-		m_ltContactNames.SetItem(num, 1, LVIF_TEXT, tmp_email.data(), NULL, NULL, NULL, NULL);
-		m_ltContactNames.SetItem(num, 2, LVIF_TEXT, tmp_name.data(), NULL, NULL, NULL, NULL);
+		m_ltContactNames.SetItemText(num, 1, tmp_email.data());
+		m_ltContactNames.SetItemText(num, 2, tmp_name.data());
+		num++;
 	}
+	m_ltContactNames.UnlockWindowUpdate();
+	UpdateData(FALSE);
 }
 
 LRESULT CContactRegisterDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
