@@ -6,7 +6,7 @@
 using namespace std;
 
 UiController* UiController::instance = nullptr;
-UiController::UiController()
+UiController::UiController() : result(0, 0)
 {
 	cout << "UiController()" << endl;	
 	accountManager = AccountManager::getInstance();
@@ -41,7 +41,7 @@ void UiController::postMessage(WPARAM wPram, LPARAM lParam)
 	for (int i = 0; i < callbackWnds.size(); i++) {
 		if (IsWindow(callbackWnds[i]->m_hWnd)) {
 			callbackWnds[i]->PostMessageW(UWM_UI_CONTROLLER, wPram, lParam);
-			cout << "UiController::postMessage() = " << lParam << endl;
+			//cout << "UiController::postMessage() = " << lParam << endl;
 		}
 	}
 }
@@ -61,6 +61,12 @@ void UiController::startConnection( string serverIp )
 void UiController::notify(int type, int result)
 {
 	postMessage(type, (LPARAM)result);
+}
+
+void UiController::notifyCallState(CallResult r)
+{
+	result = r;
+	postMessage(MSG_RESPONSE_CALLSTATE, (LPARAM)(&result));
 }
 
 list<ContactData> UiController::get_MyContacts()

@@ -317,10 +317,6 @@ void CContactView::OnJoinUser()
 	{
 		CString stmp = m_wndContactView.GetItemText(m_wndContactView.ItemHasChildren(ht) == 0 ? m_wndContactView.GetParentItem(ht) : ht);
 		UiController::getInstance()->request_OutgoingCall(this, std::string(CT2CA(stmp)));
-
-		// outgoing 
-		CMessageBoxDlg dlg(this, (int)CMessageBoxDlg::Msg::OUTGOING, stmp);
-		dlg.DoModal();
 	}
 }
 

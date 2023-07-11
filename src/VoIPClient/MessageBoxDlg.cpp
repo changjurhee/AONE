@@ -7,6 +7,7 @@
 #include "MessageBoxDlg.h"
 
 #include "session/UiController.h"
+#include "session/Constants.h"
 
 // CMessageBoxDlg 대화 상자
 
@@ -50,13 +51,18 @@ HBRUSH CMessageBoxDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 LRESULT CMessageBoxDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 {
+	std::cout << "CMessageBoxDlg::wp: " << wParam << ", lp: " << lParam << std::endl;
 	switch (wParam)
 	{
 	case MSG_RESPONSE_CALLSTATE:
-		if (lParam == 0) {
+	{
+		CallResult* res = reinterpret_cast<CallResult*>(lParam);
+		int result = res->result;
+		if (result != CallState::STATE_DIALING && result != CallState::STATE_RINGING) {
 			EndDialog(IDOK);
 		}
 		break;
+	}
 	default:
 		break;
 	}
@@ -69,9 +75,10 @@ BOOL CMessageBoxDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
+	std::cout << "setCallbackWnd()" << std::endl;
+	UiController::getInstance()->setCallbackWnd(this);
 	SetWindowText(m_mode == (int)Msg::INCOMING ? _T("INCOMING") : _T("OUTGOING"));
 	GetDlgItem(IDOK)->EnableWindow(m_mode == (int)Msg::INCOMING ? TRUE : FALSE);
-	
 	GetDlgItem(IDOK)->SetWindowText(_T("Answer"));
 	GetDlgItem(IDCANCEL)->SetWindowText(m_mode == (int)Msg::INCOMING ? _T("Reject") : _T("End"));
 
