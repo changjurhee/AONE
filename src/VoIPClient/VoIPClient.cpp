@@ -235,6 +235,27 @@ BOOL CVoIPClientApp::InitInstance()
 	test->setViewHandler((handleptr)pView->GetBitmapHandle());
 #endif
 
+#if 1
+	// Make client media manager
+	media::ClientMediaManager* clientMediaManager = media::ClientMediaManager::getInstance();
+
+	// Pass handle to output video screen
+	CVoIPClientView* pView = (CVoIPClientView*)((CMainFrame*)AfxGetMainWnd())->GetActiveView();
+	clientMediaManager->setViewHandler((handleptr)pView->GetBitmapHandle());
+
+	Json::Value client_join_info;
+	client_join_info["rid"] = "TEST_ID";
+	client_join_info["serverIp"] = "127.0.0.1";
+	client_join_info["myIp"] = "127.0.0.1";
+	client_join_info["videoCodec"] = "H264";
+	client_join_info["audioCodec"] = "UPUS";
+	client_join_info["encryption_alg"] = "TEST_ID";
+	client_join_info["encryption_key"] = "TEST_ID";
+
+	clientMediaManager->startCall(client_join_info);
+
+#endif
+
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 	m_pMainWnd->UpdateWindow();
