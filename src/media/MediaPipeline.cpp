@@ -511,11 +511,11 @@ SubElements MediaPipeline::add_client_at_src(GstBin * parent_bin, int bin_index,
 		SubElements overlay_pair = pipeline_make_overlay(parent_bin, bin_index, client_index);
 		ret_sub_elements = connect_subElements(ret_sub_elements, overlay_pair);
 	}
+#if 0
 #define SHIFT_ID 20
 	SubElements convert_pair = pipeline_make_convert(parent_bin, bin_index, client_index + SHIFT_ID);
 	ret_sub_elements = connect_subElements(ret_sub_elements, convert_pair);
 
-#if 0
 	// Remove queue by jitter buffer
 	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index, true);
 	ret_sub_elements = connect_subElements(ret_sub_elements, queue_pair);
@@ -531,7 +531,7 @@ void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int c
 	SubElements adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, BASE_CLIENT_ID);
 	ret_sub_elements = connect_subElements(ret_sub_elements, adder);
 
-	update_adder_parameter(parent_bin, bin_index, BASE_CLIENT_ID);
+	update_adder_parameter(parent_bin, bin_index, client_index);
 }
 
 void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int client_index)

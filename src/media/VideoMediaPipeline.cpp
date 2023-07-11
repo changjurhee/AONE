@@ -253,6 +253,8 @@ vector<string> split(const string& str, char delim)
 
 void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)
 {
+#if 0
+
 	int front = pipe_mode_list_[bin_index].first;
 	if (front != MODE_UDP_N) return;
 
@@ -317,6 +319,36 @@ void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_inde
 			break;
 		}
 	}
+#else
+	int base_width = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width; 
+	int base_height = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height;
+
+	int position_table[10][2] = { {0, 0}, {0, 1}, {1, 0}, {1, 1}, {0, 2}, {1, 2}, {2, 0}, {2, 1}, {2, 2}, {0, 3} };
+	int full_size[10][2] = { {1, 1}, {1, 2}, {2, 2}, {2, 2}, {2, 3}, {2, 3}, {3, 3}, {3, 3}, {3, 3}, {3, 4} };
+
+
+	// get pad
+	GstElement* decoding = get_elements_by_name(parent_bin, TYPE_DECODING, bin_index, client_index).second;
+
+	GstPad* srcPad = gst_element_get_static_pad(decoding, "src");
+	GstPad* linkedPad = gst_pad_get_peer(srcPad);
+#if 1
+	int width = base_width;
+	int height = base_height;
+	int xpos = position_table[client_index][1] * width;
+	int ypos = position_table[client_index][0] * height;
+#else
+	int width = base_height / full_size[count][1];
+	int height = base_width / full_size[count][0];
+	int xpos = position_table[client_index][1] * width;
+	int ypos = position_table[client_index][0] * height;
+#endif
+	g_object_set(linkedPad, "xpos", xpos, NULL);
+	g_object_set(linkedPad, "ypos", ypos, NULL);
+	g_object_set(linkedPad, "width", width, NULL);
+	g_object_set(linkedPad, "height", height, NULL);
+	gst_object_unref(linkedPad);
+#endif
 };
 
 } // namespace media
