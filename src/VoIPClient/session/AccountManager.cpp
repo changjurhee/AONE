@@ -442,6 +442,7 @@ void AccountManager::handleGetAllMyConference(Json::Value data)
 {
 	std::list<ConferenceData> conferenceDataList;
 	Json::Value payload = data;
+	bool flag = false;
 	if (payload.isArray()) {
 		for (const auto& item : payload) {
 			ConferenceData conference;
@@ -450,8 +451,13 @@ void AccountManager::handleGetAllMyConference(Json::Value data)
 			conference.duration = item["duration"].asUInt64();
 			for (int i = 0; i < item["participants"].size(); i++) {
 				conference.participants.push_back(item["participants"][i].asString());
+				if (item["participants"][i].asString() == myCid) {
+					flag = true;
+				}
 			}
-			conferenceDataList.push_back(conference);
+			if (flag) {
+				conferenceDataList.push_back(conference);
+			}
 		}
 	}
 	AccountManager::myConferenceDataList = conferenceDataList;
