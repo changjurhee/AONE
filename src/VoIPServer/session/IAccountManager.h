@@ -17,4 +17,5 @@ public:
 	virtual void handleCreateConference(Json::Value data, std::string from) = 0;
 	virtual void handleGetAllContact(std::string from) = 0;
 	virtual void handleGetAllConference(Json::Value data, std::string from) = 0;
+	virtual void handleDeleteConference(Json::Value data, std::string from) = 0;
 };

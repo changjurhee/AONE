@@ -38,6 +38,7 @@ public:
 	void getAllContact();
 	void createConference(long time, long duration, std::list<std::string>& list);
 	void getAllConference(std::string cid);
+	void deleteConference(std::string rid);
 
 	// Communication with UI
 	std::list<ContactData> getMyContactList();
