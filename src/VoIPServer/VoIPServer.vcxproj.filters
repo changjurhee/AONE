@@ -138,6 +138,9 @@
     <ClInclude Include="..\media\media_config.h">
       <Filter>media</Filter>
     </ClInclude>
+    <ClInclude Include="CommandLineInterface.h">
+      <Filter>Session</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VoIPServer.cpp">
@@ -223,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="..\media\media_config.cpp">
       <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandLineInterface.cpp">
+      <Filter>Session</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

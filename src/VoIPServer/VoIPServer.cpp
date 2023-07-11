@@ -21,6 +21,7 @@
 #include "session/SessionManager.h"
 #include "session/TelephonyManager.h"
 #include "session/AccountManager.h"
+#include "session/SUiController.h"
 
 // CVoIPServerApp
 
@@ -192,13 +193,15 @@ BOOL CVoIPServerApp::InitInstance()
 		return FALSE;
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
-	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
+	m_pMainWnd->ShowWindow(SW_HIDE);
 	m_pMainWnd->UpdateWindow();
 
 	// SessionManager create and init
 	SessionManager::getInstance()->init();
 
 	media::ServerMediaManager* server = media::ServerMediaManager::getInstance();
+
+	SUiController::getInstance()->startCommandLineInterface();
 
 	return TRUE;
 }
