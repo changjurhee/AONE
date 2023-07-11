@@ -4,6 +4,7 @@
 
 #pragma once
 
+#define IDC_LT_CONTACT_NAMES    0x61A8
 
 class CVoIPServerView : public CView
 {

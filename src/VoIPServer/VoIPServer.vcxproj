@@ -215,6 +215,7 @@
     <ClInclude Include="calendarbar.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="CommandLineInterface.h" />
+    <ClInclude Include="ContactListView.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IServerMediaManager.h" />
@@ -255,6 +256,7 @@
     <ClCompile Include="calendarbar.cpp" />
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="CommandLineInterface.cpp" />
+    <ClCompile Include="ContactListView.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="OutputWnd.cpp" />

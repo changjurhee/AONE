@@ -11,6 +11,8 @@
 
 #include "VoIPServerDoc.h"
 #include "VoIPServerView.h"
+#include "ContactListView.h"
+
 #include "ServerMediaManager.h"
 #include "common/logger.h"
 
@@ -145,7 +147,7 @@ BOOL CVoIPServerApp::InitInstance()
 		//IDI_HOMER_FRAME,
 		RUNTIME_CLASS(CVoIPServerDoc),
 		RUNTIME_CLASS(CMainFrame),       // 주 SDI 프레임 창입니다.
-		RUNTIME_CLASS(CVoIPServerView));
+		RUNTIME_CLASS(CContactListView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
@@ -196,7 +198,7 @@ BOOL CVoIPServerApp::InitInstance()
 		return FALSE;
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
-	m_pMainWnd->ShowWindow(SW_HIDE);
+	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 
 	// SessionManager create and init
