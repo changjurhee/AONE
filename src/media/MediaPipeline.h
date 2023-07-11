@@ -129,7 +129,7 @@ protected :
 	void enable_debugging(void);
 	string get_pipeline_info(int bin_index);
 	string get_pipe_mode_name(int mode);
-	bool count_active_client(void);
+	int count_active_client(void);
 public:
 	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb);
 	void makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info, handleptr handler);

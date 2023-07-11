@@ -266,12 +266,16 @@ vector<string> split(const string& str, char delim)
 
 void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)
 {
+	int front = pipe_mode_list_[bin_index].first;
+	if (front != MODE_UDP_N) return;
+
 	int base_width = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width;
 	int base_height = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height;
 
 	// get pad
 	GstElement* adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, BASE_CLIENT_ID).second;
 	int position_table[10][2] = { {0, 0}, {0, 1}, {1, 0}, {1, 1}, {0, 2}, {1, 2}, {2, 0}, {2, 1}, {2, 2}, {0, 3} };
+	int full_size[10][2] = { {1, 1}, {1, 2}, {2, 2}, {2, 2}, {2, 3}, {2, 3}, {3, 3}, {3, 3}, {3, 3}, {3, 4} };
 
 	int count = count_active_client();
 	map<int, int> sort_num;
@@ -300,10 +304,18 @@ void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_inde
 				GstElement* linkedElement = gst_pad_get_parent_element(linkedPad);
 				string name = gst_element_get_name(linkedElement);
 				int num = stoi(split(name, '_')[2]);
-				g_object_set(sinkPad, "xpos", position_table[sort_num[num]][0] * base_width, NULL);
-				g_object_set(sinkPad, "ypos", position_table[sort_num[num]][1] * base_height, NULL);
-				g_object_set(sinkPad, "width", base_width, NULL);
-				g_object_set(sinkPad, "height", base_height, NULL);
+				int width = base_height / full_size[count][1];
+				int height = base_width / full_size[count][0];
+				int xpos = position_table[sort_num[num]][1] * width;
+				int ypos = position_table[sort_num[num]][0] * height;
+				int delta_y = 0;
+
+				if (position_table[sort_num[num]][1] != position_table[sort_num[num]][0]) height / 2;
+				g_object_set(sinkPad, "xpos", xpos, NULL);
+				g_object_set(sinkPad, "ypos", ypos + delta_y, NULL);
+				g_object_set(sinkPad, "width", width, NULL);
+				g_object_set(sinkPad, "height", height, NULL);
+				LOG_OBJ_INFO() << "count : " << count << ", xpos:" << xpos << ", ypos : " << ypos + delta_y << ", num:" << num << ", order : " << sort_num[num] << endl;
 				gst_object_unref(linkedPad);
 				gst_object_unref(linkedElement);
 			}

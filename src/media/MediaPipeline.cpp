@@ -429,7 +429,7 @@ void MediaPipeline::disable_client_index(ContactInfo* client_info)
 	}
 }
 
-bool MediaPipeline::count_active_client(void)
+int MediaPipeline::count_active_client(void)
 {
 	int count = 0;
 	for (const auto& item : client_id_list_) {
@@ -579,6 +579,8 @@ void MediaPipeline::remove_client_in_front(GstBin* parent_bin, int bin_index, in
 	string current_name = get_elements_name(TYPE_UDP_SRC, bin_index, client_index);
 	string target_name = get_elements_name(TYPE_ADDER, bin_index, BASE_CLIENT_ID);
 	remove_element_list(parent_bin, current_name, target_name, "src");
+
+	update_adder_parameter(parent_bin, bin_index, BASE_CLIENT_ID);
 }
 
 void MediaPipeline::remove_client_in_back(GstBin* parent_bin, int bin_index, int client_index)
@@ -691,6 +693,7 @@ void MediaPipeline::remove_client(ContactInfo * client_info)
 
 	LOG_OBJ_INFO() << get_pipeline_info(0) << " CID : " << client_info->cid << ", client_id : " << client_index << endl;
 	stop_state_pipeline(true);
+	disable_client_index(client_info);
 	for (int bin_index = 0; bin_index < pipe_mode_list_.size(); bin_index++) {
 		std::string name = "bin_" + std::to_string(bin_index);
 		GstBin* bin = GST_BIN(gst_bin_get_by_name(GST_BIN(pipeline), name.c_str()));
@@ -708,7 +711,6 @@ void MediaPipeline::remove_client(ContactInfo * client_info)
 			remove_client_in_back(bin, bin_index, client_index);
 		}
 	}
-	disable_client_index(client_info);
 	LOG_OBJ_INFO() << get_pipeline_info(0) << " Get pipeline view (remove Client)" << endl;
 	logPipelineElements(pipeline, 0);
 }

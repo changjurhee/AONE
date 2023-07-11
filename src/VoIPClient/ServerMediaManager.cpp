@@ -98,19 +98,21 @@ ContactInfo* ServerMediaManager::get_contact_info(Json::Value add_client_info, b
 void ServerMediaManager::addClient(Json::Value add_client_info)
 {
 	string rid = add_client_info["rid"].asString();
+	if (checkValidRID(rid)) {
+		LOG_OBJ_INFO() << " Invalid RID (" << rid << ")" << endl;
+		return;
+	}
 
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
-	ContactInfo* client_info;
+	ContactInfo* client_info = get_contact_info(add_client_info, false);;
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
-		client_info = get_contact_info(add_client_info, false);
 		pipeline->request_add_client(client_info);
 	}
 
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
-		client_info = get_contact_info(add_client_info, false);
 		pipeline->request_add_client(client_info);
 	}
 }
@@ -118,7 +120,7 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 void ServerMediaManager::removeClient(Json::Value remove_client_info)
 {
 	string rid = remove_client_info["rid"].asString();
-	if (checkValidRID(rid)) {
+	if (!checkValidRID(rid)) {
 		LOG_OBJ_INFO() << " Invalid RID (" << rid << ")" << endl;
 		return;
 	}
