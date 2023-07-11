@@ -148,6 +148,7 @@ SubElements VideoMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int b
 
 	std::string rtp_name = get_elements_name(TYPE_ENCODING_RTP, bin_index, client_index);
     GstElement* rtp_element = gst_element_factory_make("rtph264pay", rtp_name.c_str());
+	g_object_set(rtp_element, "config-interval", -1, NULL);
 
 	gst_bin_add(GST_BIN(parent_bin), encoding_element);
 	gst_bin_add(GST_BIN(parent_bin), rtp_element);
@@ -159,11 +160,16 @@ SubElements VideoMediaPipeline::pipeline_make_decoding(GstBin* parent_bin, int b
 	std::string rtp_name = get_elements_name(TYPE_DECODING_RTP, bin_index, client_index);
     GstElement* rtp_element = gst_element_factory_make("rtph264depay", rtp_name.c_str());
 
+	std::string parse_name = get_elements_name(TYPE_DECODING_PARSE, bin_index, client_index);
+	GstElement* parse_element = gst_element_factory_make("h264parse", parse_name.c_str());
+
 	std::string decoding_name = get_elements_name(TYPE_DECODING, bin_index, client_index);
     GstElement* decoding_element = gst_element_factory_make("avdec_h264", decoding_name.c_str());
 	gst_bin_add(GST_BIN(parent_bin), rtp_element);
+	gst_bin_add(GST_BIN(parent_bin), parse_element);
 	gst_bin_add(GST_BIN(parent_bin), decoding_element);
-	gst_element_link(rtp_element, decoding_element);
+	gst_element_link(rtp_element, parse_element);
+	gst_element_link(parse_element, decoding_element);
 	return SubElements(rtp_element, decoding_element);
 };
 
