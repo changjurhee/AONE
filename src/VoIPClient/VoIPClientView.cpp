@@ -127,9 +127,9 @@ void CVoIPClientView::OnEditCut()
 void CVoIPClientView::OnConnection()
 {
 	LOG_DEBUG("waiting something...");
-	// @todo status 정보에 따라 request를 분기 해주ㅝ야 함. 
-	UiController::getInstance()->request_EndCall(this);
-	//UiController::getInstance()->request_ExitConference(this);
+	// @todo status 정보에 따라 request를 분기 해주ㅝ야 함.
+
+	UiController::getInstance()->request_EndOrExitCall(this);
 }
 
 void CVoIPClientView::OnCheckedVAD()

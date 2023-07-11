@@ -289,6 +289,7 @@ void TelephonyManager::handleDisconnect(Json::Value data) {
 	int msgId;
 	std::list<std::string> participants = conn.getParticipants();
 	for (const auto& participant : participants) {
+		connectionMap[connId].removeParticipant(participant);
 		clientMedia["cid"] = participant;
 		msgId = conn.isConference() ? 209 : 305;
 		sessionControl->sendData(msgId, payload, participant);

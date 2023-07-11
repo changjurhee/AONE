@@ -23,6 +23,9 @@
 
 // Session
 #include "session/SessionManager.h"
+#include "session/UiController.h"
+#include "session/Constants.h"
+#include "MessageBoxDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -65,6 +68,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_TEST_UPDATE_USER, &CMainFrame::OnResetPassword)
 	ON_UPDATE_COMMAND_UI(ID_TEST_UPDATE_USER, &CMainFrame::OnUpdateResetPassword)
 	ON_WM_GETMINMAXINFO()
+	ON_MESSAGE(UWM_UI_CONTROLLER, &CMainFrame::processUiControlNotify)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -241,6 +245,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_SETTING_TEST);
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
+
+	UiController::getInstance()->setCallbackWnd(this);
 
 	return 0;
 }
@@ -785,4 +791,35 @@ void CMainFrame::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 	lpMMI->ptMinTrackSize.y = 500;
 
 	CFrameWndEx::OnGetMinMaxInfo(lpMMI);
+}
+
+LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+	case MSG_RESPONSE_CALLSTATE:
+	{
+		CallResult* res = reinterpret_cast<CallResult*>(lParam);
+		int result = res->result;
+		int cause = res->cause;
+		if (result == CallState::STATE_RINGING) {
+			std::cout << "show incoming dlg from: " << res->callerId << std::endl;
+			CString cid((res->callerId).c_str());
+			CMessageBoxDlg dlg(this, (int)CMessageBoxDlg::Msg::INCOMING, cid);
+			dlg.DoModal();
+		}
+		else if (result == CallState::STATE_DIALING) {
+			CString cid((res->callerId).c_str());
+			CMessageBoxDlg dlg(this, (int)CMessageBoxDlg::Msg::OUTGOING, cid);
+			dlg.DoModal();
+		}
+		else if (result == CallState::STATE_DISCONNECTED) {
+			MessageBox(_T("DISCONNECTED"));
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	return LRESULT();
 }
