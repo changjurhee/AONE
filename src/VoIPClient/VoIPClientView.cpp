@@ -74,9 +74,9 @@ void CVoIPClientView::OnDraw(CDC* /*pDC*/)
 	CPoint StartPos = rectClient.CenterPoint();
 
 	// m_DisplayBox Size 
-	int bmWidth = 640;
-	int bmHeight = 480;
-	m_DisplayBox.SetWindowPos(NULL, StartPos.x - bmWidth / 2, StartPos.y - bmHeight / 2, bmWidth, bmHeight, SWP_DRAWFRAME);
+	int bmWidth = 1280;
+	int bmHeight = 960;
+	m_DisplayBox.SetWindowPos(NULL, StartPos.x - bmWidth / 2 + 150, StartPos.y - bmHeight / 2, bmWidth, bmHeight, SWP_DRAWFRAME);
 	//m_DisplayBox.ShowWindow(SW_HIDE);
 }
 
