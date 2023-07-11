@@ -151,18 +151,25 @@ int TelephonyManager::joinableConference(Json::Value data) {
 	return 0;
 }
 
+std::string timePrint(std::chrono::system_clock::time_point tp) {
+	std::time_t target = std::chrono::system_clock::to_time_t(tp);
+	std::time(&target);
+	char time[26];
+	ctime_s(time, 26, &target);
+	return time;
+}
+
 void TelephonyManager::manageConferenceLifetime(std::string connId) {
 	std::string displayConn = "[" + connId + "]";
 	Connection conn = connectionMap[connId];
 	std::chrono::system_clock::time_point startTime = std::chrono::system_clock::time_point(std::chrono::seconds(conn.getConferenceStartTime()));
 	std::chrono::seconds duration(conn.getDuration());
 
+	std::cout << displayConn << "startTime: " << timePrint(startTime) << std::endl;
+
 	while (true) {
-		std::time_t now;
-		std::time(&now);
-		char time[26];
-		ctime_s(time, 26, &now);
-		std::cout << displayConn << "current time: " << time << endl;
+		std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+		std::cout << displayConn << "current time: " << timePrint(now) << endl;
 
 		// wait 1 minute
 		std::this_thread::sleep_for(std::chrono::minutes(1));
@@ -356,9 +363,16 @@ void TelephonyManager::removeConference(std::string connId) {
 	Json::Value data;
 	data["rid"] = connId;
 	handleDisconnect(data);
+
+	Connection conn = connectionMap[connId];
+	Json::Value payload;
+	payload["rid"] = connId;
+	for (const auto& cid : conn.getConferenceList()) {
+		sessionControl->sendData(207, payload, cid);
+	}
+
 	conferenceDb->remove(connId);
 	connectionMap.erase(connId);
-
 	std::cout << "removeConference()/connId[" << connId << "]" << std::endl;
 	logConnections();
 }
