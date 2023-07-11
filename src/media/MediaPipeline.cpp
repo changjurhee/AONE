@@ -215,45 +215,47 @@ SubElements MediaPipeline::pipeline_make_tee(GstBin* parent_bin, int bin_index, 
 
 SubElements MediaPipeline::pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) {
 
-	std::string nameEnc = get_elements_name(TYPE_SRTPENC, bin_index, client_index);
-	GstElement* VideoSRTPEnc = gst_element_factory_make("srtpenc", nameEnc.c_str());
+	//std::string nameEnc = get_elements_name(TYPE_SRTPENC, bin_index, client_index);
+	//GstElement* VideoSRTPEnc = gst_element_factory_make("srtpenc", nameEnc.c_str());
 
-	std::string nameEncCaps = get_elements_name(TYPE_SRTPENC_CAPS, bin_index, client_index);
-	GstElement* videoSRTPEncCapsfilter = gst_element_factory_make("capsfilter", nameEncCaps.c_str());
+	//std::string nameEncCaps = get_elements_name(TYPE_SRTPENC_CAPS, bin_index, client_index);
+	//GstElement* videoSRTPEncCapsfilter = gst_element_factory_make("capsfilter", nameEncCaps.c_str());
 
-	// Set the SRTP encryption key for video
-	static guint8 data[30];
-	memset(data, 0, sizeof(data));
-	guint size = sizeof(data);
-	GstBuffer* keyBuffer = gst_buffer_new_wrapped(data, size);
+	//// Set the SRTP encryption key for video
+	//static guint8 data[30];
+	//memset(data, 0, sizeof(data));
+	//guint size = sizeof(data);
+	//GstBuffer* keyBuffer = gst_buffer_new_wrapped(data, size);
 
-	g_object_set(VideoSRTPEnc, "key", keyBuffer, NULL);
-	g_object_set(VideoSRTPEnc, "rtp-auth", 2, NULL);
-	g_object_set(VideoSRTPEnc, "rtp-cipher", 1, NULL);
-	g_object_set(VideoSRTPEnc, "rtcp-auth", 2, NULL);
-	g_object_set(VideoSRTPEnc, "rtcp-cipher", 1, NULL);
+	//g_object_set(VideoSRTPEnc, "key", keyBuffer, NULL);
+	//g_object_set(VideoSRTPEnc, "rtp-auth", 2, NULL);
+	//g_object_set(VideoSRTPEnc, "rtp-cipher", 1, NULL);
+	//g_object_set(VideoSRTPEnc, "rtcp-auth", 2, NULL);
+	//g_object_set(VideoSRTPEnc, "rtcp-cipher", 1, NULL);
 
-	// Set RTP for video
-	GstCaps* videoEncCaps = gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
-	g_object_set(videoSRTPEncCapsfilter, "caps", videoEncCaps, NULL);
-	gst_caps_unref(videoEncCaps);
+	//// Set RTP for video
+	//GstCaps* videoEncCaps = gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
+	//g_object_set(videoSRTPEncCapsfilter, "caps", videoEncCaps, NULL);
+	//gst_caps_unref(videoEncCaps);
 
 
-	gst_bin_add(GST_BIN(parent_bin), VideoSRTPEnc);
-	gst_bin_add(GST_BIN(parent_bin), videoSRTPEncCapsfilter);
+	//gst_bin_add(GST_BIN(parent_bin), VideoSRTPEnc);
+	//gst_bin_add(GST_BIN(parent_bin), videoSRTPEncCapsfilter);
 
-	gst_element_link(VideoSRTPEnc, videoSRTPEncCapsfilter);
+	//gst_element_link(VideoSRTPEnc, videoSRTPEncCapsfilter);
 
-	return SubElements(VideoSRTPEnc, videoSRTPEncCapsfilter);
+	//return SubElements(VideoSRTPEnc, videoSRTPEncCapsfilter);
+	return SubElements(NULL, NULL);
 }
 
 SubElements MediaPipeline::pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) {
-	std::string name = get_elements_name(TYPE_SRTPDEC, bin_index, client_index);
-	GstElement* VideoSRTPDec = gst_element_factory_make("srtpdec", name.c_str());
+	//std::string name = get_elements_name(TYPE_SRTPDEC, bin_index, client_index);
+	//GstElement* VideoSRTPDec = gst_element_factory_make("srtpdec", name.c_str());
 
-	gst_bin_add(GST_BIN(parent_bin), VideoSRTPDec);
+	//gst_bin_add(GST_BIN(parent_bin), VideoSRTPDec);
 
-	return SubElements(VideoSRTPDec, VideoSRTPDec);
+	//return SubElements(VideoSRTPDec, VideoSRTPDec);
+	return SubElements(NULL, NULL);
 }
 
 SubElements MediaPipeline::pipeline_make_udp_sink_with_port(GstBin* parent_bin, int bin_index, int client_index, int port) {
