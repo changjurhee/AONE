@@ -18,7 +18,8 @@ GstElement* gSendVideoScale;
 GstElement* gSendVideoResCaps;
 GstElement* gSendVideoH264Enc;
 GstElement* gSendVideoRTPH264Pay;
-GstElement* gSendVideoRTPCaps;
+GstElement* gSendVideoSRTPEnc;
+GstElement* gSendVideoSRTPCaps;
 GstElement* gSendVideoQueue;
 GstElement* gSendVideoSink;
 
@@ -28,12 +29,10 @@ GstElement* gSendAudioConv;
 GstElement* gSendAudioResample;
 GstElement* gSendAudioOpusenc;
 GstElement* gSendAudioRTPOpusPay;
+GstElement* gSendAudioSRTPEnc;
+GstElement* gSendAudioSRTPCaps;
 GstElement* gSendAudioQueue;
 GstElement* gSendAudioSink;
-
-// Create GStreamer pipline elements for encryption
-GstElement* gSendVideoSRTPEnc;
-GstElement* gSendAudioSRTPEnc;
 
 GstCaps* gCaps;
 GstPad* gSinkpad;
@@ -80,7 +79,8 @@ int sendMain()
     gSendVideoResCaps = gst_element_factory_make("capsfilter", "videoResCaps");
     gSendVideoH264Enc = gst_element_factory_make("x264enc", "videoEnc");
     gSendVideoRTPH264Pay = gst_element_factory_make("rtph264pay", "videoPay");
-    gSendVideoRTPCaps = gst_element_factory_make("capsfilter", "videoRTPCaps");
+    gSendVideoSRTPEnc = gst_element_factory_make("srtpenc", "videoEncrypt");
+    gSendVideoSRTPCaps = gst_element_factory_make("capsfilter", "videoSRTPCaps");
     gSendVideoQueue = gst_element_factory_make("queue", "videoQueue");
     gSendVideoSink = gst_element_factory_make("udpsink", "videoSink");
 
@@ -90,22 +90,26 @@ int sendMain()
     gSendAudioResample = gst_element_factory_make("audioresample", "audioResample");
     gSendAudioOpusenc = gst_element_factory_make("opusenc", "audioOpusenc");
     gSendAudioRTPOpusPay = gst_element_factory_make("rtpopuspay", "audioPay");
+    gSendAudioSRTPEnc = gst_element_factory_make("srtpenc", "audioEncrypt");
+    gSendAudioSRTPCaps = gst_element_factory_make("capsfilter", "audioSRTPCaps");
     gSendAudioQueue = gst_element_factory_make("queue", "audioQueue");
     gSendAudioSink = gst_element_factory_make("udpsink", "audioSink");
 
-    // Create GStreamer pipline elements for encryption
-    gSendVideoSRTPEnc = gst_element_factory_make("srtpenc", "videoEncrypt");
-    gSendAudioSRTPEnc = gst_element_factory_make("srtpenc", "audioEncrypt");
-
     // Add element to pipeline
     gst_bin_add_many(GST_BIN(gSendPipeline),
-        gSendVideoSrc, gSendVideoScale, gSendVideoResCaps, gSendVideoH264Enc, gSendVideoRTPH264Pay, gSendVideoSRTPEnc, gSendVideoRTPCaps, gSendVideoQueue, gSendVideoSink,
+        gSendVideoSrc, gSendVideoScale, gSendVideoResCaps, gSendVideoH264Enc, gSendVideoRTPH264Pay, gSendVideoSRTPEnc, gSendVideoSRTPCaps, gSendVideoQueue, gSendVideoSink,
+        gSendAudioSrc, gSendAudioConv, gSendAudioResample, gSendAudioOpusenc, gSendAudioRTPOpusPay, gSendAudioSRTPEnc, gSendAudioSRTPCaps, gSendAudioQueue, gSendAudioSink,
         NULL);
 
     // linking elements for video
-    gst_element_link_many(gSendVideoSrc, gSendVideoScale, gSendVideoResCaps, gSendVideoH264Enc, gSendVideoRTPH264Pay, gSendVideoSRTPEnc, gSendVideoRTPCaps, gSendVideoQueue, gSendVideoSink,
+    gst_element_link_many(
+        gSendVideoSrc, gSendVideoScale, gSendVideoResCaps, gSendVideoH264Enc, gSendVideoRTPH264Pay, gSendVideoSRTPEnc, gSendVideoSRTPCaps, gSendVideoQueue, gSendVideoSink,
         NULL);
 
+    // linking elements for audio
+    gst_element_link_many(
+        gSendAudioSrc, gSendAudioConv, gSendAudioResample, gSendAudioOpusenc, gSendAudioRTPOpusPay, gSendAudioSRTPEnc, gSendAudioSRTPCaps, gSendAudioQueue, gSendAudioSink,
+        NULL);
 
     // set up laptop camera
     g_object_set(gSendVideoSrc, "device-index", 0, NULL);  // 0은 첫 번째 카메라를 나타냅니다.
@@ -124,18 +128,20 @@ int sendMain()
     g_object_set(gSendVideoH264Enc, "tune", H_264_TUNE_ZEROLATENCY, NULL);
 
     // Set the SRTP encryption key for video
-    guint8 data[30];
+    static guint8 data[30];
     memset(data, 0, sizeof(data));
-    guint size = sizeof(data);
-    GstBuffer* keyBuffer = gst_buffer_new_wrapped(data, size);
+    static guint size = sizeof(data);
+    GstBuffer* videoKeyBuffer = gst_buffer_new_wrapped(data, size);
 
-    g_object_set(gSendVideoSRTPEnc, "key", keyBuffer, NULL);
+    g_object_set(gSendVideoSRTPEnc, "key", videoKeyBuffer, NULL);
+    g_object_set(gSendVideoSRTPEnc, "rtp-auth", 2, NULL);
+    g_object_set(gSendVideoSRTPEnc, "rtp-cipher", 1, NULL);
     g_object_set(gSendVideoSRTPEnc, "rtcp-auth", 2, NULL);
     g_object_set(gSendVideoSRTPEnc, "rtcp-cipher", 1, NULL);
 
     // Set RTP for video
-    gCaps = gst_caps_from_string("application/x-srtp, media=(string)video, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
-    g_object_set(gSendVideoRTPCaps, "caps", gCaps, NULL);
+    gCaps = gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
+    g_object_set(gSendVideoSRTPCaps, "caps", gCaps, NULL);
     gst_caps_unref(gCaps);
 
     // Set the receiving IP and port for video
@@ -153,6 +159,20 @@ int sendMain()
     gst_pad_set_caps(gSinkpad, gCaps);
     gst_caps_unref(gCaps);
     gst_object_unref(gSinkpad);
+
+    // Set the SRTP encryption key for audio
+    GstBuffer* audioKeyBuffer = gst_buffer_new_wrapped(data, size);
+
+    g_object_set(gSendAudioSRTPEnc, "key", audioKeyBuffer, NULL);
+    g_object_set(gSendAudioSRTPEnc, "rtp-auth", 2, NULL);
+    g_object_set(gSendAudioSRTPEnc, "rtp-cipher", 1, NULL);
+    g_object_set(gSendAudioSRTPEnc, "rtcp-auth", 2, NULL);
+    g_object_set(gSendAudioSRTPEnc, "rtcp-cipher", 1, NULL);
+
+    // Set RTP for video
+    gCaps = gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
+    g_object_set(gSendAudioSRTPCaps, "caps", gCaps, NULL);
+    gst_caps_unref(gCaps);
 
     // Set the receiving IP and port for audio
     g_object_set(gSendAudioSink, "host", "127.0.0.1", "port", 5002, NULL);

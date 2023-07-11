@@ -11,6 +11,7 @@ GstElement* gReceiveVideoPipeline;
 // Create GStreamer pipeline elements for video
 GstElement* gReceiveVideoSrc;
 GstElement* gReceiveVideoSRTPCaps;
+GstElement* gReceiveVideoSRTPDec;
 GstElement* gReceiveVideoJitterbuffer;
 GstElement* gReceiveVideoRTPH264Depay;
 GstElement* gReceiveVideoH264Dec;
@@ -22,6 +23,7 @@ GstElement* gReceiveAudioPipeline;
 // Create GStreamer pipeline elements for audio
 GstElement* gReceiveAudioSrc;
 GstElement* gReceiveAudioCapsfilter;
+GstElement* gReceiveAudioSRTPDec;
 GstElement* gReceiveAudioJitterbuffer;
 GstElement* gReceiveAudioDec;
 GstElement* gReceiveAudioDepay;
@@ -29,8 +31,6 @@ GstElement* gReceiveAudioConv;
 GstElement* gReceiveAudioSink;
 
 // Create GStreamer pipeline elements for decryption
-GstElement* gReceiveVideoSRTPDec;
-GstElement* gReceiveAudioSRTPDec;
 
 // define callback function
 static gboolean on_video_bus_message(GstBus* bus, GstMessage* const message, gpointer user_data) {
@@ -80,6 +80,7 @@ int recvMain(HWND hwnd)
     // Create GStreamer pipeline elements for video
     gReceiveVideoSrc = gst_element_factory_make("udpsrc", "videoSrc");
     gReceiveVideoSRTPCaps = gst_element_factory_make("capsfilter", "videoSRTPCaps");
+    gReceiveVideoSRTPDec = gst_element_factory_make("srtpdec", "videoDecrypt");
     gReceiveVideoJitterbuffer = gst_element_factory_make("rtpjitterbuffer", "videoJitterbuffer");
     gReceiveVideoRTPH264Depay = gst_element_factory_make("rtph264depay", "videoDepay");
     gReceiveVideoH264Dec = gst_element_factory_make("avdec_h264", "videoDec");
@@ -91,15 +92,12 @@ int recvMain(HWND hwnd)
     // Create GStreamer pipeline elements for audio
     gReceiveAudioSrc = gst_element_factory_make("udpsrc", "audioSrc");
     gReceiveAudioCapsfilter = gst_element_factory_make("capsfilter", "audioCapsfilter");
+    gReceiveAudioSRTPDec = gst_element_factory_make("srtpdec", "audioDecrypt");
     gReceiveAudioJitterbuffer = gst_element_factory_make("rtpjitterbuffer", "audioJitterbuffer");
     gReceiveAudioDec = gst_element_factory_make("opusdec", "audioDec");
     gReceiveAudioDepay = gst_element_factory_make("rtpopusdepay", "audioDepay");
     gReceiveAudioConv = gst_element_factory_make("audioconvert", "audioConv");
     gReceiveAudioSink = gst_element_factory_make("autoaudiosink", "audioSink");
-
-    // Create GStreamer pipeline elements for encryption
-    gReceiveVideoSRTPDec = gst_element_factory_make("srtpdec", "videoDecrypt");
-    gReceiveAudioSRTPDec = gst_element_factory_make("srtpdec", "audioDecrypt");
 
     // set up video bus and callback function for jitter statistics
     GstBus* videoBus = gst_element_get_bus(gReceiveVideoPipeline);
@@ -116,13 +114,13 @@ int recvMain(HWND hwnd)
         gReceiveVideoSrc, gReceiveVideoSRTPCaps, gReceiveVideoSRTPDec, gReceiveVideoJitterbuffer, gReceiveVideoRTPH264Depay, gReceiveVideoH264Dec, gReceiveVideoSink,
         NULL);
     gst_bin_add_many(GST_BIN(gReceiveAudioPipeline),
-        gReceiveAudioSrc, gReceiveAudioCapsfilter, gReceiveAudioJitterbuffer, gReceiveAudioDec, gReceiveAudioDepay, gReceiveAudioConv, gReceiveAudioSink,
+        gReceiveAudioSrc, gReceiveAudioCapsfilter, gReceiveAudioSRTPDec, gReceiveAudioJitterbuffer, gReceiveAudioDec, gReceiveAudioDepay, gReceiveAudioConv, gReceiveAudioSink,
         NULL);
 
     // linking elements
     gst_element_link_many(gReceiveVideoSrc, gReceiveVideoSRTPCaps, gReceiveVideoSRTPDec, gReceiveVideoJitterbuffer, gReceiveVideoRTPH264Depay, gReceiveVideoH264Dec, gReceiveVideoSink,
         NULL);
-    gst_element_link_many(gReceiveAudioSrc, gReceiveAudioCapsfilter, gReceiveAudioJitterbuffer, gReceiveAudioDepay, gReceiveAudioDec, gReceiveAudioConv, gReceiveAudioSink,
+    gst_element_link_many(gReceiveAudioSrc, gReceiveAudioCapsfilter, gReceiveAudioSRTPDec, gReceiveAudioJitterbuffer, gReceiveAudioDepay, gReceiveAudioDec, gReceiveAudioConv, gReceiveAudioSink,
         NULL);
 
     // Receive port setting for video
@@ -136,7 +134,8 @@ int recvMain(HWND hwnd)
     gst_caps_unref(videoCaps);
   
     // RTP audio format (caps) settings
-    GstCaps* audioCaps = gst_caps_from_string("application/x-rtp, media=(string)audio, encoding-name=OPUS,  payload=(int)96");
+    GstCaps* audioCaps = 
+        gst_caps_from_string("application/x-srtp, media=(string)audio, encoding-name=OPUS,  payload=(int)96, ssrc=(uint)112233, srtp-key=(buffer)000000000000000000000000000000000000000000000000000000000000, srtp-cipher=(string)aes-128-icm, srtp-auth=(string)hmac-sha1-80, srtcp-cipher=(string)aes-128-icm, srtcp-auth=(string)hmac-sha1-80, roc=(uint)0");
     g_object_set(G_OBJECT(gReceiveAudioCapsfilter), "caps", audioCaps, NULL);
     gst_caps_unref(audioCaps);
 

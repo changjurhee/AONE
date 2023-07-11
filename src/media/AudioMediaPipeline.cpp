@@ -119,7 +119,7 @@ SubElements AudioMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 	std::string name = get_elements_name(TYPE_UDP_CAPS, bin_index, client_index);
 	GstElement* audioCapsfilter = gst_element_factory_make("capsfilter", name.c_str());
 	GstCaps* audioCaps = 
-		gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, srtp-key=(buffer)000000000000000000000000000000000000000000000000000000000000, srtp-cipher=(string)aes-128-icm, srtp-auth=(string)hmac-sha1-80, srtcp-cipher=(string)aes-128-icm, srtcp-auth=(string)hmac-sha1-80, roc=(uint)0");
+		gst_caps_from_string("application/x-srtp, media=(string)audio, encoding-name=OPUS, payload=(int)96, ssrc=(uint)112233, srtp-key=(buffer)000000000000000000000000000000000000000000000000000000000000, srtp-cipher=(string)aes-128-icm, srtp-auth=(string)hmac-sha1-80, srtcp-cipher=(string)aes-128-icm, srtcp-auth=(string)hmac-sha1-80, roc=(uint)0");
 	g_object_set(G_OBJECT(audioCapsfilter), "caps", audioCaps, NULL);
 	gst_caps_unref(audioCaps);
 
