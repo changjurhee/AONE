@@ -417,6 +417,7 @@ LRESULT CSessionView::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 			case 3: MessageBox(_T("Invalid request")); break;
 			default: MessageBox(_T("Unknown Error")); break;
 		}
+		UiController::getInstance()->req_GetAllConferences(this);
 		break;
 	case MSG_RESPONSE_JOIN_CONF:
 		switch (lParam) {
