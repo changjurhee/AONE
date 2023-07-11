@@ -139,15 +139,21 @@ void CSessionView::FillSessionView()
 	m_wndSessionView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
 	
 	for (ConferenceData p : ConfDataList) {
-		tstring tmp_rid, tmp_time;
+		tstring tmp_rid, tmp_time_s, tmp_time_e;
 
 		tmp_rid.assign(p.rid.begin(), p.rid.end());
 		HTREEITEM hRoom = m_wndSessionView.InsertItem(tmp_rid.data(), 1, 1, hRoot);
 
-		tmp_time = FormatString(_T("%d, %d", p.dataAndTime, p.duration));
-		m_wndSessionView.InsertItem(tmp_time.data(), 3, 3, hRoom);
-		
-		CString res = GetDateTime(p.dataAndTime, p.duration);
+		std::pair<std::string, std::string> res = GetDateTime(p.dataAndTime, p.duration);
+
+		tstring tmp1, tmp2;
+		tmp1.assign(res.first.begin(), res.first.end());
+		tmp_time_s = _T("start : ") + tmp1;
+		m_wndSessionView.InsertItem(tmp_time_s.data(), 3, 3, hRoom);
+
+		tmp2.assign(res.second.begin(), res.second.end());
+		tmp_time_e = _T("end : ") + tmp2;
+		m_wndSessionView.InsertItem(tmp_time_e.data(), 3, 3, hRoom);
 
 		HTREEITEM hParticipant = m_wndSessionView.InsertItem(_T("Participant"), 0, 0, hRoom);
 		for (auto participant : p.participants) {
@@ -162,12 +168,20 @@ void CSessionView::FillSessionView()
 
 #ifdef DEBUG
 	if (ConfDataList.size() == 0) {
-		tstring tmp_rid = _T("hello"), tmp_time;
+		tstring tmp_rid = _T("hello"), tmp_time_s, tmp_time_e;
 
 		HTREEITEM hRoom = m_wndSessionView.InsertItem(tmp_rid.data(), 1, 1, hRoot);
 
-		tmp_time = FormatString(_T("%d, %d", 1, 2));
-		m_wndSessionView.InsertItem(tmp_time.data(), 3, 3, hRoom);
+		std::pair<std::string, std::string> res = GetDateTime(1688955000, 600);
+
+		tstring tmp1, tmp2;
+		tmp1.assign(res.first.begin(), res.first.end());
+		tmp_time_s = _T("start : ") + tmp1;
+		m_wndSessionView.InsertItem(tmp_time_s.data(), 3, 3, hRoom);
+
+		tmp2.assign(res.second.begin(), res.second.end());
+		tmp_time_e = _T("end : ") + tmp2;
+		m_wndSessionView.InsertItem(tmp_time_e.data(), 3, 3, hRoom);
 
 		HTREEITEM hParticipant = m_wndSessionView.InsertItem(_T("Participant"), 0, 0, hRoom);
 		tstring tmp_name = _T("hog.gildong"), tmp_name2 = _T("steve.jobs");
