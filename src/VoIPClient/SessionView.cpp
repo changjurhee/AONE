@@ -58,6 +58,7 @@ BEGIN_MESSAGE_MAP(CSessionView, CDockablePane)
 	ON_COMMAND(ID_CLASS_DEFINITION, OnClassDefinition)
 	ON_COMMAND(ID_CLASS_PROPERTIES, OnClassProperties)
 	ON_COMMAND(ID_NEW_FOLDER, OnNewSession)
+	ON_COMMAND(ID_DELETE_USER, OnDeleteSession)
 	ON_COMMAND(ID_JOIN_SESSION, OnJoinSession)
 	ON_WM_PAINT()
 	ON_WM_SETFOCUS()
@@ -314,12 +315,27 @@ void CSessionView::OnNewSession()
 	pFrame->AddSessionList();
 }
 
+void CSessionView::OnDeleteSession()
+{
+	HTREEITEM ht = m_wndSessionView.GetSelectedItem();
+	if (ht == m_wndSessionView.GetRootItem()) return;
+	if (MessageBox(_T("Do you want to delete the Session ?"), _T("DeleteSession"), MB_OKCANCEL) == IDOK)
+	{
+		CString sRID = m_wndSessionView.GetItemText(m_wndSessionView.GetParentItem(ht));
+		// @todo 아래 메시지 함수 추가 시 주석 해제 하세요. 
+		//UiController::getInstance()->req_deleteConference(this, std::string(CT2CA(sRID)));
+	}
+}
+
 void CSessionView::OnJoinSession()
 {
 	HTREEITEM ht = m_wndSessionView.GetSelectedItem();
 	if (ht == m_wndSessionView.GetRootItem()) return;
-	CString sRID = m_wndSessionView.GetItemText(m_wndSessionView.GetParentItem(ht));
-	UiController::getInstance()->request_JoinConference(this, std::string(CT2CA(sRID)));
+	if (MessageBox(_T("Do you want to Join the Session ?"), _T("JoinSession"), MB_OKCANCEL) == IDOK)
+	{
+		CString sRID = m_wndSessionView.GetItemText(m_wndSessionView.GetParentItem(ht));
+		UiController::getInstance()->request_JoinConference(this, std::string(CT2CA(sRID)));
+	}
 }
 
 void CSessionView::OnPaint()
