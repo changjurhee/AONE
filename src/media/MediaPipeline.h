@@ -11,6 +11,8 @@
 #include <mutex>
 using namespace std;
 
+#define SRTP_ENABLE (1)
+
 #define BASE_CLIENT_ID 99
 enum pipe_topology_mode {
 	MODE_NONE,

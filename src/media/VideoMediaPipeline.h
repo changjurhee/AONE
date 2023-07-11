@@ -7,8 +7,6 @@
 #define H_264_TUNE_FASTCODE     (0x00000002)
 #define H_264_TUNE_ZEROLATENCY  (0x00000004)
 
-#define SRTP_ENABLE (1)
-
 namespace media {
 
 class VideoMediaPipeline: public MediaPipeline
