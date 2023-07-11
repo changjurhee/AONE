@@ -31,8 +31,13 @@ void UiController::releaseInstance()
 
 void UiController::setCallbackWnd(CWnd* wnd)
 {
+	vector<CWnd*>::iterator iter;
+	for (iter = callbackWnds.begin(); iter != callbackWnds.end(); iter++) {
+		if (*iter == wnd) {
+			return;
+		}
+	}
 	callbackWnds.push_back(wnd);
-	callbackWnds.erase(unique(callbackWnds.begin(), callbackWnds.end()), callbackWnds.end());
 }
 
 void UiController::postMessage(WPARAM wPram, LPARAM lParam)

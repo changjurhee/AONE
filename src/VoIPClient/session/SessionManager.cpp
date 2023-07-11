@@ -138,6 +138,9 @@ void SessionManager::proc_recv() {
 				msgStr = "GET_ALL_CONFERENCE";
 				accountManager->handleGetAllMyConference(payloads);
 				break;
+			case 207: // 207 : DELETE_CONFERENCE
+				accountManager->handleDeleteConference(payloads);
+				break;				
 			case 208: // 208 : JOIN_CONFERENCE
 				msgStr = "JOIN_CONFERENCE";
 				payloads["serverIp"] = serverIP;

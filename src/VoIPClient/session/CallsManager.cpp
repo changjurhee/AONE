@@ -231,6 +231,7 @@ void CallsManager::onSuccessfulJoinConference(Json::Value data) {
 	if (uiControl != NULL) {
 		CallResult result(CallState::STATE_ACTIVE, 0);
 		uiControl->notifyCallState(result);
+		uiControl->notify(MSG_RESPONSE_JOIN_CONF, 0);
 	}
 }
 
@@ -251,6 +252,7 @@ void CallsManager::onFailedJoinConference(Json::Value data) {
 	if (uiControl != NULL) {
 		CallResult result(CallState::STATE_IDLE, cause);
 		uiControl->notifyCallState(result);
+		uiControl->notify(MSG_RESPONSE_JOIN_CONF, cause);
 	}
 }
 

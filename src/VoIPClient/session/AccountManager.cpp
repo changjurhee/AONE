@@ -495,3 +495,11 @@ void AccountManager::handleUpdateMyContact(Json::Value data)
 		uiControl->notify(MSG_RESPONSE_UPDATE_CONTACT, result);
 	}
 }
+
+void AccountManager::handleDeleteConference(Json::Value data)
+{
+	int result = data["result"].asInt();	
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_DELETE_CONF, result);
+	}	
+}
