@@ -132,5 +132,6 @@ void CContactRegisterDlg::OnBnClickedOk()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	
 	CString cid = m_ltContactNames.GetItemText(m_ltIndex, 0);
+	if (cid.IsEmpty() || cid.GetLength() == 0) return;
 	UiController::getInstance()->req_AddMyContact(this, std::string(CT2CA(cid)));
 }
