@@ -300,10 +300,18 @@ void CContactView::OnNewUser()
 void CContactView::OnDeleteUser()
 {
 	HTREEITEM ht = m_wndContactView.GetSelectedItem();
-	if (ht == m_wndContactView.GetRootItem()) return;
+	if (ht == m_wndContactView.GetRootItem()) {
+		return;
+	}
 	if (MessageBox(_T("Do you want to delete the User ?"), _T("Delete User"), MB_OKCANCEL) == IDOK)
 	{
-		CString stmp = m_wndContactView.GetItemText(m_wndContactView.GetParentItem(ht));
+		CString stmp;
+		if (m_wndContactView.GetParentItem(ht) == m_wndContactView.GetRootItem()) {
+			stmp = m_wndContactView.GetItemText(ht);
+		}
+		else {
+		    stmp = m_wndContactView.GetItemText(m_wndContactView.GetParentItem(ht));
+	    }
 		UiController::getInstance()->req_DeleteMyContact(this, std::string(CT2CA(stmp)));
 	}
 }
