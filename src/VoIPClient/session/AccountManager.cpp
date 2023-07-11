@@ -460,6 +460,7 @@ void AccountManager::handleGetAllMyConference(Json::Value data)
 			}
 			if (flag) {
 				conferenceDataList.push_back(conference);
+				flag = false;
 			}
 		}
 	}
