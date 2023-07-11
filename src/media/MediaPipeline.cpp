@@ -521,11 +521,11 @@ SubElements MediaPipeline::add_client_at_src(GstBin * parent_bin, int bin_index,
 		SubElements overlay_pair = pipeline_make_overlay(parent_bin, bin_index, client_index);
 		ret_sub_elements = connect_subElements(ret_sub_elements, overlay_pair);
 	}
+#if 0
 #define SHIFT_ID 20
 	SubElements convert_pair = pipeline_make_convert(parent_bin, bin_index, client_index + SHIFT_ID);
 	ret_sub_elements = connect_subElements(ret_sub_elements, convert_pair);
 
-#if 0
 	// Remove queue by jitter buffer
 	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index, true);
 	ret_sub_elements = connect_subElements(ret_sub_elements, queue_pair);
@@ -541,7 +541,7 @@ void MediaPipeline::add_client_in_front(GstBin* parent_bin, int bin_index, int c
 	SubElements adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, BASE_CLIENT_ID);
 	ret_sub_elements = connect_subElements(ret_sub_elements, adder);
 
-	update_adder_parameter(parent_bin, bin_index, BASE_CLIENT_ID);
+	update_adder_parameter(parent_bin, bin_index, client_index);
 }
 
 void MediaPipeline::add_client_in_back(GstBin* parent_bin, int bin_index, int client_index)
@@ -714,6 +714,10 @@ void MediaPipeline::request_add_client(ContactInfo* client_info)
 
 void MediaPipeline::add_client(ContactInfo* client_info)
 {
+	string cid = client_info->cid;
+	if (client_id_list_.find(cid) != client_id_list_.end())
+		return;
+
 	int client_index = get_client_index(client_info, true);
 	if (client_index < 0) return;
 
@@ -750,6 +754,7 @@ void MediaPipeline::request_remove_client(ContactInfo* client_info)
 
 void MediaPipeline::remove_client(ContactInfo * client_info)
 {
+#if 0
 	GstState cur_state;
 	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
 	int client_index = get_client_index(client_info, false);
@@ -777,6 +782,12 @@ void MediaPipeline::remove_client(ContactInfo * client_info)
 	}
 	LOG_OBJ_INFO() << get_pipeline_info(0) << " Get pipeline view (remove Client)" << endl;
 	logPipelineElements(pipeline, 0);
+#else
+	int client_index = get_client_index(client_info, false);
+	if (client_index < 0) return;
+	disable_client_index(client_info);
+	LOG_OBJ_INFO() << get_pipeline_info(0) << " CID : " << client_info->cid << ", client_id : " << client_index << endl;
+#endif
 }
 
 void MediaPipeline::requestSetVideoQuality(VideoQualityInfo* vq_info)

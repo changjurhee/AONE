@@ -243,6 +243,7 @@ BOOL CVoIPClientApp::InitInstance()
 	CVoIPClientView* pView = (CVoIPClientView*)((CMainFrame*)AfxGetMainWnd())->GetActiveView();
 	clientMediaManager->setViewHandler((handleptr)pView->GetBitmapHandle());
 
+
 #endif
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
