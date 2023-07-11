@@ -105,9 +105,6 @@
     <ClInclude Include="..\media\call_info.h">
       <Filter>media</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\debug.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="IServerMediaManager.h">
       <Filter>media</Filter>
     </ClInclude>
@@ -196,9 +193,6 @@
     </ClCompile>
     <ClCompile Include="..\media\AudioMediaPipeline.cpp">
       <Filter>media</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\debug.cpp">
-      <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="..\common\logger.cpp">
       <Filter>common</Filter>
