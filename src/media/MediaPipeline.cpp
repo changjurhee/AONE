@@ -967,7 +967,7 @@ void MediaPipeline::stop_state_pipeline(bool stop)
 		}
 	}
 	else {
-		if (!pipe_block_flag_ && cur_state != GST_STATE_PLAYING) {
+		if (!pipe_block_flag_ && cur_state == GST_STATE_NULL) {
 			LOG_OBJ_INFO() << get_pipeline_info(0) << " state : Play" << endl;
 			GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
 		}
