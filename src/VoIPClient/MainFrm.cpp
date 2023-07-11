@@ -794,6 +794,24 @@ void CMainFrame::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 	CFrameWndEx::OnGetMinMaxInfo(lpMMI);
 }
 
+void SetForegroundWindowForce(HWND hWnd)
+{
+	HWND hWndForeground = ::GetForegroundWindow();
+	if (hWndForeground == hWnd) return;
+	DWORD Strange = ::GetWindowThreadProcessId(hWndForeground, NULL);
+	DWORD My = ::GetWindowThreadProcessId(hWnd, NULL);
+	if (!::AttachThreadInput(Strange, My, TRUE))
+	{
+		ASSERT(0);
+	}
+	::SetForegroundWindow(hWnd);
+	::BringWindowToTop(hWnd);
+	if (!::AttachThreadInput(Strange, My, FALSE))
+	{
+		ASSERT(0);
+	}
+}
+
 LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam)
@@ -805,6 +823,7 @@ LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 		int cause = res->cause;
 		if (result == CallState::STATE_RINGING) {
 			std::cout << "show incoming dlg from: " << res->callerId << std::endl;
+			SetForegroundWindowForce(this->m_hWnd);
 			CString cid((res->callerId).c_str());
 			CMessageBoxDlg dlg(this, (int)CMessageBoxDlg::Msg::INCOMING, cid);
 			dlg.DoModal();
