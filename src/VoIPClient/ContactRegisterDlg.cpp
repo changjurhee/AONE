@@ -70,24 +70,21 @@ void CContactRegisterDlg::OnBnClickedMfcbtnSearch()
 	UpdateData(TRUE);
 
 	auto result_list = UiController::getInstance()->get_SearchResult(std::string(CT2CA(m_sSearchName)));
+	
+	if (!result_list.empty()) {
+		m_ltContactNames.DeleteAllItems();
+		int num = m_ltContactNames.GetItemCount();
 
-	m_ltContactNames.DeleteAllItems();
-	int num = m_ltContactNames.GetItemCount();
-
-	m_ltContactNames.LockWindowUpdate();
-	for (ContactData p : result_list) {
-		tstring tmp_cid, tmp_email, tmp_name;
-
-		tmp_cid.assign(p.cid.begin(), p.cid.end());
-		tmp_email.assign(p.email.begin(), p.email.end());
-		tmp_name.assign(p.name.begin(), p.name.end());
-
-		m_ltContactNames.InsertItem(num, tmp_cid.data());
-		m_ltContactNames.SetItemText(num, 1, tmp_email.data());
-		m_ltContactNames.SetItemText(num, 2, tmp_name.data());
-		num++;
+		m_ltContactNames.LockWindowUpdate();
+		for (ContactData p : result_list) {
+			m_ltContactNames.InsertItem(num, CString(p.cid.c_str()));
+			m_ltContactNames.SetItemText(num, 1, CString(p.email.c_str()));
+			m_ltContactNames.SetItemText(num, 2, CString(p.name.c_str()));
+			num++;
+		}
+		m_ltContactNames.UnlockWindowUpdate();
 	}
-	m_ltContactNames.UnlockWindowUpdate();
+
 	UpdateData(FALSE);
 }
 
