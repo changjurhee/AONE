@@ -247,7 +247,8 @@ SubElements MediaPipeline::pipeline_make_encryption(GstBin* parent_bin, int bin_
 }
 
 SubElements MediaPipeline::pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) {
-	GstElement* VideoSRTPDec = gst_element_factory_make("srtpdec", "videoDecrypt");
+	std::string name = get_elements_name(TYPE_SRTPDEC, bin_index, client_index);
+	GstElement* VideoSRTPDec = gst_element_factory_make("srtpdec", name.c_str());
 
 	gst_bin_add(GST_BIN(parent_bin), VideoSRTPDec);
 
