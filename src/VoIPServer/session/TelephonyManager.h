@@ -10,6 +10,13 @@
 #include "ContactDb.h"
 #include "../../json/json.h"
 
+#define MEDIA_ENABLED true
+
+namespace media {
+	class ServerMediaManager;
+}
+using namespace media;
+
 class TelephonyManager : public ITelephonyManager, public ISessionMediaCallback {
 private:
 	static TelephonyManager* instance;
@@ -20,6 +27,7 @@ private:
 	ISUiController* uiControl;
 	ConferenceDb* conferenceDb; // Conference Database
 	ContactDb* contactDb;
+	ServerMediaManager* mediaManager = nullptr;
 
 	TelephonyManager();
 

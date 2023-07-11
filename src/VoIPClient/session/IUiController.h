@@ -14,6 +14,9 @@
 #define MSG_RESPONSE_DELETE_CONF	1008 // Delete conference
 #define MSG_RESPONSE_JOIN_CONF		1009 // Join conference
 
+#define MSG_RESPONSE_AUDIO_VAD		2001
+#define MSG_RESPONSE_AUDIO_AEC		2002
+
 typedef struct CallResult {
 	std::string callerId;
 	int result = 0;
@@ -22,9 +25,6 @@ typedef struct CallResult {
 	//Result() {}
 	CallResult(int r, int c) : result(r), cause(c) {}
 };
-
-#define MSG_RESPONSE_AUDIO_VAD		2001
-#define MSG_RESPONSE_AUDIO_AEC		2002
 
 class IUiController {
 public:
