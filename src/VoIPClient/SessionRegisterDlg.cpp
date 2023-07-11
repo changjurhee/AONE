@@ -146,9 +146,9 @@ void CSessionRegisterDlg::OnBnClickedMfcbtnRight()
 	tstring tmp_email(m_ltContact.GetItemText(m_nIndexContact, 1));
 	tstring tmp_name(m_ltContact.GetItemText(m_nIndexContact, 2));
 
-	m_ltParticipants.InsertItem(num, tmp_cid.data());
-	m_ltParticipants.SetItemText(num, 1, tmp_email.data());
-	m_ltParticipants.SetItemText(num, 2, tmp_name.data());
+	int index_num = m_ltParticipants.InsertItem(num, tmp_cid.data());
+	m_ltParticipants.SetItemText(index_num, 1, tmp_email.data());
+	m_ltParticipants.SetItemText(index_num, 2, tmp_name.data());
 
 	m_ltContact.LockWindowUpdate();
 	m_ltContact.DeleteItem(m_nIndexContact);
@@ -166,9 +166,9 @@ void CSessionRegisterDlg::OnBnClickedMfcbtnLeft()
 	tstring tmp_email(m_ltParticipants.GetItemText(m_nIndexParticipants, 1));
 	tstring tmp_name(m_ltParticipants.GetItemText(m_nIndexParticipants, 2));
 
-	m_ltContact.InsertItem(num, tmp_cid.data());
-	m_ltContact.SetItemText(num, 1, tmp_email.data());
-	m_ltContact.SetItemText(num, 2, tmp_name.data());
+	int index_num = m_ltContact.InsertItem(num, tmp_cid.data());
+	m_ltContact.SetItemText(index_num, 1, tmp_email.data());
+	m_ltContact.SetItemText(index_num, 2, tmp_name.data());
 
 	m_ltParticipants.LockWindowUpdate();
 	m_ltParticipants.DeleteItem(m_nIndexParticipants);
@@ -209,9 +209,9 @@ BOOL CSessionRegisterDlg::OnInitDialog()
 		tmp_email.assign(p.email.begin(), p.email.end());
 		tmp_name.assign(p.name.begin(), p.name.end());
 
-		m_ltContact.InsertItem(num, tmp_cid.data());
-		m_ltContact.SetItemText(num, 1, tmp_email.data());
-		m_ltContact.SetItemText(num, 2, tmp_name.data());
+		int index_num = m_ltContact.InsertItem(num, tmp_cid.data());
+		m_ltContact.SetItemText(index_num, 1, tmp_email.data());
+		m_ltContact.SetItemText(index_num, 2, tmp_name.data());
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
