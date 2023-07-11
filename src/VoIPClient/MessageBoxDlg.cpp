@@ -3,8 +3,16 @@
 
 #include "pch.h"
 #include "VoIPClient.h"
+
+#include "MainFrm.h"
+#include "VoIPClientDoc.h"
+
 #include "afxdialogex.h"
 #include "MessageBoxDlg.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 #include "session/UiController.h"
 #include "session/Constants.h"
@@ -13,7 +21,7 @@
 
 IMPLEMENT_DYNAMIC(CMessageBoxDlg, CDialogEx)
 
-CMessageBoxDlg::CMessageBoxDlg(CWnd* pParent /*=nullptr*/, int mode, CString cid)
+CMessageBoxDlg::CMessageBoxDlg(CWnd* pParent /*=nullptr*/, INT mode, CString cid)
 	: CDialogEx(IDD_DLG_MSGBOX, pParent)
 	, m_stMessage(cid)
 	, m_mode(mode)
@@ -40,6 +48,13 @@ END_MESSAGE_MAP()
 
 // CMessageBoxDlg 메시지 처리기
 
+CVoIPClientDoc* CMessageBoxDlg::GetDocument() const
+{
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	CVoIPClientDoc* m_pDocument = (CVoIPClientDoc*)pFrame->GetActiveDocument();
+	return (CVoIPClientDoc*)m_pDocument;
+}
+
 HBRUSH CMessageBoxDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -59,6 +74,7 @@ LRESULT CMessageBoxDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 		CallResult* res = reinterpret_cast<CallResult*>(lParam);
 		int result = res->result;
 		if (result != CallState::STATE_DIALING && result != CallState::STATE_RINGING) {
+			if (result == CallState::STATE_ACTIVE) GetDocument()->SetConnection(TRUE);
 			EndDialog(IDOK);
 		}
 		break;
@@ -77,10 +93,10 @@ BOOL CMessageBoxDlg::OnInitDialog()
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 	std::cout << "setCallbackWnd()" << std::endl;
 	UiController::getInstance()->setCallbackWnd(this);
-	SetWindowText(m_mode == (int)Msg::INCOMING ? _T("INCOMING") : _T("OUTGOING"));
-	GetDlgItem(IDOK)->EnableWindow(m_mode == (int)Msg::INCOMING ? TRUE : FALSE);
+	SetWindowText(m_mode == (INT)Msg::INCOMING ? _T("INCOMING") : _T("OUTGOING"));
+	GetDlgItem(IDOK)->EnableWindow(m_mode == (INT)Msg::INCOMING ? TRUE : FALSE);
 	GetDlgItem(IDOK)->SetWindowText(_T("Answer"));
-	GetDlgItem(IDCANCEL)->SetWindowText(m_mode == (int)Msg::INCOMING ? _T("Reject") : _T("End"));
+	GetDlgItem(IDCANCEL)->SetWindowText(m_mode == (INT)Msg::INCOMING ? _T("Reject") : _T("End"));
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -89,13 +105,13 @@ BOOL CMessageBoxDlg::OnInitDialog()
 void CMessageBoxDlg::OnBnClickedOk()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if(m_mode == (int)Msg::INCOMING) UiController::getInstance()->request_AnswerCall(this);
+	if(m_mode == (INT)Msg::INCOMING) UiController::getInstance()->request_AnswerCall(this);
 }
 
 void CMessageBoxDlg::OnBnClickedCancel()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (m_mode == (int)Msg::INCOMING) 
+	if (m_mode == (INT)Msg::INCOMING)
 		UiController::getInstance()->request_RejectCall(this);
 	else 
 		UiController::getInstance()->request_EndCall(this);

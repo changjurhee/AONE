@@ -185,16 +185,16 @@ BOOL CSessionRegisterDlg::OnInitDialog()
 	m_ltContact.GetWindowRect(&rt);
 	m_ltContact.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
 
-	m_ltContact.InsertColumn(0, TEXT("cid"), LVCFMT_CENTER, rt.Width() * 0.2);
-	m_ltContact.InsertColumn(1, TEXT("email"), LVCFMT_CENTER, rt.Width() * 0.5);
-	m_ltContact.InsertColumn(2, TEXT("name"), LVCFMT_CENTER, rt.Width() * 0.3);
+	m_ltContact.InsertColumn(0, TEXT("cid"), LVCFMT_CENTER, rt.Width() * 20 / 100);
+	m_ltContact.InsertColumn(1, TEXT("email"), LVCFMT_CENTER, rt.Width() * 50 / 100);
+	m_ltContact.InsertColumn(2, TEXT("name"), LVCFMT_CENTER, rt.Width() * 30 / 100);
 
 	m_ltParticipants.GetWindowRect(&rt);
 	m_ltParticipants.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
 
-	m_ltParticipants.InsertColumn(0, TEXT("cid"), LVCFMT_CENTER, rt.Width() * 0.2);
-	m_ltParticipants.InsertColumn(1, TEXT("email"), LVCFMT_CENTER, rt.Width() * 0.5);
-	m_ltParticipants.InsertColumn(2, TEXT("name"), LVCFMT_CENTER, rt.Width() * 0.3);
+	m_ltParticipants.InsertColumn(0, TEXT("cid"), LVCFMT_CENTER, rt.Width() * 20 / 100);
+	m_ltParticipants.InsertColumn(1, TEXT("email"), LVCFMT_CENTER, rt.Width() * 50 / 100);
+	m_ltParticipants.InsertColumn(2, TEXT("name"), LVCFMT_CENTER, rt.Width() * 30 / 100);
 
 	auto result_list = UiController::getInstance()->get_MyContacts();
 

@@ -17,7 +17,8 @@
 #define MSG_RESPONSE_AUDIO_VAD		2001
 #define MSG_RESPONSE_AUDIO_AEC		2002
 
-typedef struct CallResult {
+// warning C4091: 'typedef ': 변수를 선언하지 않으면 'CallResult' 왼쪽은 무시됩니다.
+/*typedef */struct CallResult {
 	std::string callerId;
 	int result = 0;
 	int cause = 0;

@@ -1,12 +1,11 @@
 ﻿
 #include "pch.h"
 #include "framework.h"
-#include "mainfrm.h"
+#include "MainFrm.h"
 
 #include "ContactView.h"
 #include "Resource.h"
 #include "VoIPClient.h"
-#include "MessageBoxDlg.h"
 
 #include "session/UiController.h"
 

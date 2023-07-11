@@ -172,7 +172,7 @@ CVoIPClientDoc* CVoIPClientView::GetDocument() const // 디버그되지 않은 �
 void CVoIPClientView::OnPaint()
 {
 	CPaintDC dc(this); // 그리기를 위한 디바이스 컨텍스트입니다.
-	
+
 	CRect rectClient;
 	GetClientRect(rectClient);
 	CPoint StartPos = rectClient.CenterPoint();
@@ -194,10 +194,54 @@ void CVoIPClientView::OnPaint()
 	// 메모리 DC에 선택
 	pOldBmp = MemDC.SelectObject(&bmp);
 
-	// 메모리 DC에 들어 있는 비트맵을 화면 DC로 복사하여 출력
-	dc.BitBlt(StartPos.x - bmpInfo.bmWidth / 2, StartPos.y - bmpInfo.bmHeight / 2, bmpInfo.bmWidth, bmpInfo.bmHeight, &MemDC, 0, 0, SRCCOPY);
-
+	if (FALSE == GetDocument()->GetConnection()) {
+		// 메모리 DC에 들어 있는 비트맵을 화면 DC로 복사하여 출력
+		dc.BitBlt(StartPos.x - bmpInfo.bmWidth / 2, StartPos.y - bmpInfo.bmHeight / 2, bmpInfo.bmWidth, bmpInfo.bmHeight, &MemDC, 0, 0, SRCCOPY);
+	}
+	// 이전 비트맵으로 재설정.
 	MemDC.SelectObject(pOldBmp);
+
+	// 생성한 리소스 해제.
+	MemDC.DeleteDC();
+	bmp.DeleteObject();
+
+	//	[GDI] 더블 버퍼링(Double Buffering) 소개
+	//	// Picture Control DC를 생성.
+	//	CClientDC dc(GetDlgItem(IDC_CLIENT_VIEW_DISPLAY));
+
+	//	// Picture Control 크기를 얻는다.
+	//	CRect rect;
+	//	GetDlgItem(IDC_CLIENT_VIEW_DISPLAY)->GetClientRect(&rect);
+
+	//	CDC memDC;
+	//	CBitmap* pOldBitmap, bitmap;
+
+	//	// Picture Control DC에 호환되는 새로운 CDC를 생성. (임시 버퍼)
+	//	memDC.CreateCompatibleDC(&dc);
+
+	//	// Picture Control의 크기와 동일한 비트맵을 생성.
+	//	bitmap.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
+
+	//	// 임시 버퍼에서 방금 생성한 비트맵을 선택하면서, 이전 비트맵을 보존.
+	//	pOldBitmap = memDC.SelectObject(&bitmap);
+
+	//	// 임시 버퍼에 검은색으로 채움.
+	//	memDC.PatBlt(0, 0, rect.Width(), rect.Height(), BLACKNESS);
+
+	//	// 임시 버퍼(memDC)에 그리는 동작을 수행.
+	//	// ...
+	//	// ...
+
+	//// 임시 버퍼를 Picture Control에 그린다.
+	//	dc.BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
+
+	//	// 이전 비트맵으로 재설정.
+	//	memDC.SelectObject(pOldBitmap);
+
+	//	// 생성한 리소스 해제.
+	//	memDC.DeleteDC();
+	//	bitmap.DeleteObject();
+	//}
 }
 
 

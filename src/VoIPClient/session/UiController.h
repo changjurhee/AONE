@@ -1,6 +1,8 @@
 #pragma once
 
+#ifndef _AFXDLL
 #define _AFXDLL
+#endif //_AFXDLL
 
 #include <afxwin.h>
 #include "AccountManager.h"

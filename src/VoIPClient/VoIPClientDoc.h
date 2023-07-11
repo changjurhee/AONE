@@ -14,6 +14,7 @@ protected: // serialization에서만 만들어집니다.
 public:
 	std::shared_ptr<userInfo> m_spUserInfo;
 	BOOL IsCurrentUser;
+	BOOL m_IsConnected;
 
 // 작업입니다.
 public:
@@ -38,6 +39,9 @@ public:
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
+
+	BOOL GetConnection() { return m_IsConnected; };
+	void SetConnection(BOOL Connected) { m_IsConnected = Connected;  };
 
 protected:
 

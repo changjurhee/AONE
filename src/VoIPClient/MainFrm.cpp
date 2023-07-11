@@ -6,8 +6,6 @@
 #include "framework.h"
 #include "VoIPClient.h"
 
-//#include "CallView.h"
-//#include "CallListView.h"
 #include "MainFrm.h"
 #include "VoIPClientDoc.h"
 #include "VoIPClientView.h"
@@ -814,6 +812,8 @@ void SetForegroundWindowForce(HWND hWnd)
 
 LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 {
+	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)GetActiveDocument();
+
 	switch (wParam)
 	{
 	case MSG_RESPONSE_CALLSTATE:
@@ -825,15 +825,16 @@ LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 			std::cout << "show incoming dlg from: " << res->callerId << std::endl;
 			SetForegroundWindowForce(this->m_hWnd);
 			CString cid((res->callerId).c_str());
-			CMessageBoxDlg dlg(this, (int)CMessageBoxDlg::Msg::INCOMING, cid);
+			CMessageBoxDlg dlg(this, (INT)CMessageBoxDlg::Msg::INCOMING, cid);
 			dlg.DoModal();
 		}
 		else if (result == CallState::STATE_DIALING) {
 			CString cid((res->callerId).c_str());
-			CMessageBoxDlg dlg(this, (int)CMessageBoxDlg::Msg::OUTGOING, cid);
+			CMessageBoxDlg dlg(this, (INT)CMessageBoxDlg::Msg::OUTGOING, cid);
 			dlg.DoModal();
 		}
 		else if (result == CallState::STATE_DISCONNECTED) {
+			if (result == CallState::STATE_ACTIVE) pDoc->SetConnection(FALSE);
 			MessageBox(_T("DISCONNECTED"));
 		}
 		break;

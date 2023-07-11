@@ -52,6 +52,7 @@ CVoIPClientDoc::CVoIPClientDoc() noexcept
 	m_spUserInfo = std::shared_ptr<userInfo>(new userInfo);
 
 	IsCurrentUser = FALSE;
+	m_IsConnected = FALSE;
 }
 
 CVoIPClientDoc::~CVoIPClientDoc()
