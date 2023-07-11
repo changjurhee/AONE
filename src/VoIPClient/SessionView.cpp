@@ -411,20 +411,17 @@ LRESULT CSessionView::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 	case MSG_RESPONSE_DELETE_CONF:
 		cout << "CSessionView::MSG_RESPONSE_DELETE_CONF" << endl;
 		switch (lParam) {
-			case 0: MessageBox(_T("Conference deleted")); break;
 			case 1: MessageBox(_T("No conference ID exists")); break;
 			case 2: MessageBox(_T("Only HOST can delete conference")); break;
 			case 3: MessageBox(_T("Invalid request")); break;
-			default: MessageBox(_T("Unknown Error")); break;
 		}
 		UiController::getInstance()->req_GetAllConferences(this);
 		break;
 	case MSG_RESPONSE_JOIN_CONF:
 		switch (lParam) {
-			case 0: MessageBox(_T("No Room to join")); break;
-			case 1: MessageBox(_T("Conference not started")); break;
-			case 2: MessageBox(_T("You are not invited")); break;
-			default: MessageBox(_T("Unknown Error")); break;
+			case 1: MessageBox(_T("No Room to join")); break;
+			case 2: MessageBox(_T("Conference not started")); break;
+			case 3: MessageBox(_T("You are not invited")); break;
 		}
 		break;
 	case MSG_RESPONSE_DATA:
