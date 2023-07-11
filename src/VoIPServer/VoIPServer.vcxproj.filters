@@ -132,6 +132,12 @@
     <ClInclude Include="..\media\audio_buffer.h">
       <Filter>media</Filter>
     </ClInclude>
+    <ClInclude Include="session\ISUiController.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="session\SUiController.h">
+      <Filter>Session</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VoIPServer.cpp">
@@ -214,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="..\media\audio_buffer.cpp">
       <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="session\SUiController.cpp">
+      <Filter>Session</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
