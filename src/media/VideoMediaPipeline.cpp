@@ -153,6 +153,7 @@ SubElements VideoMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int b
 	std::string encoding_name = get_elements_name(TYPE_ENCODING, bin_index, client_index);
     GstElement* encoding_element = gst_element_factory_make("x264enc", encoding_name.c_str());
 	  g_object_set(encoding_element,
+		  "tune", H_264_TUNE_ZEROLATENCY,
 		  "key-int-max", 30,
 		  "bitrate", kVideoPresets.at(VideoPresetLevel::kVideoPreset5).bitrate,
 		  NULL);
