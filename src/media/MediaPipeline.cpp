@@ -8,8 +8,9 @@
 
 namespace media {
 
-MediaPipeline::MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb) :
-	PipelineMonitorable(monitor_cb) {
+MediaPipeline::MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list,
+	PipelineMonitorable::Callback* rtpstats_cb, PipelineMonitorable::Callback* data_cb) :
+	PipelineMonitorable(rtpstats_cb, data_cb) {
 
 	rid_ = rid;
 	pipe_mode_list_ = pipe_mode_list;
@@ -376,6 +377,7 @@ void MediaPipeline::enable_debugging(void)
 	//gst_debug_set_threshold_for_name("x264enc", logLevel);
 	//gst_debug_set_threshold_for_name("rtph264pay", logLevel);
 	//gst_debug_set_threshold_for_name("udpsink", logLevel);
+	//gst_debug_set_threshold_for_name("rtpjitterbuffer", logLevel);
 	/* Set default debug level */
 	//gst_debug_set_threshold_for_name("srtpenc", logLevel);
 	//gst_debug_set_default_threshold(GST_LEVEL_FIXME);
@@ -449,6 +451,14 @@ void MediaPipeline::end_call()
 	// Release the pipeline
 	stop_state_pipeline(true);
 	g_main_loop_quit(mainLoop_);
+}
+
+void MediaPipeline::set_rtp_jitter_buffer_latency(unsigned int latency) {
+	LOG_OBJ_INFO() << "Set rtpjitterbuffer latency " << latency << " ms" << std::endl;
+	vector<GstElement*> elems = get_elements_list(TYPE_JITTER);
+	for_each(elems.begin(), elems.end(), [latency](auto elem) {
+		g_object_set(elem, "latency", latency, NULL);
+		});
 }
 
 int MediaPipeline::get_client_index(ContactInfo* client_info, bool new_client)
@@ -1067,9 +1077,8 @@ void MediaPipeline::ReadAndNotifyRtpStats() {
 			LOG_OBJ_LOG() << gst_element_get_name(elem) << ": lost " << stats.num_lost << ", late "
 				<< stats.num_late << ", avg_jitter " << stats.avg_jitter_us << " us" << std::endl;
 
-			VideoPresetType current_preset;
-			if (monitor_cb_)
-				monitor_cb_->OnRtpStats(current_preset, stats);
+			if (rtpstats_cb_)
+				rtpstats_cb_->OnRtpStats(cur_video_preset_, stats);
 		});
 }
 

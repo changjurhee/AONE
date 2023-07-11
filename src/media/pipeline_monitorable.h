@@ -34,12 +34,14 @@ public:
 	};
 
 	PipelineMonitorable() = delete;
-	PipelineMonitorable(Callback* monitor_cb):
-		monitor_cb_(monitor_cb)
+	PipelineMonitorable(Callback* rtpstats_cb, Callback* data_cb):
+		rtpstats_cb_(rtpstats_cb),
+		data_cb_(data_cb)
 	{}
 
 protected:
-	Callback* monitor_cb_;
+	Callback* rtpstats_cb_;
+	Callback* data_cb_;
 
 	virtual ~PipelineMonitorable() {}
 };

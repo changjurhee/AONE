@@ -84,6 +84,7 @@ protected :
 	GstElement* pipeline;
 	queue<ContactInfo> client_queue_;
 	queue<VideoQualityInfo> video_quality_queue_;
+	VideoPresetType cur_video_preset_;
 	bool start_pipeline_;
 	int pipe_block_flag_;
 	GMainLoop* mainLoop_;
@@ -135,7 +136,8 @@ protected :
 	string get_pipe_mode_name(int mode);
 	int count_active_client(void);
 public:
-	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb);
+	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list,
+		PipelineMonitorable::Callback* rtpstats_cb, PipelineMonitorable::Callback* data_cb);
 	void makePipeline(vector<ContactInfo> &contact_info_list, OperatingInfo& operate_info, handleptr handler);
 	void pipeline_run();
 	void request_add_client(ContactInfo* client_info);
@@ -148,6 +150,8 @@ public:
 	void unset_pipe_block_flag(pipe_block_flag flag_type);
 	void stop_state_pipeline(bool stop);
 	void end_call();
+
+	void set_rtp_jitter_buffer_latency(unsigned int latency);
 
 private:
 	uint32_t bus_watch_id_;

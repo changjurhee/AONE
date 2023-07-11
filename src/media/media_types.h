@@ -5,13 +5,15 @@
 
 namespace media {
 
-enum class VideoPresetLevel {
+enum class VideoPresetLevel : int {
+	// assigned int value shall not be changed when adding new preset.
 	kVideoPresetOff = 0,
 	kVideoPreset1 = 1,
 	kVideoPreset2 = 2,
 	kVideoPreset3 = 3,
 	kVideoPreset4 = 4,
 	kVideoPreset5 = 5,
+	kVideoPresetMax = kVideoPreset5,
 };
 
 struct VideoPresetType {
