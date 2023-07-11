@@ -187,3 +187,26 @@ void UiController::request_deleteConference(CWnd* wnd, string rid)
 	accountManager->deleteConference(rid);
 }
 
+void UiController::request_EndOrExitCall(CWnd* wnd)
+{
+	Call* call = callsManager->getCall();
+	if (call->isConference()) {
+		request_ExitConference(wnd);
+	}
+	else {
+		request_EndCall(wnd);
+	}
+}
+
+void UiController::request_VAD(CWnd* wnd, bool on)
+{
+	setCallbackWnd(wnd);
+	// TODO : VAD Feature on off
+}
+
+void UiController::request_AEC(CWnd* wnd, bool on)
+{
+	setCallbackWnd(wnd);
+	// TODO : AEC Feature on off
+}
+

@@ -211,7 +211,6 @@
     <ClInclude Include="..\media\pipeline_monitorable.h" />
     <ClInclude Include="..\media\vad_processor.h" />
     <ClInclude Include="AccountLoginDlg.h" />
-    <ClInclude Include="..\common\debug.h" />
     <ClInclude Include="..\media\AudioMediaPipeline.h" />
     <ClInclude Include="..\media\call_info.h" />
     <ClInclude Include="..\media\MediaManager.h" />
@@ -264,7 +263,6 @@
     <ClCompile Include="..\media\media_types.cpp" />
     <ClCompile Include="..\media\vad_processor.cpp" />
     <ClCompile Include="AccountLoginDlg.cpp" />
-    <ClCompile Include="..\common\debug.cpp" />
     <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
     <ClCompile Include="..\media\MediaManager.cpp" />
     <ClCompile Include="..\media\MediaPipeline.cpp" />

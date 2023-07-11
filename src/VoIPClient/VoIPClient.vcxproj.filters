@@ -76,9 +76,6 @@
     <ClCompile Include="..\media\AudioMediaPipeline.cpp">
       <Filter>media</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\debug.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="..\media\VideoMediaPipeline.cpp">
       <Filter>media</Filter>
     </ClCompile>
@@ -230,9 +227,6 @@
     </ClInclude>
     <ClInclude Include="..\media\VideoMediaPipeline.h">
       <Filter>media</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\debug.h">
-      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\media\pipeline_monitorable.h">
       <Filter>media</Filter>

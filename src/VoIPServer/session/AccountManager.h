@@ -12,6 +12,7 @@ private:
 	static AccountManager* instance;
 
 	SessionControl* sessionControl;
+	ISUiController* uiControl;
 	ContactDb* contactDb; // Contact Database
 	ConferenceDb* conferenceDb; // Conference Database
 
@@ -25,6 +26,7 @@ public:
 
 	// interface
 	void setSessionControl(SessionControl* control) override;
+	void setUiControl(ISUiController* control) override;
 
     // JSON based callback methods
 	void handleRegisterContact(Json::Value data, string from) override;
