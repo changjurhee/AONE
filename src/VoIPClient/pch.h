@@ -58,6 +58,17 @@ struct stDateToOle {
 
 constexpr long long RESOLUTION_TIME = 10000000;
 
+using time_point = std::chrono::system_clock::time_point;
+static std::string serializeTimePoint(const time_point& time, const std::string& format)
+{
+	std::time_t tt = std::chrono::system_clock::to_time_t(time);
+	std::tm tm;
+	gmtime_s(&tm, &tt);
+	std::stringstream ss;
+	ss << std::put_time(&tm, format.c_str());
+	return ss.str();
+}
+
 static stOleToDate SetDateTime(COleDateTime m_Date, COleDateTime m_StartTime, COleDateTime m_endTime) {
 	std::tm tm_start = {};
 	std::tm tm_end = {};
@@ -70,29 +81,33 @@ static stOleToDate SetDateTime(COleDateTime m_Date, COleDateTime m_StartTime, CO
 	ss_e >> std::get_time(&tm_end, "%Y %m %d %H %M %S");
 	auto tp_s = std::chrono::system_clock::from_time_t(std::mktime(&tm_start));
 	auto tp_e = std::chrono::system_clock::from_time_t(std::mktime(&tm_end));
-	std::chrono::seconds duration_second = std::chrono::duration_cast<std::chrono::seconds>(tp_e - tp_s);
+	
+	auto now1 = std::chrono::time_point_cast<std::chrono::seconds>(tp_s);
+	auto now2 = std::chrono::time_point_cast<std::chrono::seconds>(tp_e);
 
-	std::cout << tp_s.time_since_epoch().count() / RESOLUTION_TIME << "\n";
-	std::cout << tp_e.time_since_epoch().count() / RESOLUTION_TIME << "\n";
-	std::cout << duration_second.count() << "\n";
-
+	auto integral_duration1 = now1.time_since_epoch().count();
+	auto integral_duration2 = now2.time_since_epoch().count();
+	
 	stOleToDate res;
-	res.dataAndTime = tp_s.time_since_epoch().count() / RESOLUTION_TIME;
-	res.duration = duration_second.count();
+	res.dataAndTime = integral_duration1;
+	res.duration = integral_duration2 - integral_duration1;
 
 	return res;
 }
 
-static CString GetDateTime(long long dataAndTime, long long duration) {
-	stDateToOle res;
-	std::chrono::seconds dur(dataAndTime);
-	std::chrono::time_point<std::chrono::system_clock> dt(dur);
-	
-	COleDateTime t(1999, 0, 0, 0, 0, dataAndTime);
+static std::pair<std::string, std::string> GetDateTime(long long dataAndTime, long long duration) {
+	std::chrono::system_clock::time_point input = std::chrono::system_clock::now();
+	auto now1 = std::chrono::time_point_cast<std::chrono::seconds>(input);
+	using sys_seconds = decltype(now1);
 
-	CString str = t.Format(_T("%Y %m %d %H %M %S"));
+	sys_seconds dt1{ std::chrono::seconds{dataAndTime} };
+	sys_seconds dt2{ std::chrono::seconds{dataAndTime + duration} };
+
+	std::pair<std::string, std::string> res;
+	res.first = serializeTimePoint(dt1, "%Y-%m-%d %H:%M:%S");
+	res.second = serializeTimePoint(dt2, "%Y-%m-%d %H:%M:%S");
 	
-	return str;
+	return res;
 }
 
 enum class KResponse : INT_PTR {
