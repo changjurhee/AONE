@@ -510,6 +510,9 @@ SubElements MediaPipeline::add_client_at_src(GstBin * parent_bin, int bin_index,
 		SubElements overlay_pair = pipeline_make_overlay(parent_bin, bin_index, client_index);
 		ret_sub_elements = connect_subElements(ret_sub_elements, overlay_pair);
 	}
+#define SHIFT_ID 20
+	SubElements convert_pair = pipeline_make_convert(parent_bin, bin_index, client_index + SHIFT_ID);
+	ret_sub_elements = connect_subElements(ret_sub_elements, convert_pair);
 
 #if 0
 	// Remove queue by jitter buffer
@@ -559,7 +562,6 @@ void MediaPipeline::add_client_udp_remove_me(GstBin* parent_bin, int bin_index, 
 	SubElements tee_pair = pipeline_make_tee(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, tee_pair);
 
-
 	SubElements adder_pair = pipeline_make_adder(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, adder_pair);
 
@@ -574,6 +576,7 @@ void MediaPipeline::add_client_udp_remove_me(GstBin* parent_bin, int bin_index, 
 
 	SubElements encryption_pair = pipeline_make_encryption(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, encryption_pair);
+	connect_subElements(get_elements_by_name(parent_bin, TYPE_SRTPENC, bin_index, client_index), get_elements_by_name(parent_bin, TYPE_SRTPENC_CAPS, bin_index, client_index));
 
 	SubElements udp_sink_pair = pipeline_make_udp_sink(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, udp_sink_pair);
