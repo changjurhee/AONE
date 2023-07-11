@@ -301,16 +301,22 @@ void CContactView::OnDeleteUser()
 {
 	HTREEITEM ht = m_wndContactView.GetSelectedItem();
 	if (ht == m_wndContactView.GetRootItem()) return;
-	CString stmp = m_wndContactView.GetItemText(m_wndContactView.GetParentItem(ht));
-	UiController::getInstance()->req_DeleteMyContact(this, std::string(CT2CA(stmp)));
+	if (MessageBox(_T("Do you want to delete the User ?"), _T("Delete User"), MB_OKCANCEL) == IDOK)
+	{
+		CString stmp = m_wndContactView.GetItemText(m_wndContactView.GetParentItem(ht));
+		UiController::getInstance()->req_DeleteMyContact(this, std::string(CT2CA(stmp)));
+	}
 }
 
 void CContactView::OnJoinUser()
 {
 	HTREEITEM ht = m_wndContactView.GetSelectedItem();
 	if (ht == m_wndContactView.GetRootItem()) return;
-	CString stmp = m_wndContactView.GetItemText(m_wndContactView.GetParentItem(ht));
-	UiController::getInstance()->request_OutgoingCall(this, std::string(CT2CA(stmp)));
+	if (MessageBox(_T("Do you want to Call the User ?"), _T("Call User"), MB_OKCANCEL) == IDOK)
+	{
+		CString stmp = m_wndContactView.GetItemText(m_wndContactView.GetParentItem(ht));
+		UiController::getInstance()->request_OutgoingCall(this, std::string(CT2CA(stmp)));
+	}
 }
 
 void CContactView::OnPaint()
