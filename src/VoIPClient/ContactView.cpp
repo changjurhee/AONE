@@ -299,15 +299,18 @@ void CContactView::OnNewUser()
 
 void CContactView::OnDeleteUser()
 {
-	// @todo get element cid from tree node
-	UiController::getInstance()->req_DeleteMyContact(this, std::string(CT2CA(_T("hello"))));
+	HTREEITEM ht = m_wndContactView.GetSelectedItem();
+	if (ht == m_wndContactView.GetRootItem()) return;
+	CString stmp = m_wndContactView.GetItemText(m_wndContactView.GetParentItem(ht));
+	UiController::getInstance()->req_DeleteMyContact(this, std::string(CT2CA(stmp)));
 }
 
 void CContactView::OnJoinUser()
 {
-	// @todo get element cid from tree node
-
-	UiController::getInstance()->request_OutgoingCall(this, std::string(CT2CA(_T("hello"))));
+	HTREEITEM ht = m_wndContactView.GetSelectedItem();
+	if (ht == m_wndContactView.GetRootItem()) return;
+	CString stmp = m_wndContactView.GetItemText(m_wndContactView.GetParentItem(ht));
+	UiController::getInstance()->request_OutgoingCall(this, std::string(CT2CA(stmp)));
 }
 
 void CContactView::OnPaint()

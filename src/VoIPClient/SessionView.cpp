@@ -316,7 +316,10 @@ void CSessionView::OnNewSession()
 
 void CSessionView::OnJoinSession()
 {
-	UiController::getInstance()->request_JoinConference(this, std::string(CT2CA(_T("hello"))));
+	HTREEITEM ht = m_wndSessionView.GetSelectedItem();
+	if (ht == m_wndSessionView.GetRootItem()) return;
+	CString sRID = m_wndSessionView.GetItemText(m_wndSessionView.GetParentItem(ht));
+	UiController::getInstance()->request_JoinConference(this, std::string(CT2CA(sRID)));
 }
 
 void CSessionView::OnPaint()
