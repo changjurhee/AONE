@@ -3,7 +3,9 @@
 namespace media {
 
 AudioMediaPipeline::AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb) :
-	MediaPipeline(rid, pipe_mode_list, monitor_cb) {};
+	MediaPipeline(rid, pipe_mode_list, monitor_cb) {
+	media_mode_ = "Audio";
+};
 
 SubElements AudioMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index)
 {
@@ -60,7 +62,7 @@ SubElements AudioMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bi
 	return SubElements(element, element);
 };
 
-	SubElements AudioMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int bin_index, int client_index) {
+SubElements AudioMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string encoding_name = get_elements_name(TYPE_ENCODING, bin_index, client_index);
     GstElement* encoding_element = gst_element_factory_make("opusenc", encoding_name.c_str());
 	g_object_set(encoding_element, "audio-type", 2051, "frame-size", 10, NULL);
@@ -77,7 +79,7 @@ SubElements AudioMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bi
 	return make_pair(encoding_element, rtp_element);
 };
 
-	SubElements AudioMediaPipeline::pipeline_make_decoding(GstBin* parent_bin, int bin_index, int client_index) {
+SubElements AudioMediaPipeline::pipeline_make_decoding(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string rtp_name = get_elements_name(TYPE_DECODING_RTP, bin_index, client_index);
 	GstElement* rtp_element = gst_element_factory_make("rtpopusdepay", rtp_name.c_str());
 
@@ -91,16 +93,20 @@ SubElements AudioMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bi
 	return make_pair(rtp_element, decoding_element);
 };
 
-	SubElements AudioMediaPipeline::pipeline_make_adder(GstBin* parent_bin, int bin_index, int client_index) {
+SubElements AudioMediaPipeline::pipeline_make_overlay(GstBin* parent_bin, int bin_index, int client_index) {
+	return SubElements(NULL, NULL);
+};
+
+
+SubElements AudioMediaPipeline::pipeline_make_adder(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_ADDER, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("audiomixer", name.c_str());
-	g_printerr(("adiuo" + name + "\n").c_str());
 
 	gst_bin_add(GST_BIN(parent_bin), element);
 	return make_pair(element, element);
 };
 
-	SubElements AudioMediaPipeline::pipeline_make_jitter_buffer(GstBin* parent_bin, int bin_index, int client_index) {
+SubElements AudioMediaPipeline::pipeline_make_jitter_buffer(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_JITTER, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("rtpjitterbuffer", name.c_str());
 
