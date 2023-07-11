@@ -85,7 +85,8 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 		std::cout << " 30. GET MY CONFERENCES " << std::endl;
 		std::cout << " 31. CREATE CONFERENCE " << std::endl;
 		std::cout << " 32. JOIN CONFERENCE " << std::endl;
-		std::cout << " 33. EXIT_CONFERENCE " << std::endl << std::endl;
+		std::cout << " 33. EXIT_CONFERENCE " << std::endl;
+		std::cout << " 34. DELETE_CONFERENCE " << std::endl << std::endl;
 		std::cout << " << MY DATA (" << getMyIpAddress() << ") >> " << std::endl;
 		
 		if (accountManager->myCid.empty()) {
@@ -194,7 +195,9 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 				getline(std::cin >> std::ws, email);
 				std::cout << "name : ";
 				getline(std::cin >> std::ws, name);
-				accountManager->updateMyContact(accountManager->myCid, email, name);
+				std::cout << "password : ";
+				getline(std::cin >> std::ws, newpw);
+				accountManager->updateMyContact(accountManager->myCid, email, name, newpw);
 			}
 			break;
 		case 11: //GET ALL CONTACTLIST FROM SERVER
@@ -300,6 +303,12 @@ void CommandLineInterface::startCli(AccountManager* accountManager, CallsManager
 		case 33: // EXIT CONFERENCE
 			std::cout << "EXIT CONFERENCE" << std::endl;
 			callsManager->exitConference();
+			break;
+		case 34: // DELETE CONFERENCE
+			std::cout << "DELETE CONFERENCE" << std::endl;
+			std::cout << "rid : ";
+			getline(std::cin >> std::ws, inputID);
+			accountManager->deleteConference(inputID);
 			break;
 		default:			
 			break;

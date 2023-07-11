@@ -199,9 +199,9 @@ void CallsManager::joinConference(std::string callId) {
 
 	sessionControl->sendData(208, payload);
 
-	if (uiControl != NULL) {
-		uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_DIALING);
-	}
+	// if (uiControl != NULL) {
+	//	uiControl->notify(MSG_RESPONSE_CALLSTATE, CallState::STATE_DIALING);
+	// }
 }
 
 void CallsManager::onSuccessfulJoinConference(Json::Value data) {

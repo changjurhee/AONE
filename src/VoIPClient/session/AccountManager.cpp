@@ -181,13 +181,15 @@ void AccountManager::getAllContact() {
 }
 
 void AccountManager::createConference(long dateAndTime, long duration, std::list<std::string>& participants) {
-
 	Json::Value payload;
 	payload["dateAndTime"] = (Json::UInt64)dateAndTime;
 	payload["duration"] = (Json::UInt64)duration;
-	int index = 0;
+	payload["participants"][0] = myCid;
+	int index = 1;
 	for (const auto& element : participants) {
-		payload["participants"][index++] = element;
+		if (element != myCid) {
+			payload["participants"][index++] = element;
+		}
 	}
 	Json::Value root;
 	root["msgId"] = 206;
@@ -203,6 +205,19 @@ void AccountManager::getAllConference(std::string cid)
 	Json::Value payload;
 	payload["cid"] = cid;
 	root["msgId"] = 205;
+	root["payload"] = payload;
+	Json::StreamWriterBuilder writerBuilder;
+	std::string jsonString = Json::writeString(writerBuilder, root);
+	sessionControl->sendData(jsonString.c_str());
+}
+
+void AccountManager::deleteConference(std::string rid)
+{
+	Json::Value root;
+	Json::Value payload;
+	payload["cid"] = myCid;
+	payload["rid"] = rid;
+	root["msgId"] = 207;
 	root["payload"] = payload;
 	Json::StreamWriterBuilder writerBuilder;
 	std::string jsonString = Json::writeString(writerBuilder, root);
@@ -266,6 +281,11 @@ void AccountManager::deleteContact(std::string cid)
 
 void AccountManager::addContact(std::string cid)
 {
+	for (auto& contact : AccountManager::myContactDataList) {
+		if (cid == contact) {
+			return;
+		}
+	}
 	//Add cid in myContactDataList and request updateMyContactList
 	for (auto& contact : AccountManager::allConatactDataList) {
 		if (cid == contact.cid) {
@@ -373,7 +393,7 @@ void AccountManager::handleResetPassword(Json::Value msg) {
 	}
 }
 
-void AccountManager::updateMyContact(std::string cid, std::string email, std::string name)
+void AccountManager::updateMyContact(std::string cid, std::string email, std::string name, std::string password)
 {
 	Json::Value root;
 	root["msgId"] = 107;
@@ -382,6 +402,7 @@ void AccountManager::updateMyContact(std::string cid, std::string email, std::st
 	payload["cid"] = cid;
 	payload["email"] = email;
 	payload["name"] = name;
+	payload["password"] = password;
 	root["payload"] = payload;
 	Json::StreamWriterBuilder writerBuilder;
 	std::string jsonString = Json::writeString(writerBuilder, root);
@@ -446,5 +467,20 @@ void AccountManager::handleGetAllMyConference(Json::Value data)
 	}
 	if (uiControl != NULL) {
 		uiControl->notify(MSG_RESPONSE_DATA, 0);
+	}
+}
+
+void AccountManager::handleUpdateMyContact(Json::Value data)
+{
+	int result = 1; //(0:SUCCESS, 1:FAIL)
+	result = data["result"].asInt();
+	if (result == 0) { // SUCCESS
+		std::cout << "Update Result : " << result << std::endl;
+	}
+	else {
+		std::cout << "Update Result : " << result << std::endl;
+	}
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_UPDATE_CONTACT, result);
 	}
 }

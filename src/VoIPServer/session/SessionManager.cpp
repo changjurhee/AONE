@@ -213,8 +213,13 @@ void SessionManager::HandleClient(int clientSocket) {
 			case 206: // 206 : CREATE_CONFERENCE
 				msgStr = "CREATE_CONFERENCE";
 				payloads["myIp"] = myIpAddr;
+				payloads["host"] = contactId;
 				telephonyManager->handleCreateConference(payloads);
 				accountManager->handleCreateConference(payloads, contactId);
+				break;
+			case 207: // 207 : DELETE_CONFERENCE
+				msgStr = "DELETE_CONFERENCE";
+				accountManager->handleDeleteConference(payloads, contactId);
 				break;
 			case 208: // 208 : JOIN_CONFERENCE
 				msgStr = "JOIN_CONFERENCE";

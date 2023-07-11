@@ -34,6 +34,9 @@ public:
 	void Connect(); // Connect to server
 	void UserLogIn(); // User Login
 	void UserSignIn(); // User Signin
+	void ResetPassword(); // Reset Password
+	void UpdateAccount(); // Update user account
+
 	void AddSessionList();
 	void AddContactList();
 
@@ -90,7 +93,9 @@ protected:
 	afx_msg void OnUserLogOut();
 	afx_msg void OnUpdateTestDlg(CCmdUI* pCmdUI);
 	afx_msg void OnTestDlg();
-
+	afx_msg void OnUpdateResetPassword(CCmdUI* pCmdUI);
+	afx_msg void OnResetPassword();
+	
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();
@@ -106,6 +111,7 @@ protected:
 
 public:
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
 };
 
 

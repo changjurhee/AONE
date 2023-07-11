@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "afxdialogex.h"
 
 
@@ -19,11 +19,21 @@ public:
 
 public:
 	CVoIPClientDoc* GetDocument() const;
+	CString m_edId;
+	CString m_edPassword;
+	INT m_edPasswordQuestion;
+	CString m_edPasswordAnswer;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
+	virtual BOOL OnInitDialog();
+	BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
+	afx_msg void OnBnClickedMfcbtnReset();
+	afx_msg void OnBnClickedMfcbtnCancel();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
 };

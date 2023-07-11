@@ -130,8 +130,8 @@ void MediaManager::OnRtpStats(const VideoPresetType& current_preset, const Pipel
 	}
 }
 
-void MediaManager::OnAudioBuffer(const AudioBuffer& buffer) {
-	LOG_DEBUG("IN");
+bool MediaManager::OnAudioBuffer(const AudioBuffer& buffer, size_t frames_per_buffer) {
+	return true;
 }
 
 } // namespace media

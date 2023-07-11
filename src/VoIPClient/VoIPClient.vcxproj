@@ -225,6 +225,7 @@
     <ClInclude Include="IServerMediaManager.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="ManageUserAccountDlg.h" />
+    <ClInclude Include="MessageBoxDlg.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PropertiesWnd.h" />
@@ -244,9 +245,11 @@
     <ClInclude Include="session\IUiController.h" />
     <ClInclude Include="session\SessionControl.h" />
     <ClInclude Include="session\SessionManager.h" />
+    <ClInclude Include="session\UiController.h" />
     <ClInclude Include="StartDlg.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TestCallDlg.h" />
+    <ClInclude Include="UpdateUserAccountDlg.h" />
     <ClInclude Include="ViewTree.h" />
     <ClInclude Include="VoIPClient.h" />
     <ClInclude Include="VoIPClientDoc.h" />
@@ -271,6 +274,7 @@
     <ClCompile Include="CommandLineInterface.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="ManageUserAccountDlg.cpp" />
+    <ClCompile Include="MessageBoxDlg.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -289,6 +293,7 @@
     <ClCompile Include="session\SessionManager.cpp" />
     <ClCompile Include="StartDlg.cpp" />
     <ClCompile Include="TestCallDlg.cpp" />
+    <ClCompile Include="UpdateUserAccountDlg.cpp" />
     <ClCompile Include="ViewTree.cpp" />
     <ClCompile Include="session\UiController.cpp" />
     <ClCompile Include="VoIPClient.cpp" />

@@ -38,6 +38,7 @@ void CAccountLoginDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_PASSWORD, m_edPassword);
 	DDX_Control(pDX, IDC_MFCBTN_LOGIN, m_btnLogIn);
 	DDX_Control(pDX, IDC_MFCBTN_SIGN_IN, m_btnSignIn);
+	DDX_Control(pDX, IDC_MFCBTN_RESET_PW, m_btnResetPw);
 }
 
 BEGIN_MESSAGE_MAP(CAccountLoginDlg, CDialogEx)
@@ -46,6 +47,7 @@ BEGIN_MESSAGE_MAP(CAccountLoginDlg, CDialogEx)
 	ON_MESSAGE(UWM_UI_CONTROLLER, &CAccountLoginDlg::processUiControlNotify)
 	ON_WM_CTLCOLOR()
 	ON_WM_SYSCOMMAND()
+	ON_BN_CLICKED(IDC_MFCBTN_RESET_PW, &CAccountLoginDlg::OnBnClickedMfcbtnResetPw)
 END_MESSAGE_MAP()
 
 // CAccountLoginDlg 메시지 처리기
@@ -72,9 +74,11 @@ BOOL CAccountLoginDlg::OnInitDialog()
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 	m_btnLogIn.LoadBitmaps(IDB_LOG_IN, IDB_LOG_IN_D, NULL , IDB_LOG_IN_F);
 	m_btnSignIn.LoadBitmaps(IDB_SIGN_IN, IDB_SIGN_IN_D, NULL, IDB_SIGN_IN_F);
+	m_btnResetPw.LoadBitmaps(IDB_RESET_PW, IDB_RESET_PW_D, NULL, IDB_RESET_PW_F);
 
 	m_btnLogIn.SizeToContent();
 	m_btnSignIn.SizeToContent();
+	m_btnResetPw.SizeToContent();
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -117,6 +121,7 @@ void CAccountLoginDlg::OnBnClickedMfcbtnLogin()
 	GetDocument()->SetUser(spUserInfo);
 	GetDocument()->IsCurrentUser = TRUE;
 
+	GetDlgItem(IDC_MFCBTN_LOGIN)->EnableWindow(false);
 	UiController::getInstance()->req_Login(this, std::string(CT2CA(m_edEmailID)), std::string(CT2CA(m_edPassword)));
 }
 
@@ -133,29 +138,31 @@ void CAccountLoginDlg::OnBnClickedMfcbtnSignIn()
 	EndDialog((INT_PTR)KResponse::CREATE_USER);
 }
 
+void CAccountLoginDlg::OnBnClickedMfcbtnResetPw()
+{
+	EndDialog((INT_PTR)KResponse::RESET_PASSWORD);
+}
+
 LRESULT CAccountLoginDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 {
 	cout << "processUiControlNotify()/WPARAM:" << wParam << "/LPARAM:" << lParam << endl;
 	switch (wParam)
 	{
-	case MSG_RESPONSE_CONNECT:
-		if ( lParam == 0 ) {
-			cout << "SUCCESS" << endl;
-			MessageBox(_T("Connection Success"));
-		} else  {
-			cout << "FAILED" << endl;
-			MessageBox(_T("Connection FAILED"));
-		} 
-		break;
 	case MSG_RESPONSE_LOGIN:
+		GetDlgItem(IDC_MFCBTN_LOGIN)->EnableWindow(true);
 		if (lParam == 0) {
 			cout << "SUCCESS" << endl;
 			MessageBox(_T("Login Success"));
 			EndDialog((INT_PTR)KResponse::LOGIN_COMPLETE);
-		}
-		else {
+		} else if (lParam == 1) {
 			cout << "FAILED" << endl;
-			MessageBox(_T("Login FAILED"));
+			MessageBox(_T("Login Failed : ID not registered"));
+		} else if (lParam == 2) {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Login Failed : Wrong password"));
+		} else {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Login Failed"));
 		}
 		break;
 	default:

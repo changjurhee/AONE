@@ -124,7 +124,7 @@ protected :
 	vector<GstElement*> get_elements_list(element_type etype);
 	string getLinkedElements(GstElement* element);
 	SubElements connect_subElements(SubElements front, SubElements back);
-	string get_elements_name(element_type etype, int bin_index, int client_index);
+	string get_elements_name(element_type etype, int bin_index, int client_index, std::string suffix = "");
 	SubElements get_elements_by_name(GstBin* parent_bin, element_type etype, int bin_index, int client_index);
 	void enable_debugging(void);
 	string get_pipeline_info(int bin_index);

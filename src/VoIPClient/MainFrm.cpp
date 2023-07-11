@@ -27,6 +27,7 @@
 #define new DEBUG_NEW
 #endif
 #include "StartDlg.h"
+#include "UpdateUserAccountDlg.h"
 
 // CMainFrame
 
@@ -60,6 +61,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_OUT, &CMainFrame::OnUpdateUserLogOut)
 	ON_COMMAND(ID_SETTING_TEST, &CMainFrame::OnTestDlg)
 	ON_UPDATE_COMMAND_UI(ID_SETTING_TEST, &CMainFrame::OnUpdateTestDlg)
+	ON_COMMAND(ID_TEST_UPDATE_USER, &CMainFrame::OnResetPassword)
+	ON_UPDATE_COMMAND_UI(ID_TEST_UPDATE_USER, &CMainFrame::OnUpdateResetPassword)
 	ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
@@ -642,6 +645,18 @@ void CMainFrame::OnUpdateTestDlg(CCmdUI* pCmdUI)
 	pCmdUI->Enable(TRUE);
 }
 
+void CMainFrame::OnUpdateResetPassword(CCmdUI* pCmdUI)
+{
+	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)this->GetActiveDocument();
+	pCmdUI->Enable(pDoc->IsCurrentUser);
+}
+
+void CMainFrame::OnResetPassword()
+{
+	CResetPasswordDlg resetDlg;
+	resetDlg.DoModal();
+}
+
 void CMainFrame::Connect()
 {
 	CStartDlg startDlg;
@@ -667,6 +682,8 @@ void CMainFrame::UserLogIn()
 		// Go to main screen (finish modal status)
 	} else if ((KResponse)retValue == KResponse::CREATE_USER) {
 		UserSignIn();
+	} else if ((KResponse)retValue == KResponse::RESET_PASSWORD) {
+		ResetPassword();
 	}
 	else {
 		DestroyWindow();
@@ -682,6 +699,33 @@ void CMainFrame::UserSignIn()
 	} else if ((KResponse)retValue == KResponse::SIGNIN_CANCELED) {
 		UserLogIn();
 	}else {
+		DestroyWindow();
+	}
+}
+
+void CMainFrame::ResetPassword()
+{
+	CResetPasswordDlg resetPwDlg;
+	INT_PTR retValue = resetPwDlg.DoModal();
+	if ((KResponse)retValue == KResponse::RESET_PASSWORD_COMPLETE) {
+		UserLogIn();
+	} else if ((KResponse)retValue == KResponse::RESET_PASSWORD_CANCELED) {
+		UserLogIn();
+	} else {
+		DestroyWindow();
+	}
+}
+
+void CMainFrame::UpdateAccount()
+{
+	CUpdateUserAccountDlg updateDlg;
+	INT_PTR retValue = updateDlg.DoModal();
+	if ((KResponse)retValue == KResponse::UPDATE_USER_COMPLETE) {
+		// Do nothing (Go to mainframe screen)
+	}
+	else if ((KResponse)retValue == KResponse::UPDATE_USER_CANCELED) {
+		// Do nothing (Go to mainframe screen)
+	} else {
 		DestroyWindow();
 	}
 }

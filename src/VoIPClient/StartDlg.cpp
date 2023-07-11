@@ -107,6 +107,7 @@ void CStartDlg::OnBnClickedMfcbtnStart()
 	spUserInfo->server_ip_num = tstring(m_sIpAddressServer);
 	GetDocument()->SetUser(spUserInfo);
 
+	GetDlgItem(IDC_MFCBTN_START)->EnableWindow(false);
 	UiController::getInstance()->req_Connect(this, std::string(CT2CA(m_sIpAddressServer)));
 }
 
@@ -116,6 +117,7 @@ LRESULT CStartDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 	switch (wParam)
 	{
 	case MSG_RESPONSE_CONNECT:
+		GetDlgItem(IDC_MFCBTN_START)->EnableWindow(true);
 		if (lParam == 0) {
 			cout << "SUCCESS" << endl;
 			MessageBox(_T("Connection Success"));

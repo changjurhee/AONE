@@ -38,13 +38,14 @@ public:
 	void getAllContact();
 	void createConference(long time, long duration, std::list<std::string>& list);
 	void getAllConference(std::string cid);
+	void deleteConference(std::string rid);
 
 	// Communication with UI
 	std::list<ContactData> getMyContactList();
 	std::list<ContactData> searchContact(std::string key);
 	void deleteContact(std::string cid);
 	void addContact(std::string cid);
-	void updateMyContact(std::string cid, std::string email, std::string name);
+	void updateMyContact(std::string cid, std::string email, std::string name, std::string password);
 
 	// Listener (Recieve Msg)
 	void setSessionControl(SessionControl* control) override;
@@ -56,4 +57,5 @@ public:
 	void handleResetPassword(Json::Value data) override;	
 	void handleGetAllContact(Json::Value data) override;
 	void handleGetAllMyConference(Json::Value data) override;
+	void handleUpdateMyContact(Json::Value data) override;
 };

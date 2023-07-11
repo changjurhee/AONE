@@ -12,6 +12,7 @@ ClientMediaManager::ClientMediaManager(int max_pipeline) : MediaManager(max_pipe
 	audio_src_pipe_mode_list_.push_back(PipeMode(MODE_UDP_1, MODE_DEVICE));
 
 	sessionCallback_ = nullptr;
+	vad_on_ = false;
 	gst_init(NULL, NULL);
 };
 
@@ -102,6 +103,8 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 		pipeline->request_add_client(&contact_info_list[0]);
 		pipeline->makePipeline(contact_info_list, *operate_info, NULL);
 	}
+
+	vad_.Initialize(48000, 1, 16);
 }
 
 void ClientMediaManager::setViewHandler(handleptr view_handler)
@@ -112,6 +115,13 @@ void ClientMediaManager::setViewHandler(handleptr view_handler)
 void ClientMediaManager::endCall(Json::Value client_join_info) {
 	LOG_INFO("In");
 	return MediaManager::end_call_with_rid(DEFAULT_CLIENT_RID);
+}
+
+bool ClientMediaManager::OnAudioBuffer(const AudioBuffer& buffer, size_t frames_per_buffer) {
+	if (vad_on_)
+		return vad_.OnData(buffer, frames_per_buffer);
+	else
+		return true;
 }
 
 } // namespace media

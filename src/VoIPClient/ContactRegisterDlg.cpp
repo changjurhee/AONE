@@ -70,22 +70,23 @@ void CContactRegisterDlg::OnBnClickedMfcbtnSearch()
 	UpdateData(TRUE);
 
 	auto result_list = UiController::getInstance()->get_SearchResult(std::string(CT2CA(m_sSearchName)));
+	
+	if (!result_list.empty()) {
+		m_ltContactNames.DeleteAllItems();
 
-	m_ltContactNames.DeleteAllItems();
+		int itemIndex = 0;
 
-	for (ContactData p : result_list) {
-		tstring tmp_cid, tmp_email, tmp_name;
-
-		int num = m_ltContactNames.GetItemCount();
-
-		tmp_cid.assign(p.cid.begin(), p.cid.end());
-		tmp_email.assign(p.email.begin(), p.email.end());
-		tmp_name.assign(p.name.begin(), p.name.end());
-
-		m_ltContactNames.InsertItem(num, tmp_cid.data());
-		m_ltContactNames.SetItem(num, 1, LVIF_TEXT, tmp_email.data(), NULL, NULL, NULL, NULL);
-		m_ltContactNames.SetItem(num, 2, LVIF_TEXT, tmp_name.data(), NULL, NULL, NULL, NULL);
+		m_ltContactNames.LockWindowUpdate();
+		for (ContactData p : result_list) {
+			int num = m_ltContactNames.InsertItem(itemIndex, CString(p.cid.c_str()));
+			m_ltContactNames.SetItemText(num, 1, CString(p.email.c_str()));
+			m_ltContactNames.SetItemText(num, 2, CString(p.name.c_str()));
+			itemIndex++;
+		}
+		m_ltContactNames.UnlockWindowUpdate();
 	}
+
+	UpdateData(FALSE);
 }
 
 LRESULT CContactRegisterDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
