@@ -144,10 +144,8 @@ string AccountManager::handleLogin(Json::Value data, string ipAddress, string fr
 	*/
 	sessionControl->sendData(102, payload, from);
 	if (result == true) {
-	    handleGetAllContact(from);
 		Json::Value data;
 		data["cid"] = cid;
-		handleGetAllConference(data, from);
 		return cid;
 	} else {
 		return "";
@@ -293,24 +291,15 @@ void AccountManager::handleGetAllContact( string from)
 	} else {
 		std::cout << "handleGetAllContact()FAILED/Contact Empty[" << from << "]" << std::endl;
 	}
-	sessionControl->sendData(106, payload, from);
+	sessionControl->sendData(106, payload); // Send update contact data to all
 }
 
 void AccountManager::handleGetAllConference(Json::Value data, string from)
 {
 	string cid = data["cid"].asString();
-	Json::Value payload;
 	Json::Value allConferences = conferenceDb->get();
-	for (int i = 0; i < allConferences.size(); i++) {		
-		for (int j = 0; j < allConferences[i]["participants"].size(); j++) {
-			if (allConferences[i]["participants"][j].asString().compare(cid) == 0) {
-				payload.append(allConferences[i]);
-				break;
-			}
-		}
-	}
 	std::cout << "handleGetAllConference()[" << cid << "]OK/from[" << from << "]" << std::endl;	
-	sessionControl->sendData(205, payload, from);
+	sessionControl->sendData(205, allConferences); // Send updated conference data to all
 }
 
 void AccountManager::handleDeleteConference(Json::Value data, std::string from)

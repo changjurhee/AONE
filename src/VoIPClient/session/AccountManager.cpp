@@ -342,6 +342,9 @@ void AccountManager::handleLogin(Json::Value msg) {
 	if (uiControl != NULL) {
 		uiControl->notify(MSG_RESPONSE_LOGIN, result);
 	}
+	// Request contact data and conference data
+	getAllContact();
+	getAllConference(cid);
 }
 
 void AccountManager::handleConnect(int result)

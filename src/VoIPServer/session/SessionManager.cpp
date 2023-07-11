@@ -302,3 +302,10 @@ void SessionManager::sendData(int msgId, Json::Value payload, std::string to) {
 	const char* data = jsonString.c_str();
 	send(clientMap[to], data, strlen(data), 0);
 }
+
+void SessionManager::sendData(int msgId, Json::Value payload ) {
+	for (const auto& client : clientMap) {
+		sendData(msgId, payload, client.first);
+		std::cout << "sendData[" << msgId << +"]/to[" + client.first + "]payload" << payload << std::endl;
+	}
+}
