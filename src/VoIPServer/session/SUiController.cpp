@@ -12,7 +12,9 @@ SUiController::SUiController()
 	telephonyManager = TelephonyManager::getInstance();
 	
 	conferenceDb = ConferenceDb::getInstance();
+	conferenceDb->setUiControl(this);
 	contactDb = ContactDb::getInstance();
+	contactDb->setUiControl(this);
 
 	accountManager->setUiControl(this);
 	telephonyManager->setUiControl(this);
@@ -74,6 +76,10 @@ list<ContactData> SUiController::get_AllContacts()
 		contact.cid = item["cid"].asString();
 		contact.email = item["email"].asString();
 		contact.name = item["name"].asString();
+		contact.enabled = true;
+		if (!item["enable"].empty()) {
+			contact.enabled = item["enable"].asBool();
+		}
 		contactDataList.push_back(contact);
 	}
 	return contactDataList;
@@ -100,13 +106,11 @@ void SUiController::req_enableContact(CWnd *wnd, string cid, bool enable)
 {
 	setCallbackWnd(wnd);
 	contactDb->setEnable(cid, enable);
-	postMessage(MSG_RESPONSE_UPDATE_DATA, 0);
 }
 
 void SUiController::req_deleteContact(CWnd* wnd, string cid)
 {
 	setCallbackWnd(wnd);
 	contactDb->remove(cid);
-	postMessage(MSG_RESPONSE_UPDATE_DATA, 0);
 }
 

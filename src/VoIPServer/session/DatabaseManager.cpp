@@ -19,6 +19,11 @@ DatabaseManager::DatabaseManager(string databaseName)
 	}
 }
 
+void DatabaseManager::setUiControl(ISUiController* control)
+{
+	uiControl = control;
+}
+
 void DatabaseManager::printDatabase()
 {
 	Json::Value root = readFromFile();
@@ -70,6 +75,16 @@ bool DatabaseManager::writeToFile(const Json::Value jsonData)
 	}
 	size_t fileSize = fwrite(outputConfig.c_str(), 1, outputConfig.length(), fp);
 	fclose(fp);
+
+	if (uiControl != NULL) {
+		if (dbName == DB_CONFERENCE) {
+			uiControl->notify(MSG_RESPONSE_UPDATE_DATA_CONFERENCE, 0);
+		}
+		else if (dbName == DB_CONTACT) {
+			uiControl->notify(MSG_RESPONSE_UPDATE_DATA_CONTACT, 0);
+		}
+	}
+
 	return true;
 }
 
