@@ -231,9 +231,6 @@
     <ClInclude Include="..\common\debug.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="CommandLineInterface.h">
-      <Filter>Session</Filter>
-    </ClInclude>
     <ClInclude Include="..\media\pipeline_monitorable.h">
       <Filter>media</Filter>
     </ClInclude>
@@ -269,6 +266,9 @@
     </ClInclude>
     <ClInclude Include="UpdateUserAccountDlg.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="session\UiController.h">
+      <Filter>Session</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

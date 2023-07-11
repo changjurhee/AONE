@@ -245,6 +245,7 @@
     <ClInclude Include="session\IUiController.h" />
     <ClInclude Include="session\SessionControl.h" />
     <ClInclude Include="session\SessionManager.h" />
+    <ClInclude Include="session\UiController.h" />
     <ClInclude Include="StartDlg.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TestCallDlg.h" />
