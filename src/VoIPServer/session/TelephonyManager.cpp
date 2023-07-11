@@ -177,9 +177,15 @@ void TelephonyManager::manageConferenceLifetime(std::string connId) {
 	std::chrono::system_clock::time_point startTime = std::chrono::system_clock::time_point(std::chrono::seconds(conn.getConferenceStartTime()));
 	std::chrono::seconds duration(conn.getDuration());
 
-	std::cout << displayConn << "startTime: " << timePrint(startTime) << std::endl;
+	std::cout << displayConn << "Created!!! will startTime: " << timePrint(startTime) << std::endl;
+
+	bool silentDestroyed = false;
 
 	while (true) {
+		if (connectionMap.count(connId) == 0) {
+			silentDestroyed = true;
+			break;
+		}
 		std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
 		std::cout << displayConn << "Alive(" << timePrint(now) << ")" << std::endl;
 
@@ -193,7 +199,9 @@ void TelephonyManager::manageConferenceLifetime(std::string connId) {
 		}
 	}
 	std::cout << displayConn << "connection Closed" << endl;
-	removeConference(connId);
+	if (!silentDestroyed) {
+		removeConference(connId);
+	}
 }
 
 void TelephonyManager::logConnections()
@@ -404,6 +412,11 @@ void TelephonyManager::removeConference(std::string connId) {
 	connectionMap.erase(connId);
 	std::cout << "removeConference()/connId[" << connId << "]" << std::endl;
 	logConnections();
+}
+
+void TelephonyManager::removeConferenceSilent(Json::Value data) {
+	std::string connId = data["rid"].asString();
+	connectionMap.erase(connId);
 }
 
 void TelephonyManager::handleJoinConference(Json::Value data) {

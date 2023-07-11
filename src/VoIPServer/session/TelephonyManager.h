@@ -55,6 +55,7 @@ public:
 	void handleDisconnect(Json::Value data) override;
 	void releaseConnection(std::string cid) override;
 	void handleCreateConference(Json::Value data) override;
+	void removeConferenceSilent(Json::Value data) override;
 	void handleJoinConference(Json::Value data) override;
 	void handleExitConference(Json::Value data) override;
 	void handleRequestVideoQualityChange(Json::Value data) override;
