@@ -11,6 +11,9 @@
 #define MSG_RESPONSE_DATA			1006 // Update contacts & conferences
 #define MSG_RESPONSE_CALLSTATE		1007 // Call and conference status
 
+#define MSG_RESPONSE_DELETE_CONF	1008 // Delete conference
+#define MSG_RESPONSE_JOIN_CONF		1009 // Join conference
+
 typedef struct CallResult {
 	std::string callerId;
 	int result = 0;
