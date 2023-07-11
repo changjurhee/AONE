@@ -30,14 +30,17 @@ protected:
 public:
 	virtual void OnInitialUpdate();
 	CListCtrl m_ltContactNames;
+	CListCtrl m_ltConferenceNames;
 	INT m_ltIndex;
 	afx_msg void OnNMClickLtContact(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnBnClickedMfcbtnSearch();
 	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedMfcbtnChangeState();
 	afx_msg void OnBnClickedMfcbtnDelete();
 	afx_msg void OnBnClickedMfcbtnChangeDisable();
-	void UpdateView();
+	void UpdateContactView();
+	void UpdateConferenceView();
+	afx_msg void OnBnClickedMfcbtnRefreshContact();
+	afx_msg void OnBnClickedMfcbtnRefreshConf();
 };
 
 

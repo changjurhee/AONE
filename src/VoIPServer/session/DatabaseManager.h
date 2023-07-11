@@ -1,5 +1,7 @@
 
 #include "../../json/json.h"
+#include "ISUiController.h"
+
 using namespace std;
 
 #pragma once
@@ -15,10 +17,13 @@ private:
 	// Internel methods	
 	string dbName;
 	string dbUid;
+	ISUiController* uiControl;
 	Json::Value readFromFile();
 	bool writeToFile(const Json::Value jsonData);
 public:	
 	DatabaseManager(string databaseName); // Constructor	
+	void setUiControl(ISUiController* control);
+
 	//-----------------------------------------
 	// Database operations
 	string search(string key, string word); 
