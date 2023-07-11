@@ -214,6 +214,7 @@ BOOL CVoIPClientApp::InitInstance()
 
 	// Start connecting to server
 	((CMainFrame*)AfxGetMainWnd())->Connect();
+
 #if 0
 	// TODO : test code 제거 및 모듈 초기화 코드 위치 확인
 	ClientMediaManager test = ClientMediaManager(1);
@@ -228,6 +229,11 @@ BOOL CVoIPClientApp::InitInstance()
 	test.startCall(contact_info, operate_info);
 #endif
 
+#if 0 // 지웅님 아래 내용 참고 하세요. 
+	ServerMediaManager* test = ServerMediaManager::getInstance();
+	CVoIPClientView* pView = (CVoIPClientView*)((CMainFrame*)AfxGetMainWnd())->GetActiveView();
+	test->setViewHandler((handleptr)pView->GetBitmapHandle());
+#endif
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
