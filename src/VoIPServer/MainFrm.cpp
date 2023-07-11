@@ -113,20 +113,20 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	DockPane(&m_wndToolBar);
 
 
-	// Visual Studio 2005 스타일 도킹 창 동작을 활성화합니다.
-	CDockingManager::SetDockingMode(DT_SMART);
-	// Visual Studio 2005 스타일 도킹 창 자동 숨김 동작을 활성화합니다.
-	EnableAutoHidePanes(CBRS_ALIGN_ANY);
+	//// Visual Studio 2005 스타일 도킹 창 동작을 활성화합니다.
+	//CDockingManager::SetDockingMode(DT_SMART);
+	//// Visual Studio 2005 스타일 도킹 창 자동 숨김 동작을 활성화합니다.
+	//EnableAutoHidePanes(CBRS_ALIGN_ANY);
 
-	// 탐색 창이 왼쪽에 만들어지므로 일시적으로 왼쪽에 도킹을 비활성화합니다.
-	EnableDocking(CBRS_ALIGN_TOP | CBRS_ALIGN_BOTTOM | CBRS_ALIGN_RIGHT);
+	//// 탐색 창이 왼쪽에 만들어지므로 일시적으로 왼쪽에 도킹을 비활성화합니다.
+	//EnableDocking(CBRS_ALIGN_TOP | CBRS_ALIGN_BOTTOM | CBRS_ALIGN_RIGHT);
 
-	// "Outlook" 탐색 모음을 만들고 설치합니다.
-	if (!CreateOutlookBar(m_wndNavigationBar, ID_VIEW_NAVIGATION, m_wndTree, m_wndCalendar, 250))
-	{
-		TRACE0("탐색 창을 만들지 못했습니다.\n");
-		return -1;      // 만들지 못했습니다.
-	}
+	//// "Outlook" 탐색 모음을 만들고 설치합니다.
+	//if (!CreateOutlookBar(m_wndNavigationBar, ID_VIEW_NAVIGATION, m_wndTree, m_wndCalendar, 250))
+	//{
+	//	TRACE0("탐색 창을 만들지 못했습니다.\n");
+	//	return -1;      // 만들지 못했습니다.
+	//}
 
 	// 캡션 표시줄을 만듭니다.
 	if (!CreateCaptionBar())
@@ -135,47 +135,47 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // 만들지 못했습니다.
 	}
 
-	// Outlook 표시줄이 만들어지고 왼쪽에 도킹할 수 있도록 허용해야 합니다.
-	EnableDocking(CBRS_ALIGN_LEFT);
-	EnableAutoHidePanes(CBRS_ALIGN_RIGHT);
+	//// Outlook 표시줄이 만들어지고 왼쪽에 도킹할 수 있도록 허용해야 합니다.
+	//EnableDocking(CBRS_ALIGN_LEFT);
+	//EnableAutoHidePanes(CBRS_ALIGN_RIGHT);
 
-	// 메뉴 항목 이미지를 로드합니다(표준 도구 모음에 없음).
-	CMFCToolBar::AddToolBarForImageCollection(IDR_MENU_IMAGES, theApp.m_bHiColorIcons ? IDB_MENU_IMAGES_24 : 0);
+	//// 메뉴 항목 이미지를 로드합니다(표준 도구 모음에 없음).
+	//CMFCToolBar::AddToolBarForImageCollection(IDR_MENU_IMAGES, theApp.m_bHiColorIcons ? IDB_MENU_IMAGES_24 : 0);
 
-	// 도킹 창을 만듭니다.
-	if (!CreateDockingWindows())
-	{
-		TRACE0("도킹 창을 만들지 못했습니다.\n");
-		return -1;
-	}
+	//// 도킹 창을 만듭니다.
+	//if (!CreateDockingWindows())
+	//{
+	//	TRACE0("도킹 창을 만들지 못했습니다.\n");
+	//	return -1;
+	//}
 
-	m_wndFileView.EnableDocking(CBRS_ALIGN_ANY);
-	m_wndClassView.EnableDocking(CBRS_ALIGN_ANY);
-	DockPane(&m_wndFileView);
-	CDockablePane* pTabbedBar = nullptr;
-	m_wndClassView.AttachToTabWnd(&m_wndFileView, DM_SHOW, TRUE, &pTabbedBar);
-	m_wndOutput.EnableDocking(CBRS_ALIGN_ANY);
-	DockPane(&m_wndOutput);
-	m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
-	DockPane(&m_wndProperties);
+	//m_wndFileView.EnableDocking(CBRS_ALIGN_ANY);
+	//m_wndClassView.EnableDocking(CBRS_ALIGN_ANY);
+	//DockPane(&m_wndFileView);
+	//CDockablePane* pTabbedBar = nullptr;
+	//m_wndClassView.AttachToTabWnd(&m_wndFileView, DM_SHOW, TRUE, &pTabbedBar);
+	//m_wndOutput.EnableDocking(CBRS_ALIGN_ANY);
+	//DockPane(&m_wndOutput);
+	//m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
+	//DockPane(&m_wndProperties);
 
-	// 보관된 값에 따라 비주얼 관리자 및 스타일을 설정합니다.
-	OnApplicationLook(theApp.m_nAppLook);
+	//// 보관된 값에 따라 비주얼 관리자 및 스타일을 설정합니다.
+	//OnApplicationLook(theApp.m_nAppLook);
 
-	// 도구 모음 및 도킹 창 메뉴 바꾸기를 활성화합니다.
-	EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, strCustomize, ID_VIEW_TOOLBAR);
+	//// 도구 모음 및 도킹 창 메뉴 바꾸기를 활성화합니다.
+	//EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, strCustomize, ID_VIEW_TOOLBAR);
 
-	// 빠른(<Alt> 키를 누른 채 끌기) 도구 모음 사용자 지정을 활성화합니다.
-	CMFCToolBar::EnableQuickCustomization();
+	//// 빠른(<Alt> 키를 누른 채 끌기) 도구 모음 사용자 지정을 활성화합니다.
+	//CMFCToolBar::EnableQuickCustomization();
 
-	if (CMFCToolBar::GetUserImages() == nullptr)
-	{
-		// 사용자 정의 도구 모음 이미지를 로드합니다.
-		if (m_UserImages.Load(_T(".\\UserImages.bmp")))
-		{
-			CMFCToolBar::SetUserImages(&m_UserImages);
-		}
-	}
+	//if (CMFCToolBar::GetUserImages() == nullptr)
+	//{
+	//	// 사용자 정의 도구 모음 이미지를 로드합니다.
+	//	if (m_UserImages.Load(_T(".\\UserImages.bmp")))
+	//	{
+	//		CMFCToolBar::SetUserImages(&m_UserImages);
+	//	}
+	//}
 
 	// 메뉴 개인 설정을 활성화합니다(가장 최근에 사용한 명령).
 	// TODO: 사용자의 기본 명령을 정의하여 각 풀다운 메뉴에 하나 이상의 기본 명령을 포함시킵니다.
@@ -192,7 +192,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_APP_ABOUT);
 	lstBasicCommands.AddTail(ID_VIEW_STATUS_BAR);
 	lstBasicCommands.AddTail(ID_VIEW_TOOLBAR);
-	lstBasicCommands.AddTail(ID_VIEW_APPLOOK_OFF_2003);
+	/*lstBasicCommands.AddTail(ID_VIEW_APPLOOK_OFF_2003);
 	lstBasicCommands.AddTail(ID_VIEW_APPLOOK_VS_2005);
 	lstBasicCommands.AddTail(ID_VIEW_APPLOOK_OFF_2007_BLUE);
 	lstBasicCommands.AddTail(ID_VIEW_APPLOOK_OFF_2007_SILVER);
@@ -202,7 +202,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_SORTING_SORTALPHABETIC);
 	lstBasicCommands.AddTail(ID_SORTING_SORTBYTYPE);
 	lstBasicCommands.AddTail(ID_SORTING_SORTBYACCESS);
-	lstBasicCommands.AddTail(ID_SORTING_GROUPBYTYPE);
+	lstBasicCommands.AddTail(ID_SORTING_GROUPBYTYPE);*/
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
 
