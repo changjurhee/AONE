@@ -216,6 +216,11 @@ void TelephonyManager::setSessionControl(SessionControl* control) {
 	sessionControl = control;
 }
 
+void TelephonyManager::setUiControl(ISUiController* control)
+{
+	uiControl = control;
+}
+
 void TelephonyManager::handleOutgoingCall(Json::Value data) {
 	if (sessionControl == nullptr) {
 		std::cerr << "Not register sessionControl" << std::endl;

@@ -37,6 +37,11 @@ void AccountManager::setSessionControl(SessionControl* control) {
 	sessionControl = control;
 }
 
+void AccountManager::setUiControl(ISUiController* control)
+{
+	uiControl = control;
+}
+
 void AccountManager::handleRegisterContact(Json::Value data, string from)
 {	
 	Json::Value payload;
@@ -98,7 +103,12 @@ string AccountManager::handleLogin(Json::Value data, string ipAddress, string fr
 		// Contact id exists in database
 		// Check password
 		string storedPassword = contactDb->get(cid, "password").asString();
-		if (data["password"] == storedPassword) {
+		Json::Value enabled = contactDb->get(cid, "enable");
+		if ( enabled != NULL && enabled == false ) {
+			// ID Disabled by admin
+			payload["result"] = 3; // Fail 
+			cout << "handleLogin()[" << cid << "]FAIL/ID Disabled by Administrator/From[" << from << "]" << endl;
+		} else if (data["password"] == storedPassword) {
 			if (contactDb->get(cid, "login") == true) {
 				// TODO : Do we have to check already logged in state?
 			}
@@ -183,7 +193,6 @@ void AccountManager::handleUpdateMyContactList(Json::Value data, string from)
 		}		
 		if (contactDb->update(cid, "myContactList", updateMyContactList)) {
 			std::cout << "handleUpdateMyContactList()[" << cid << "]OK" << std::endl;
-			handleGetAllContact(from);
 		} else {
 			std::cout << "handleUpdateMyContactList()[" << cid << "]FAILED/Unknown" << std::endl;
 		}
@@ -191,6 +200,7 @@ void AccountManager::handleUpdateMyContactList(Json::Value data, string from)
 	else {
 		std::cout << "handleUpdateMyContactList()[" << cid << "]FAIL/Wrong Payload" << std::endl;
 	}	
+	handleGetAllContact(from);
 }
 
 void AccountManager::handleResetPassword(Json::Value data, string from)
@@ -272,7 +282,6 @@ void AccountManager::handleGetAllContact( string from)
 	Json::Value payload;
 	Json::Value allContacts = contactDb->get();
 	if (!allContacts.empty()) {
-		payload = allContacts;
 		for (int i = 0; i < allContacts.size(); i++) {
 			payload[i]["cid"] = allContacts[i]["cid"];
 			payload[i]["email"] = allContacts[i]["email"];
