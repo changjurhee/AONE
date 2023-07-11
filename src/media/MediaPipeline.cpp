@@ -704,6 +704,10 @@ void MediaPipeline::request_add_client(ContactInfo* client_info)
 
 void MediaPipeline::add_client(ContactInfo* client_info)
 {
+	string cid = client_info->cid;
+	if (client_id_list_.find(cid) != client_id_list_.end())
+		return;
+
 	int client_index = get_client_index(client_info, true);
 	if (client_index < 0) return;
 
@@ -740,6 +744,7 @@ void MediaPipeline::request_remove_client(ContactInfo* client_info)
 
 void MediaPipeline::remove_client(ContactInfo * client_info)
 {
+#if 0
 	GstState cur_state;
 	gst_element_get_state(GST_ELEMENT(pipeline), &cur_state, NULL, 0);
 	int client_index = get_client_index(client_info, false);
@@ -767,6 +772,12 @@ void MediaPipeline::remove_client(ContactInfo * client_info)
 	}
 	LOG_OBJ_INFO() << get_pipeline_info(0) << " Get pipeline view (remove Client)" << endl;
 	logPipelineElements(pipeline, 0);
+#else
+	int client_index = get_client_index(client_info, false);
+	if (client_index < 0) return;
+	disable_client_index(client_info);
+	LOG_OBJ_INFO() << get_pipeline_info(0) << " CID : " << client_info->cid << ", client_id : " << client_index << endl;
+#endif
 }
 
 void MediaPipeline::requestSetVideoQuality(VideoQualityInfo* vq_info)
