@@ -45,7 +45,7 @@ void AccountManager::setUiControl(ISUiController* control)
 void AccountManager::handleRegisterContact(Json::Value data, string from)
 {	
 	Json::Value payload;
-	if (data["name"] == "" || data["password"] == "" || data["passwordAnswer"] == "") {
+	if (data["name"] == "" || data["password"] == "" || data["passwordAnswer"] == "" || data["email"] == "") {
 		// Mandatory items are missing
 		payload["result"] = 2; // Failed
 		payload["reason"] = "Mandatory items are missing";
