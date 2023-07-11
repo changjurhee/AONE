@@ -101,7 +101,7 @@ SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, 
 	GstElement* element = gst_element_factory_make("d3dvideosink", name.c_str());
 
 	// Set video sink
-	g_object_set(G_OBJECT(element), "force-aspect-ratio", TRUE, "sync", FALSE, NULL);
+	g_object_set(G_OBJECT(element), "force-aspect-ratio", TRUE, "sync", TRUE, NULL);
 
 	//GST_VIDEO_OVERLAY(element);
 	gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(element), (guintptr) view_handler_);
