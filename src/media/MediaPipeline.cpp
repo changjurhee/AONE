@@ -67,6 +67,9 @@ string MediaPipeline::get_elements_name(element_type etype, int bin_index, int c
 		case TYPE_DECODING:
 			name = "decoding_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
+		case TYPE_DECODING_PARSE:
+			name = "decoding_parse" + std::to_string(bin_index) + "_" + std::to_string(client_index);
+			break;
 		case TYPE_DECODING_RTP:
 			name = "decoding_rtp_" + std::to_string(bin_index) + "_" + std::to_string(client_index);
 			break;
