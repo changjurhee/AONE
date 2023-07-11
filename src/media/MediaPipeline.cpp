@@ -164,7 +164,7 @@ SubElements MediaPipeline::pipeline_make_udp_sink_with_port(GstBin* parent_bin, 
 	std::string host = contact_info_list_[client_index].dest_ip;
 
 	g_printerr(("host " + host + " port : " + std::to_string(port)+"\n").c_str());
-	g_object_set(element, "host", host.c_str(), "port", port, "sync", FALSE, "processing-deadline", 0, NULL);
+	g_object_set(element, "host", host.c_str(), "port", port, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
 
 	return SubElements(element, element);
@@ -315,13 +315,13 @@ void MediaPipeline::pipeline_run() {
 	start_pipeline_ = true;
 	// Pipeline execution
 	LOG_INFO("Setting pipeline to PLAYING");
-    GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
-    if (ret == GST_STATE_CHANGE_FAILURE)
-    {
-        g_printerr("Sender : Unable to start the pipeline.\n");
-        gst_object_unref(pipeline);
-        return;
-    }
+    //GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
+    //if (ret == GST_STATE_CHANGE_FAILURE)
+    //{
+    //    g_printerr("Sender : Unable to start the pipeline.\n");
+    //    gst_object_unref(pipeline);
+    //    return;
+    //}
 
 	logPipelineElements(pipeline, 0);
 	enable_debugging();
