@@ -804,6 +804,7 @@ void SetForegroundWindowForce(HWND hWnd)
 	}
 	::SetForegroundWindow(hWnd);
 	::BringWindowToTop(hWnd);
+	::ShowWindow(hWnd, SW_RESTORE);
 	if (!::AttachThreadInput(Strange, My, FALSE))
 	{
 		ASSERT(0);
