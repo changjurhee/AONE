@@ -654,7 +654,8 @@ void CMainFrame::OnUpdateResetPassword(CCmdUI* pCmdUI)
 
 void CMainFrame::OnResetPassword()
 {
-	CResetPasswordDlg resetDlg;
+	//CResetPasswordDlg resetDlg;
+	CUpdateUserAccountDlg resetDlg;
 	resetDlg.DoModal();
 }
 
