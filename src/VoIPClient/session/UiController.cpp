@@ -181,3 +181,9 @@ void UiController::request_ExitConference(CWnd* wnd)
 	callsManager->exitConference();
 }
 
+void UiController::request_deleteConference(CWnd* wnd, string rid)
+{
+	setCallbackWnd(wnd);
+	accountManager->deleteConference(rid);
+}
+

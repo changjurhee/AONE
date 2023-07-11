@@ -187,7 +187,9 @@ void AccountManager::createConference(long dateAndTime, long duration, std::list
 	payload["participants"][0] = myCid;
 	int index = 1;
 	for (const auto& element : participants) {
-		payload["participants"][index++] = element;
+		if (element != myCid) {
+			payload["participants"][index++] = element;
+		}
 	}
 	Json::Value root;
 	root["msgId"] = 206;
@@ -203,6 +205,19 @@ void AccountManager::getAllConference(std::string cid)
 	Json::Value payload;
 	payload["cid"] = cid;
 	root["msgId"] = 205;
+	root["payload"] = payload;
+	Json::StreamWriterBuilder writerBuilder;
+	std::string jsonString = Json::writeString(writerBuilder, root);
+	sessionControl->sendData(jsonString.c_str());
+}
+
+void AccountManager::deleteConference(std::string rid)
+{
+	Json::Value root;
+	Json::Value payload;
+	payload["cid"] = myCid;
+	payload["rid"] = rid;
+	root["msgId"] = 207;
 	root["payload"] = payload;
 	Json::StreamWriterBuilder writerBuilder;
 	std::string jsonString = Json::writeString(writerBuilder, root);

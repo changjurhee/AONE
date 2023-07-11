@@ -304,3 +304,35 @@ void AccountManager::handleGetAllConference(Json::Value data, string from)
 	sessionControl->sendData(205, payload, from);
 }
 
+void AccountManager::handleDeleteConference(Json::Value data, std::string from)
+{
+	bool result = false;
+	Json::Value payload;
+	string cid = data["cid"].asString();
+	string rid = data["rid"].asString();
+	if (cid != "" && rid != "") {
+		Json::Value dbData = conferenceDb->get(rid);
+		if (dbData == NULL) {
+			std::cout << "handleDeleteConference()[" << cid << "]FAILED/No RID exists/from[" << from << "]" << std::endl;
+			payload["result"] = 1;
+		} else if (dbData["host"] != cid) {
+			std::cout << "handleDeleteConference()[" << cid << "]FAILED/Only host can delete/from[" << from << "]" << std::endl;
+			payload["result"] = 2;
+		} else {			
+			conferenceDb->remove(rid);
+			std::cout << "handleDeleteConference()[" << cid << "]OK/from[" << from << "]" << std::endl;
+			payload["result"] = 0;
+			result = true;
+		}
+	}
+	else {
+		payload["result"] = 3;
+		std::cout << "handleDeleteConference()[" << cid << "]FAILED/Invalid request/from[" << from << "]" << std::endl;
+	}	
+	sessionControl->sendData(207, payload, from); // Send feedback
+
+	Json::Value getMyConference;
+	getMyConference["cid"] = cid;
+	handleGetAllConference(getMyConference, from);
+}
+

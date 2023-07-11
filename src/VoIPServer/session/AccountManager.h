@@ -36,4 +36,5 @@ public:
 	void handleCreateConference(Json::Value data, string from) override;
 	void handleGetAllContact(string from) override;
 	void handleGetAllConference(Json::Value data, string from) override;
+	void handleDeleteConference(Json::Value data, std::string from) override;
 };

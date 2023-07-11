@@ -343,6 +343,11 @@ void TelephonyManager::handleCreateConference(Json::Value data) {
 	postConferenceCreated(connId, data["myIp"].asString());
 
 	logConnections();
+
+	Json::Value payload;
+	payload["result"] = 0;
+	payload["rid"] = connId;
+	sessionControl->sendData(206, payload, data["host"].asString()); // Send feedback
 }
 
 void TelephonyManager::postConferenceCreated(std::string connId, std::string myIp) {
@@ -365,6 +370,7 @@ void TelephonyManager::removeConference(std::string connId) {
 
 	Connection conn = connectionMap[connId];
 	Json::Value payload;
+	payload["result"] = 0;
 	payload["rid"] = connId;
 	for (const auto& cid : conn.getConferenceList()) {
 		sessionControl->sendData(207, payload, cid);
