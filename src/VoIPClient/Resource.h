@@ -209,6 +209,7 @@
 #define IDC_ED_ACCOUNT_ID               1038
 #define ID_MFCBTN_RESET                 1039
 #define IDC_MFCBTN_UPDATE_CONTACT       1040
+#define IDC_ST_MSG                      1041
 #define ID_TEST_32771                   32771
 #define ID_TEST_32772                   32772
 #define ID_TEST_LOG_IN                  32773
@@ -228,7 +229,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        371
 #define _APS_NEXT_COMMAND_VALUE         32781
-#define _APS_NEXT_CONTROL_VALUE         1041
+#define _APS_NEXT_CONTROL_VALUE         1042
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
