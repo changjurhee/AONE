@@ -157,6 +157,48 @@ SubElements MediaPipeline::pipeline_make_tee(GstBin* parent_bin, int bin_index, 
 	return SubElements(element, element);
 };
 
+SubElements MediaPipeline::pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) {
+
+	std::string nameEnc = get_elements_name(TYPE_SRTPENC, bin_index, client_index);
+	GstElement* VideoSRTPEnc = gst_element_factory_make("srtpenc", nameEnc.c_str());
+
+	std::string nameEncCaps = get_elements_name(TYPE_SRTPENC_CAPS, bin_index, client_index);
+	GstElement* videoSRTPEncCapsfilter = gst_element_factory_make("capsfilter", nameEncCaps.c_str());
+
+	// Set the SRTP encryption key for video
+	static guint8 data[30];
+	memset(data, 0, sizeof(data));
+	guint size = sizeof(data);
+	GstBuffer* keyBuffer = gst_buffer_new_wrapped(data, size);
+
+	g_object_set(VideoSRTPEnc, "key", keyBuffer, NULL);
+	g_object_set(VideoSRTPEnc, "rtp-auth", 2, NULL);
+	g_object_set(VideoSRTPEnc, "rtp-cipher", 1, NULL);
+	g_object_set(VideoSRTPEnc, "rtcp-auth", 2, NULL);
+	g_object_set(VideoSRTPEnc, "rtcp-cipher", 1, NULL);
+
+	// Set RTP for video
+	GstCaps* videoEncCaps = gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
+	g_object_set(videoSRTPEncCapsfilter, "caps", videoEncCaps, NULL);
+	gst_caps_unref(videoEncCaps);
+
+
+	gst_bin_add(GST_BIN(parent_bin), VideoSRTPEnc);
+	gst_bin_add(GST_BIN(parent_bin), videoSRTPEncCapsfilter);
+
+	gst_element_link(VideoSRTPEnc, videoSRTPEncCapsfilter);
+
+	return SubElements(VideoSRTPEnc, videoSRTPEncCapsfilter);
+}
+
+SubElements MediaPipeline::pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) {
+	GstElement* VideoSRTPDec = gst_element_factory_make("srtpdec", "videoDecrypt");
+
+	gst_bin_add(GST_BIN(parent_bin), VideoSRTPDec);
+
+	return SubElements(VideoSRTPDec, VideoSRTPDec);
+}
+
 SubElements MediaPipeline::pipeline_make_udp_sink_with_port(GstBin* parent_bin, int bin_index, int client_index, int port) {
 	std::string name = get_elements_name(TYPE_UDP_SINK, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("udpsink", name.c_str());
@@ -164,7 +206,7 @@ SubElements MediaPipeline::pipeline_make_udp_sink_with_port(GstBin* parent_bin, 
 	std::string host = contact_info_list_[client_index].dest_ip;
 
 	g_printerr(("host " + host + " port : " + std::to_string(port)+"\n").c_str());
-	g_object_set(element, "host", host.c_str(), "port", port, NULL);
+	g_object_set(element, "host", host.c_str(), "port", port, "sync", FALSE, "processing-deadline", 0, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
 
 	return SubElements(element, element);
@@ -279,7 +321,8 @@ void MediaPipeline::enable_debugging(void)
 	//gst_debug_set_threshold_for_name("rtph264pay", logLevel);
 	//gst_debug_set_threshold_for_name("udpsink", logLevel);
 	/* Set default debug level */
-	gst_debug_set_default_threshold(GST_LEVEL_FIXME);
+	//gst_debug_set_threshold_for_name("srtpenc", logLevel);
+	//gst_debug_set_default_threshold(GST_LEVEL_FIXME);
 	//g_printerr("log start!!!\n");
 
 	//for (int etype_int = TYPE_INPUT_DEVICE; etype_int != TYPE_MAX; etype_int++)
@@ -315,13 +358,13 @@ void MediaPipeline::pipeline_run() {
 	start_pipeline_ = true;
 	// Pipeline execution
 	LOG_INFO("Setting pipeline to PLAYING");
-    //GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
-    //if (ret == GST_STATE_CHANGE_FAILURE)
-    //{
-    //    g_printerr("Sender : Unable to start the pipeline.\n");
-    //    gst_object_unref(pipeline);
-    //    return;
-    //}
+    GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
+    if (ret == GST_STATE_CHANGE_FAILURE)
+    {
+        g_printerr("Sender : Unable to start the pipeline.\n");
+        gst_object_unref(pipeline);
+        return;
+    }
 
 	logPipelineElements(pipeline, 0);
 	enable_debugging();

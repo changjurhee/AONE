@@ -135,9 +135,9 @@ SubElements VideoMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bi
 
     // Set the video resolution using capsfilter
     GstCaps* caps = gst_caps_new_simple("video/x-raw",
-        "width", G_TYPE_INT, 1280,
-        "height", G_TYPE_INT, 720,
-        "framerate", GST_TYPE_FRACTION, 30, 1,
+		"width", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width,
+		"height", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height,
+		"framerate", GST_TYPE_FRACTION, 30, 1,
         NULL);
     g_object_set(caps_element, "caps", caps, NULL);
     gst_caps_unref(caps);
@@ -151,8 +151,9 @@ SubElements VideoMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int b
 	std::string encoding_name = get_elements_name(TYPE_ENCODING, bin_index, client_index);
     GstElement* encoding_element = gst_element_factory_make("x264enc", encoding_name.c_str());
 	  g_object_set(encoding_element,
-		"tune", H_264_TUNE_ZEROLATENCY,
-		NULL);
+		  "key-int-max", 30,
+		  "bitrate", kVideoPresets.at(VideoPresetLevel::kVideoPreset5).bitrate,
+		  NULL);
 
 	std::string rtp_name = get_elements_name(TYPE_ENCODING_RTP, bin_index, client_index);
     GstElement* rtp_element = gst_element_factory_make("rtph264pay", rtp_name.c_str());
@@ -203,7 +204,7 @@ SubElements VideoMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 	std::string name = get_elements_name(TYPE_UDP_CAPS, bin_index, client_index);
 	GstElement* videoCapsfilter = gst_element_factory_make("capsfilter", name.c_str());
 	GstCaps* videoCaps = 
-		gst_caps_from_string("application/x-srtp, encoding-name=(string)H264, payload=(int)96, ssrc=(uint)112233, srtp-key=(buffer)000000000000000000000000000000000000000000000000000000000000, srtp-cipher=(string)aes-128-icm, srtp-auth=(string)hmac-sha1-80, srtcp-cipher=(string)aes-128-icm, srtcp-auth=(string)hmac-sha1-80, roc=(uint)0");
+		gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, srtp-key=(buffer)000000000000000000000000000000000000000000000000000000000000, srtp-cipher=(string)aes-128-icm, srtp-auth=(string)hmac-sha1-80, srtcp-cipher=(string)aes-128-icm, srtcp-auth=(string)hmac-sha1-80, roc=(uint)0");
 	g_object_set(G_OBJECT(videoCapsfilter), "caps", videoCaps, NULL);
 	gst_caps_unref(videoCaps);
 
@@ -211,49 +212,6 @@ SubElements VideoMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 	gst_element_link(udpsrc_pair.second, videoCapsfilter);
 	return SubElements(udpsrc_pair.first, videoCapsfilter);
 }
-
-SubElements VideoMediaPipeline::pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) {
-
-	std::string nameEnc = get_elements_name(TYPE_SRTPENC, bin_index, client_index);
-	GstElement* VideoSRTPEnc = gst_element_factory_make("srtpenc", nameEnc.c_str());
-
-	std::string nameEncCaps = get_elements_name(TYPE_SRTPENC_CAPS, bin_index, client_index);
-	GstElement* videoSRTPEncCapsfilter = gst_element_factory_make("capsfilter", nameEncCaps.c_str());
-
-	// Set the SRTP encryption key for video
-	guint8 data[30];
-	memset(data, 0, sizeof(data));
-	guint size = sizeof(data);
-	GstBuffer* keyBuffer = gst_buffer_new_wrapped(data, size);
-
-	g_object_set(VideoSRTPEnc, "key", keyBuffer, NULL);
-	g_object_set(VideoSRTPEnc, "rtp-auth", 2, NULL);
-	g_object_set(VideoSRTPEnc, "rtp-cipher", 1, NULL);
-	g_object_set(VideoSRTPEnc, "rtcp-auth", 2, NULL);
-	g_object_set(VideoSRTPEnc, "rtcp-cipher", 1, NULL);
-
-	// Set RTP for video
-	GstCaps* videoEncCaps = gst_caps_from_string("application/x-srtp, media=(string)video, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
-	g_object_set(videoSRTPEncCapsfilter, "caps", videoEncCaps, NULL);
-	gst_caps_unref(videoEncCaps);
-
-
-	gst_bin_add(GST_BIN(parent_bin), VideoSRTPEnc);
-	gst_bin_add(GST_BIN(parent_bin), videoSRTPEncCapsfilter);
-
-	gst_element_link(VideoSRTPEnc, videoSRTPEncCapsfilter);
-
-	return SubElements(VideoSRTPEnc, videoSRTPEncCapsfilter);
-}
-
-SubElements VideoMediaPipeline::pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) {
-	GstElement* VideoSRTPDec = gst_element_factory_make("srtpdec", "videoDecrypt");
-	
-	gst_bin_add(GST_BIN(parent_bin), VideoSRTPDec);
-
-	return SubElements(VideoSRTPDec, VideoSRTPDec);
-}
-
 void VideoMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index)
 {
 	int base_width = kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height;

@@ -100,12 +100,12 @@ protected :
 	virtual SubElements pipeline_make_jitter_buffer(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_udp_sink(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	virtual SubElements pipeline_make_udp_src(GstBin* parent_bin, int bin_index, int client_index) = 0;
-	virtual SubElements pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) = 0;
-	virtual SubElements pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) = 0;
 	SubElements pipeline_make_udp_sink_with_port(GstBin* parent_bin, int bin_index, int client_index, int port);
 	SubElements pipeline_make_udp_src_with_port(GstBin* parent_bin, int bin_index, int client_index, int port);
 	SubElements pipeline_make_queue(GstBin* parent_bin, int bin_index, int client_index, bool is_front);
 	SubElements pipeline_make_tee(GstBin* parent_bin, int bin_index, int client_index);
+	SubElements pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index);
+	SubElements pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index);
 
 	void MediaPipeline::unref_element(GstBin* parent_bin, GstElement* current_element);
 	virtual void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) = 0;
