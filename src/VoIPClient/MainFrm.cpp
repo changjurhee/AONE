@@ -10,6 +10,7 @@
 //#include "CallListView.h"
 #include "MainFrm.h"
 #include "VoIPClientDoc.h"
+#include "VoIPClientView.h"
 
 #include "AccountLoginDlg.h"
 #include "ManageUserAccountDlg.h"

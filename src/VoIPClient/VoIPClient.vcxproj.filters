@@ -464,6 +464,12 @@
     <Image Include="res\sign-in-f.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="res\connection_0.bmp" />
+    <Image Include="res\connection_1.bmp" />
+    <Image Include="res\echo_0.bmp" />
+    <Image Include="res\echo_1.bmp" />
+    <Image Include="res\vad_0.bmp" />
+    <Image Include="res\vad_1.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="VoIPClient.reg" />

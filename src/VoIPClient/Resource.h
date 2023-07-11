@@ -145,6 +145,12 @@
 #define IDD_DLG_UPDATE_ACCOUNT          366
 #define IDD_DIALOG1                     369
 #define IDD_DLG_MSGBOX                  369
+#define IDB_BMP_CONNECTION              371
+#define IDB_BMP_DISCONNECTION           372
+#define IDB_ECHO_OFF                    373
+#define IDB_ECHO_ON                     374
+#define IDB_BMP_VAD_ON                  375
+#define IDB_BMP_VAD_OFF                 376
 #define ID_VIEW_CALLVIEW                400
 #define IDC_ED_EMAIL_ID                 1000
 #define IDC_ED_PASSWORD                 1001
@@ -227,7 +233,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        371
+#define _APS_NEXT_RESOURCE_VALUE        377
 #define _APS_NEXT_COMMAND_VALUE         32781
 #define _APS_NEXT_CONTROL_VALUE         1042
 #define _APS_NEXT_SYMED_VALUE           310

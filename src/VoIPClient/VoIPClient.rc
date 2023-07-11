@@ -175,6 +175,18 @@ IDB_RESET_PW_F          BITMAP                  "res\\password-f.bmp"
 
 IDB_SIGN_IN_F           BITMAP                  "res\\sign-in-f.bmp"
 
+IDB_BMP_CONNECTION      BITMAP                  "res\\connection_0.bmp"
+
+IDB_BMP_DISCONNECTION   BITMAP                  "res\\connection_1.bmp"
+
+IDB_ECHO_OFF            BITMAP                  "res\\echo_0.bmp"
+
+IDB_ECHO_ON             BITMAP                  "res\\echo_1.bmp"
+
+IDB_BMP_VAD_ON          BITMAP                  "res\\vad_0.bmp"
+
+IDB_BMP_VAD_OFF         BITMAP                  "res\\vad_1.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

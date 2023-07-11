@@ -320,6 +320,10 @@
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
     <Image Include="res\class_view_hc.ico" />
+    <Image Include="res\connection_0.bmp" />
+    <Image Include="res\connection_1.bmp" />
+    <Image Include="res\echo_0.bmp" />
+    <Image Include="res\echo_1.bmp" />
     <Image Include="res\explorer.bmp" />
     <Image Include="res\explorer_hc.bmp" />
     <Image Include="res\fileview.bmp" />
@@ -373,6 +377,8 @@
     <Image Include="res\Toolbar.bmp" />
     <Image Include="res\Toolbar256.bmp" />
     <Image Include="res\userimages.bmp" />
+    <Image Include="res\vad_0.bmp" />
+    <Image Include="res\vad_1.bmp" />
     <Image Include="res\VoIPClient.ico" />
     <Image Include="res\VoIPClientDoc.ico" />
   </ItemGroup>

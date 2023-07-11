@@ -4,6 +4,9 @@
 
 #pragma once
 
+#define ID_CV_CONNECTION               0x61A8
+#define ID_CV_CHK_VAD						0x61A9
+#define ID_CV_CHK_ECHO                   0x61AA
 
 class CVoIPClientView : public CView
 {
@@ -22,6 +25,7 @@ public:
 public:
 	virtual void OnDraw(CDC* pDC);  // 이 뷰를 그리기 위해 재정의되었습니다.
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
@@ -30,12 +34,18 @@ protected:
 // 구현입니다.
 public:
 	virtual ~CVoIPClientView();
+
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
 protected:
+	// 특성입니다.
+	CBitmapButton m_btnConnection;
+	CBitmapButton m_btnVad;
+	CBitmapButton m_btnEchoCancel;
+	CBitmap CallViewBmp;
 
 // 생성된 메시지 맵 함수
 protected:
@@ -46,7 +56,15 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	void OnEditCut();
+	void OnConnection();
+	void OnCheckedVAD();
+	void OnCheckedEcho();
+	
 	virtual void OnUpdate(CView* /*pSender*/, LPARAM /*lHint*/, CObject* /*pHint*/);
+public:
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
+
 };
 
 #ifndef _DEBUG  // VoIPClientView.cpp의 디버그 버전
