@@ -240,6 +240,7 @@ void AccountManager::handleUpdateMyContact(Json::Value data, string from)
 	string cid = data["cid"].asString();
 	string newEmail = data["email"].asString();
 	string newName = data["name"].asString();
+	string newPW = data["password"].asString();
 	if (cid.empty() || contactDb->search("cid", cid).empty()) {
 		cout << "handleUpdateMyContact()[" << cid << "]FAIL/No CID exists" << endl;
 		payload["result"] = 1;
@@ -256,6 +257,7 @@ void AccountManager::handleUpdateMyContact(Json::Value data, string from)
 	if (emailSearchCid == "" || emailSearchCid == cid) {
 		contactDb->update( cid, "email", newEmail);
 		contactDb->update( cid, "name", newName);
+		if (!newPW.empty()) contactDb->update(cid, "password", newPW);
 		cout << "handleUpdateMyContact()[" << cid << "]OK" << endl;
 		handleGetAllContact(from);
 		payload["result"] = 0;

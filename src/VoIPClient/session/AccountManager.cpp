@@ -402,6 +402,7 @@ void AccountManager::updateMyContact(std::string cid, std::string email, std::st
 	root["msgId"] = 107;
 
 	Json::Value payload;
+	if (!password.empty()) password = md5(password);
 	payload["cid"] = cid;
 	payload["email"] = email;
 	payload["name"] = name;
