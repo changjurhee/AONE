@@ -16,7 +16,7 @@ TelephonyManager::TelephonyManager() {
 	conferenceDb = ConferenceDb::getInstance();
 	contactDb = ContactDb::getInstance();
 
-#if MEDIA_ENABLE
+#if MEDIA_ENABLED
 	mediaManager = media::ServerMediaManager::getInstance();
 #endif // Media
 }
