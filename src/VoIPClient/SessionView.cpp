@@ -321,9 +321,16 @@ void CSessionView::OnDeleteSession()
 	if (ht == m_wndSessionView.GetRootItem()) return;
 	if (MessageBox(_T("Do you want to delete the Session ?"), _T("DeleteSession"), MB_OKCANCEL) == IDOK)
 	{
-		CString sRID = m_wndSessionView.GetItemText(m_wndSessionView.ItemHasChildren(ht) == 0 ? m_wndSessionView.GetParentItem(ht) : ht);
-		// @todo 아래 메시지 함수 추가 시 주석 해제 하세요. 
-		//UiController::getInstance()->req_deleteConference(this, std::string(CT2CA(sRID)));
+		// participants 인 경우 예외 처리 필요
+		CString sRID = m_wndSessionView.GetItemText(m_wndSessionView.GetParentItem(ht));
+		if (sRID == CString(_T("Participant"))) {
+			ht = m_wndSessionView.GetParentItem(ht);
+			sRID = m_wndSessionView.GetItemText(m_wndSessionView.GetParentItem(ht));
+		}
+		else {
+			sRID = m_wndSessionView.GetItemText(m_wndSessionView.ItemHasChildren(ht) == 0 ? m_wndSessionView.GetParentItem(ht) : ht);
+		}
+		//UiController::getInstance()->request_JoinConference(this, std::string(CT2CA(sRID)));
 	}
 }
 
@@ -333,7 +340,15 @@ void CSessionView::OnJoinSession()
 	if (ht == m_wndSessionView.GetRootItem()) return;
 	if (MessageBox(_T("Do you want to Join the Session ?"), _T("JoinSession"), MB_OKCANCEL) == IDOK)
 	{
-		CString sRID = m_wndSessionView.GetItemText(m_wndSessionView.ItemHasChildren(ht) == 0 ? m_wndSessionView.GetParentItem(ht) : ht);
+		// participants 인 경우 예외 처리 필요
+		CString sRID = m_wndSessionView.GetItemText(m_wndSessionView.GetParentItem(ht));
+		if (sRID == CString(_T("Participant"))) {
+			ht = m_wndSessionView.GetParentItem(ht);
+			sRID = m_wndSessionView.GetItemText(m_wndSessionView.GetParentItem(ht));
+		}
+		else {
+			sRID = m_wndSessionView.GetItemText(m_wndSessionView.ItemHasChildren(ht) == 0 ? m_wndSessionView.GetParentItem(ht) : ht);
+		}
 		UiController::getInstance()->request_JoinConference(this, std::string(CT2CA(sRID)));
 	}
 }
