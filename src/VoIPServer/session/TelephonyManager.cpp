@@ -6,16 +6,19 @@
 #include "TelephonyManager.h"
 #include "../ServerMediaManager.h"
 
-using namespace media;
-
 TelephonyManager* TelephonyManager::instance = nullptr;
 Json::FastWriter fastWriter;
 int connNum = 0;
 
 TelephonyManager::TelephonyManager() {
 	sessionControl = nullptr;
+	uiControl = nullptr;
 	conferenceDb = ConferenceDb::getInstance();
 	contactDb = ContactDb::getInstance();
+
+#if MEDIA_ENABLE
+	mediaManager = media::ServerMediaManager::getInstance();
+#endif // Media
 }
 
 TelephonyManager* TelephonyManager::getInstance() {
@@ -61,16 +64,21 @@ void TelephonyManager::onAnswer(Json::Value data) {
 	std::cout << "onAnswer()/from[" << from << "/connId[" << connId << "]" << std::endl;
 	logConnections();
 
-	Json::Value payload = ServerMediaManager::getInstance()->getMediaProperty();
+	Json::Value payload;
+	if (mediaManager != nullptr) {
+		payload = mediaManager->getMediaProperty();
+	}
 	payload["rid"] = connId;
 	payload["result"] = 1;
 	payload["result_detail"] = data["result_detail"].asString();
 
-	Json::Value media;
-	media["rid"] = connId;
-	media["conferenceSize"] = 2;
-	media["myIp"] = data["myIp"].asString();
-	ServerMediaManager::getInstance()->startCall(media);
+	if (mediaManager != nullptr) {
+		Json::Value media;
+		media["rid"] = connId;
+		media["conferenceSize"] = 2;
+		media["myIp"] = data["myIp"].asString();
+		mediaManager->startCall(media);
+	}
 
 	Json::Value clientMedia;
 	clientMedia["rid"] = connId;
@@ -78,19 +86,23 @@ void TelephonyManager::onAnswer(Json::Value data) {
 	std::list<std::string> participants = conn.getParticipants();
 	for (const auto& participant : participants) {
 		if (participant == from) {
-			clientMedia["cid"] = from;
-			clientMedia["clientIp"] = contactDb->get(participant, "ipAddress");
-			clientMedia["name"] = contactDb->get(participant, "name");
 			sessionControl->sendData(304, payload, from);
-			ServerMediaManager::getInstance()->addClient(clientMedia);
+			if (mediaManager != nullptr) {
+				clientMedia["cid"] = from;
+				clientMedia["clientIp"] = contactDb->get(participant, "ipAddress");
+				clientMedia["name"] = contactDb->get(participant, "name");
+				mediaManager->addClient(clientMedia);
+			}
 			continue;
 		}
 
-		clientMedia["cid"] = participant;
-		clientMedia["clientIp"] = contactDb->get( participant, "ipAddress" );
-		clientMedia["name"] = contactDb->get(participant, "name");
 		sessionControl->sendData(302, payload, participant);
-		ServerMediaManager::getInstance()->addClient(clientMedia);
+		if (mediaManager != nullptr) {
+			clientMedia["cid"] = participant;
+			clientMedia["clientIp"] = contactDb->get(participant, "ipAddress");
+			clientMedia["name"] = contactDb->get(participant, "name");
+			mediaManager->addClient(clientMedia);
+		}
 	}
 }
 
@@ -290,10 +302,12 @@ void TelephonyManager::handleDisconnect(Json::Value data) {
 	std::list<std::string> participants = conn.getParticipants();
 	for (const auto& participant : participants) {
 		connectionMap[connId].removeParticipant(participant);
-		clientMedia["cid"] = participant;
 		msgId = conn.isConference() ? 209 : 305;
 		sessionControl->sendData(msgId, payload, participant);
-		ServerMediaManager::getInstance()->removeClient(clientMedia);
+		if (mediaManager != nullptr) {
+			clientMedia["cid"] = participant;
+			mediaManager->removeClient(clientMedia);
+		}
 	}
 	if (!conn.isConference()) {
 		connectionMap.erase(connId);
@@ -301,9 +315,11 @@ void TelephonyManager::handleDisconnect(Json::Value data) {
 	std::cout << "handleDisconnect()/connId[" << connId << "]" << endl;
 	logConnections();
 
-	Json::Value media;
-	media["rid"] = connId;
-	ServerMediaManager::getInstance()->endCall(media);
+	if (mediaManager != nullptr) {
+		Json::Value media;
+		media["rid"] = connId;
+		mediaManager->endCall(media);
+	}
 }
 
 void TelephonyManager::releaseConnection(std::string cid) {
@@ -362,11 +378,13 @@ void TelephonyManager::postConferenceCreated(std::string connId, std::string myI
 	std::thread room(&TelephonyManager::manageConferenceLifetime, instance, connId);
 	room.detach();
 
-	Json::Value media;
-	media["rid"] = connId;
-	media["conferenceSize"] = conn.getConferenceList().size();
-	media["myIp"] = myIp;
-	ServerMediaManager::getInstance()->startCall(media);
+	if (mediaManager != nullptr) {
+		Json::Value media;
+		media["rid"] = connId;
+		media["conferenceSize"] = conn.getConferenceList().size();
+		media["myIp"] = myIp;
+		mediaManager->startCall(media);
+	}
 }
 
 void TelephonyManager::removeConference(std::string connId) {
@@ -432,19 +450,23 @@ void TelephonyManager::handleJoinConference(Json::Value data) {
 
 	connectionMap[connId].setParticipant(from);
 
-	Json::Value payload = ServerMediaManager::getInstance()->getMediaProperty();
+	Json::Value payload;
+	if (mediaManager != nullptr) {
+		payload = mediaManager->getMediaProperty();
+	}
 	payload["result"] = 1;
 	payload["result_detail"] = "SUCCESS";
 	payload["rid"] = connId;
 	sessionControl->sendData(208, payload, from);
 
-
-	Json::Value media;
-	media["rid"] = connId;
-	media["cid"] = from;
-	media["clientIp"] = contactDb->get(from, "ipAddress");
-	media["name"] = contactDb->get(from, "name");
-	ServerMediaManager::getInstance()->addClient(media);
+	if (mediaManager != nullptr) {
+		Json::Value media;
+		media["rid"] = connId;
+		media["cid"] = from;
+		media["clientIp"] = contactDb->get(from, "ipAddress");
+		media["name"] = contactDb->get(from, "name");
+		mediaManager->addClient(media);
+	}
 
 	std::cout << "handleJoinConference()/OK/from[" << from << "]/connId[" << connId << endl;
 	logConnections();
@@ -471,17 +493,21 @@ void TelephonyManager::handleExitConference(Json::Value data) {
 	payload["result_detail"] = "SUCCESS";
 	sessionControl->sendData(209, payload, from);
 
-	Json::Value media;
-	media["rid"] = connId;
-	media["cid"] = from;
-	ServerMediaManager::getInstance()->removeClient(media);
+	if (mediaManager != nullptr) {
+		Json::Value media;
+		media["rid"] = connId;
+		media["cid"] = from;
+		mediaManager->removeClient(media);
+	}
 
 	std::cout << "handleExitConference()/from[" << from << "]/connId[" << connId << "]" << std::endl;
 	logConnections();
 }
 
 void TelephonyManager::handleRequestVideoQualityChange(Json::Value data) {
-	ServerMediaManager::getInstance()->updateClientVideoQuality(data);
+	if (mediaManager != nullptr) {
+		mediaManager->updateClientVideoQuality(data);
+	}
 }
 
 void TelephonyManager::notifyVideoQualityChanged(std::string rid, int quality) {
