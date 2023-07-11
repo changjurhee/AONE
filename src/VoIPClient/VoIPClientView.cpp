@@ -44,7 +44,6 @@ CVoIPClientView::CVoIPClientView() noexcept
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
 	LOG_DEBUG("waiting something...");
-
 }
 
 CVoIPClientView::~CVoIPClientView()
@@ -237,9 +236,7 @@ int CVoIPClientView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_btnConnection.SizeToContent();
 	m_btnVad.SizeToContent();
 	m_btnEchoCancel.SizeToContent();
-
-	CallViewBmp.LoadBitmapW(IDB_MASK);
-
+	
 	return 0;
 }
 
@@ -251,4 +248,13 @@ LRESULT CVoIPClientView::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return LRESULT();
+}
+
+void CVoIPClientView::DoDataExchange(CDataExchange* pDX)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+
+	CView::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_CLIENT_VIEW_DISPLAY, m_DisplayBox);
+
 }
