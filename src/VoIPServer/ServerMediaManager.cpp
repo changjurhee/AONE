@@ -99,7 +99,7 @@ ContactInfo* ServerMediaManager::get_contact_info(Json::Value add_client_info, b
 void ServerMediaManager::addClient(Json::Value add_client_info)
 {
 	string rid = add_client_info["rid"].asString();
-	if (checkValidRID(rid)) {
+	if (!checkValidRID(rid)) {
 		LOG_OBJ_INFO() << " Invalid RID (" << rid << ")" << endl;
 		return;
 	}

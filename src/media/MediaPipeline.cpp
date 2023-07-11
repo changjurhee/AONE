@@ -361,10 +361,10 @@ void MediaPipeline::pipeline_run() {
 
 	g_timeout_add(100, (GSourceFunc)messageTask, (gpointer)this);
 
+	set_pipe_block_flag(BLOCK_NO_JOIN);
 	start_pipeline_ = true;
 	// Pipeline execution
 	LOG_INFO("Ready pipeline");
-	set_pipe_block_flag(BLOCK_NO_JOIN);
 	stop_state_pipeline(false);
 
 	LOG_OBJ_INFO() << get_pipeline_info(0) << " Get pipeline view (start)" << endl;
@@ -909,7 +909,8 @@ void MediaPipeline::checkMessageQueue(void) {
 		else {
 			remove_client(&client_info);
 		}
-		if (count_active_client() > 0) {
+		if (count_active_client() > 1
+				 || (count_active_client() > 0 && pipe_mode_list_[0].first != MODE_UDP_REMOVE_ME)) {
 			unset_pipe_block_flag(BLOCK_NO_JOIN);
 		}
 		else {
