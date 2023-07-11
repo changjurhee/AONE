@@ -23,6 +23,8 @@ private:
 	// MainFrame window to notify message
 	vector<CWnd*> callbackWnds;
 
+	CallResult result;
+
 public:	
 	static UiController* getInstance();
 	void releaseInstance();
@@ -33,6 +35,7 @@ public:
 	//-----------------------------------------
 	// Post Message back to UI
 	void notify(int type, int result) override;
+	void notifyCallState(CallResult result) override;
 
 	//-----------------------------------------
 	// Functions to get data from Managers
