@@ -7,14 +7,30 @@ namespace media {
 
 VideoPresetType MediaManager::ShouldChangeVideoQuality(const VideoPresetType& current_preset,
 	const PipelineMonitorable::RtpStats& stats) {
+	
+	LOG_OBJ_LOG() << "cur_bitrate " << current_preset.bitrate << ", num_lost " << stats.num_lost
+		<< ", num_late " << stats.num_late << ", avg_jitter " << stats.avg_jitter_us << " us" << std::endl;
+
 	// TODO: Check if changing is needed
-	LOG_OBJ_LOG() << "currrnet_bitrate " << current_preset.bitrate << std::endl;
+
 	return current_preset;
 }
 
 MediaManager::MediaManager(int max_pipeline) {
 	max_pipleline_ = max_pipeline;
 	// TODO: codec/encryption 관련 등록 기능 추가
+}
+
+void MediaManager::SetRtpJitterBufferLatency(unsigned int latency) {
+	for (auto room : pipelineMap_) {
+		auto av_pipelines = room.second;
+		for (auto pipeline : av_pipelines.video_pipelines) {
+			pipeline->set_rtp_jitter_buffer_latency(latency);
+		}
+		for (auto pipeline : av_pipelines.audio_pipelines) {
+			pipeline->set_rtp_jitter_buffer_latency(latency);
+		}
+	}
 }
 
 string MediaManager::get_ip_address(void) {

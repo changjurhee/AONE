@@ -135,6 +135,9 @@
     <ClInclude Include="session\SUiController.h">
       <Filter>Session</Filter>
     </ClInclude>
+    <ClInclude Include="..\media\media_config.h">
+      <Filter>media</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VoIPServer.cpp">
@@ -217,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="session\SUiController.cpp">
       <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\media_config.cpp">
+      <Filter>media</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

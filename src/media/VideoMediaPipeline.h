@@ -27,7 +27,8 @@ class VideoMediaPipeline: public MediaPipeline
 
 	void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) override;
 public:
-	VideoMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb);
+	VideoMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list,
+		PipelineMonitorable::Callback* rtpstats_cb, PipelineMonitorable::Callback* data_cb);
 	void setVideoQuality(int video_quality_index) override;
 	//void makePipeline(vector<ContactInfo*> contact_info_list, OperatingInfo* operate_info);
 	//void add_client(ContactInfo* client_info):

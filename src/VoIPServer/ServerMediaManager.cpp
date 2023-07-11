@@ -61,8 +61,8 @@ void ServerMediaManager::startCall(Json::Value room_creat_info)
 	LOG_OBJ_INFO() << "rid : " << rid << endl;
 
 	Pipelines pipelines;
-	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_pipe_mode_list_, this));
-	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_pipe_mode_list_, nullptr));
+	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_pipe_mode_list_, this, nullptr));
+	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_pipe_mode_list_, nullptr, nullptr));
 
 	pipelineMap_.insert(make_pair(rid, pipelines));
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);

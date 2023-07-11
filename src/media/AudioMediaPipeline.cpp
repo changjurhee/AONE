@@ -1,9 +1,12 @@
 #include "AudioMediaPipeline.h"
 
+#include "media_config.h"
+
 namespace media {
 
-AudioMediaPipeline::AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb) :
-	MediaPipeline(rid, pipe_mode_list, monitor_cb) {
+AudioMediaPipeline::AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list,
+	PipelineMonitorable::Callback* rtpstats_cb, PipelineMonitorable::Callback* data_cb) :
+	MediaPipeline(rid, pipe_mode_list, rtpstats_cb, data_cb) {
 	media_mode_ = "Audio";
 };
 
@@ -110,7 +113,7 @@ SubElements AudioMediaPipeline::pipeline_make_jitter_buffer(GstBin* parent_bin, 
 	std::string name = get_elements_name(TYPE_JITTER, bin_index, client_index);
 	GstElement* element = gst_element_factory_make("rtpjitterbuffer", name.c_str());
 
-    g_object_set(element, "latency", 80, "do-lost", TRUE, NULL);
+    g_object_set(element, "latency", MediaConfig::GetRtpJitterBufferLatency(), "do-lost", TRUE, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
 	return make_pair(element, element);
 };
@@ -142,7 +145,7 @@ void AudioMediaPipeline::update_adder_parameter(GstBin* parent_bin, int bin_inde
 }
 
 bool AudioMediaPipeline::ProcessVad(GstPadProbeInfo* info) {
-	if (!monitor_cb_)
+	if (!data_cb_)
 		return true;
 
 	GstBuffer* buffer = GST_PAD_PROBE_INFO_BUFFER(info);
@@ -150,7 +153,7 @@ bool AudioMediaPipeline::ProcessVad(GstPadProbeInfo* info) {
 	gst_buffer_map(buffer, &buffer_info, GST_MAP_READ);
 
 	AudioBuffer audio_buffer(48000, 1, 16, (char*)buffer_info.data, buffer_info.size);
-	return monitor_cb_->OnAudioBuffer(audio_buffer, 48000/100); // 48000/100 meand frames of 10 ms. same with frame-size of encoder.
+	return data_cb_->OnAudioBuffer(audio_buffer, 48000/100); // 48000/100 meand frames of 10 ms. same with frame-size of encoder.
 }
 
 } // namespace media

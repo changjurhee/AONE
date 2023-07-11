@@ -31,6 +31,7 @@ protected:
 	void end_call_with_rid(string rid);
 public:
 	MediaManager(int max_pipeline);
+	void SetRtpJitterBufferLatency(unsigned int latency);
 
 private:
 	// media::PipelineMonitorable::Callback implementation.

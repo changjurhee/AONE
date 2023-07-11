@@ -207,6 +207,7 @@
     <ClInclude Include="..\common\utility.h" />
     <ClInclude Include="..\media\litevad.h" />
     <ClInclude Include="..\media\audio_buffer.h" />
+    <ClInclude Include="..\media\media_config.h" />
     <ClInclude Include="..\media\media_types.h" />
     <ClInclude Include="..\media\pipeline_monitorable.h" />
     <ClInclude Include="..\media\vad_processor.h" />
@@ -260,6 +261,7 @@
     <ClCompile Include="..\common\utility.cpp" />
     <ClCompile Include="..\media\audio_buffer.cpp" />
     <ClCompile Include="..\media\litevad.cpp" />
+    <ClCompile Include="..\media\media_config.cpp" />
     <ClCompile Include="..\media\media_types.cpp" />
     <ClCompile Include="..\media\vad_processor.cpp" />
     <ClCompile Include="AccountLoginDlg.cpp" />
