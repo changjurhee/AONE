@@ -217,7 +217,7 @@ SubElements MediaPipeline::pipeline_make_tee(GstBin* parent_bin, int bin_index, 
 };
 
 SubElements MediaPipeline::pipeline_make_encryption(GstBin* parent_bin, int bin_index, int client_index) {
-
+#if SRTP_ENABLE
 	std::string nameEnc = get_elements_name(TYPE_SRTPENC, bin_index, client_index);
 	GstElement* VideoSRTPEnc = gst_element_factory_make("srtpenc", nameEnc.c_str());
 
@@ -248,15 +248,22 @@ SubElements MediaPipeline::pipeline_make_encryption(GstBin* parent_bin, int bin_
 	gst_element_link(VideoSRTPEnc, videoSRTPEncCapsfilter);
 
 	return SubElements(VideoSRTPEnc, videoSRTPEncCapsfilter);
+#else
+	return SubElements(NULL, NULL);
+#endif
 }
 
 SubElements MediaPipeline::pipeline_make_restoration(GstBin* parent_bin, int bin_index, int client_index) {
+#if SRTP_ENABLE
 	std::string name = get_elements_name(TYPE_SRTPDEC, bin_index, client_index);
 	GstElement* VideoSRTPDec = gst_element_factory_make("srtpdec", name.c_str());
 
 	gst_bin_add(GST_BIN(parent_bin), VideoSRTPDec);
 
 	return SubElements(VideoSRTPDec, VideoSRTPDec);
+#else
+	return SubElements(NULL, NULL);
+#endif
 }
 
 SubElements MediaPipeline::pipeline_make_udp_sink_with_port(GstBin* parent_bin, int bin_index, int client_index, int port) {
