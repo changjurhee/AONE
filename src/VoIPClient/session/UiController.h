@@ -61,4 +61,9 @@ public:
 	void request_CreateConference(CWnd* wnd, long time, long duration, list<string>& list);
 	void request_JoinConference(CWnd* wnd, string id);
 	void request_ExitConference(CWnd* wnd);
+	void request_deleteConference(CWnd* wnd, string rid);
+
+	void request_EndOrExitCall(CWnd* wnd);
+	void request_VAD(CWnd* wnd, bool on);
+	void request_AEC(CWnd* wnd, bool on);
 };

@@ -78,23 +78,6 @@ void CSessionRegisterDlg::OnBnClickedOk()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
-	/*constexpr long long RESOLUTION_TIME = 10000000;
-	std::tm tm_start = {};
-	std::tm tm_end = {};
-	std::string st_time = FormatString("%d %d %d %d %d %d", m_Date.GetYear(), m_Date.GetMonth(), m_Date.GetDay(), m_StartTime.GetHour(), m_StartTime.GetMinute(), m_StartTime.GetSecond());
-	std::string ed_time = FormatString("%d %d %d %d %d %d", m_Date.GetYear(), m_Date.GetMonth(), m_Date.GetDay(), m_endTime.GetHour(), m_endTime.GetMinute(), m_endTime.GetSecond());
-
-	std::stringstream ss_s(st_time);
-	std::stringstream ss_e(ed_time);
-	ss_s >> std::get_time(&tm_start, "%Y %m %d %H %M %S");
-	ss_e>> std::get_time(&tm_end, "%Y %m %d %H %M %S");
-	auto tp_s = std::chrono::system_clock::from_time_t(std::mktime(&tm_start));
-	auto tp_e = std::chrono::system_clock::from_time_t(std::mktime(&tm_end));
-	std::chrono::seconds duration_second = std::chrono::duration_cast<std::chrono::seconds>(tp_e - tp_s);
-
-	std::cout << tp_s.time_since_epoch().count() / RESOLUTION_TIME << "\n";
-	std::cout << tp_e.time_since_epoch().count() / RESOLUTION_TIME << "\n";
-	std::cout << duration_second.count()  << "\n";*/
 
 	stOleToDate res = SetDateTime(m_Date, m_StartTime, m_endTime);
 
@@ -163,9 +146,9 @@ void CSessionRegisterDlg::OnBnClickedMfcbtnRight()
 	tstring tmp_email(m_ltContact.GetItemText(m_nIndexContact, 1));
 	tstring tmp_name(m_ltContact.GetItemText(m_nIndexContact, 2));
 
-	m_ltParticipants.InsertItem(num, tmp_cid.data());
-	m_ltParticipants.SetItem(num, 1, LVIF_TEXT, tmp_email.data(), NULL, NULL, NULL, NULL);
-	m_ltParticipants.SetItem(num, 2, LVIF_TEXT, tmp_name.data(), NULL, NULL, NULL, NULL);
+	int index_num = m_ltParticipants.InsertItem(num, tmp_cid.data());
+	m_ltParticipants.SetItemText(index_num, 1, tmp_email.data());
+	m_ltParticipants.SetItemText(index_num, 2, tmp_name.data());
 
 	m_ltContact.LockWindowUpdate();
 	m_ltContact.DeleteItem(m_nIndexContact);
@@ -183,9 +166,9 @@ void CSessionRegisterDlg::OnBnClickedMfcbtnLeft()
 	tstring tmp_email(m_ltParticipants.GetItemText(m_nIndexParticipants, 1));
 	tstring tmp_name(m_ltParticipants.GetItemText(m_nIndexParticipants, 2));
 
-	m_ltContact.InsertItem(num, tmp_cid.data());
-	m_ltContact.SetItem(num, 1, LVIF_TEXT, tmp_email.data(), NULL, NULL, NULL, NULL);
-	m_ltContact.SetItem(num, 2, LVIF_TEXT, tmp_name.data(), NULL, NULL, NULL, NULL);
+	int index_num = m_ltContact.InsertItem(num, tmp_cid.data());
+	m_ltContact.SetItemText(index_num, 1, tmp_email.data());
+	m_ltContact.SetItemText(index_num, 2, tmp_name.data());
 
 	m_ltParticipants.LockWindowUpdate();
 	m_ltParticipants.DeleteItem(m_nIndexParticipants);
@@ -226,9 +209,9 @@ BOOL CSessionRegisterDlg::OnInitDialog()
 		tmp_email.assign(p.email.begin(), p.email.end());
 		tmp_name.assign(p.name.begin(), p.name.end());
 
-		m_ltContact.InsertItem(num, tmp_cid.data());
-		m_ltContact.SetItem(num, 1, LVIF_TEXT, tmp_email.data(), NULL, NULL, NULL, NULL);
-		m_ltContact.SetItem(num, 2, LVIF_TEXT, tmp_name.data(), NULL, NULL, NULL, NULL);
+		int index_num = m_ltContact.InsertItem(num, tmp_cid.data());
+		m_ltContact.SetItemText(index_num, 1, tmp_email.data());
+		m_ltContact.SetItemText(index_num, 2, tmp_name.data());
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control

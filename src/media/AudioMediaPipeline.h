@@ -19,7 +19,9 @@ protected:
 	SubElements pipeline_make_jitter_buffer(GstBin* parent_bin, int bin_index, int client_index) override;
 	SubElements pipeline_make_udp_sink(GstBin* parent_bin, int port, int client_index) override;
 	SubElements pipeline_make_udp_src(GstBin* parent_bin, int port, int client_index) override;
+	SubElements pipeline_make_overlay(GstBin* parent_bin, int bin_index, int client_index) override;
 	void update_adder_parameter(GstBin* parent_bin, int bin_index, int client_index) override;
+	
 public:
 	AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list, PipelineMonitorable::Callback* monitor_cb);
 	//void makePipeline(std::vector<ContactInfo*> contact_info_list, OperatingInfo* operate_info);

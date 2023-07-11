@@ -11,3 +11,14 @@ ContactDb* ContactDb::getInstance()
 	}
 	return instance;
 }
+
+void ContactDb::setEnable(string cid, bool enable)
+{
+	update(cid, "enable", enable);
+}
+
+bool ContactDb::getEnable(string cid)
+{
+	Json::Value enabled = get(cid, "enable");
+	return enabled.asBool();
+}

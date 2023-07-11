@@ -38,6 +38,7 @@ void CAccountLoginDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_PASSWORD, m_edPassword);
 	DDX_Control(pDX, IDC_MFCBTN_LOGIN, m_btnLogIn);
 	DDX_Control(pDX, IDC_MFCBTN_SIGN_IN, m_btnSignIn);
+	DDX_Control(pDX, IDC_MFCBTN_RESET_PW, m_btnResetPw);
 }
 
 BEGIN_MESSAGE_MAP(CAccountLoginDlg, CDialogEx)
@@ -73,9 +74,11 @@ BOOL CAccountLoginDlg::OnInitDialog()
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 	m_btnLogIn.LoadBitmaps(IDB_LOG_IN, IDB_LOG_IN_D, NULL , IDB_LOG_IN_F);
 	m_btnSignIn.LoadBitmaps(IDB_SIGN_IN, IDB_SIGN_IN_D, NULL, IDB_SIGN_IN_F);
+	m_btnResetPw.LoadBitmaps(IDB_RESET_PW, IDB_RESET_PW_D, NULL, IDB_RESET_PW_F);
 
 	m_btnLogIn.SizeToContent();
 	m_btnSignIn.SizeToContent();
+	m_btnResetPw.SizeToContent();
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -157,6 +160,9 @@ LRESULT CAccountLoginDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 		} else if (lParam == 2) {
 			cout << "FAILED" << endl;
 			MessageBox(_T("Login Failed : Wrong password"));
+		} else if ( lParam == 3 ) {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Login Failed : ID disabled by Administrator"));
 		} else {
 			cout << "FAILED" << endl;
 			MessageBox(_T("Login Failed"));

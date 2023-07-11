@@ -43,6 +43,7 @@ protected:
 	afx_msg void OnClassDefinition();
 	afx_msg void OnClassProperties();
 	afx_msg void OnNewSession();
+	afx_msg void OnDeleteSession();
 	afx_msg void OnJoinSession();
 	afx_msg void OnPaint();
 	afx_msg void OnSetFocus(CWnd* pOldWnd);

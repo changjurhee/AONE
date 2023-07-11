@@ -17,6 +17,7 @@ private:
 	std::map<std::string, Connection> connectionMap;
 
 	SessionControl* sessionControl;
+	ISUiController* uiControl;
 	ConferenceDb* conferenceDb; // Conference Database
 	ContactDb* contactDb;
 
@@ -38,6 +39,7 @@ public:
 
 	// Listener
 	void setSessionControl(SessionControl* control) override;
+	void setUiControl(ISUiController* control) override;
 	void initializeConference(std::string myIp) override;
 	void handleOutgoingCall(Json::Value data) override;
 	void handleOutgoingCallNoUser(Json::Value data) override;

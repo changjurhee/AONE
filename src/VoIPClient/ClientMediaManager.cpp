@@ -1,5 +1,5 @@
 #include "ClientMediaManager.h"
-#include "../common/debug.h"
+#include "common/logger.h"
 
 namespace media {
 
@@ -37,6 +37,7 @@ void ClientMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
 
 void ClientMediaManager::setVideoQuality(int video_quality_index)
 {
+	LOG_OBJ_INFO() << "video_quality_index : " << video_quality_index << endl;
 	vector<VideoMediaPipeline*> pipelines = getVideoPipeLine(DEFAULT_CLIENT_RID);
 	struct VideoQualityInfo vq_info;
 	vq_info.enable_recover_timer = false;
@@ -80,6 +81,7 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 	OperatingInfo* operate_info = get_operate_info(client_join_info);
 
 	contact_info_list.push_back(*contact_info);
+	LOG_INFO("In");
 
 	Pipelines pipelines;
 	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_sink_pipe_mode_list_, nullptr));
@@ -87,13 +89,11 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_sink_pipe_mode_list_, this));
 	pipelines.audio_pipelines.push_back(new AudioMediaPipeline(rid, audio_src_pipe_mode_list_, nullptr));
 
-	pipelineMap_.insert(make_pair(rid, pipelines));
-
+	pipelineMap_[rid] = pipelines;
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
 		pipeline->request_add_client(&contact_info_list[0]);
-		//while(view_handler_ == 0);
 		pipeline->makePipeline(contact_info_list, *operate_info, view_handler_);
 	}
 
@@ -113,6 +113,7 @@ void ClientMediaManager::setViewHandler(handleptr view_handler)
 }
 
 void ClientMediaManager::endCall(Json::Value client_join_info) {
+	LOG_INFO("In");
 	return MediaManager::end_call_with_rid(DEFAULT_CLIENT_RID);
 }
 

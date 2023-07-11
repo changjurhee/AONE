@@ -25,6 +25,7 @@ private:
 	CString m_edPassword;
 	CBitmapButton m_btnLogIn;
 	CBitmapButton m_btnSignIn;
+	CBitmapButton m_btnResetPw;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.

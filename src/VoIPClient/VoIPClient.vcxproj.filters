@@ -76,9 +76,6 @@
     <ClCompile Include="..\media\AudioMediaPipeline.cpp">
       <Filter>media</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\debug.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="..\media\VideoMediaPipeline.cpp">
       <Filter>media</Filter>
     </ClCompile>
@@ -113,6 +110,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="UpdateUserAccountDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageBoxDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -228,12 +228,6 @@
     <ClInclude Include="..\media\VideoMediaPipeline.h">
       <Filter>media</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\debug.h">
-      <Filter>common</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandLineInterface.h">
-      <Filter>Session</Filter>
-    </ClInclude>
     <ClInclude Include="..\media\pipeline_monitorable.h">
       <Filter>media</Filter>
     </ClInclude>
@@ -268,6 +262,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="UpdateUserAccountDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="session\UiController.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageBoxDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -458,6 +458,12 @@
     <Image Include="res\sign-in-f.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="res\connection_0.bmp" />
+    <Image Include="res\connection_1.bmp" />
+    <Image Include="res\echo_0.bmp" />
+    <Image Include="res\echo_1.bmp" />
+    <Image Include="res\vad_0.bmp" />
+    <Image Include="res\vad_1.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="VoIPClient.reg" />

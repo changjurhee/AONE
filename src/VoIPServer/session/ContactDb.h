@@ -9,4 +9,6 @@ private:
 	ContactDb( string dbName ) : DatabaseManager(dbName) {}; // Constructor	
 public:
 	static ContactDb* getInstance();
+	void setEnable(string cid, bool enable);
+	bool getEnable(string cid);
 };

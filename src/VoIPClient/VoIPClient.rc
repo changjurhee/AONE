@@ -175,6 +175,18 @@ IDB_RESET_PW_F          BITMAP                  "res\\password-f.bmp"
 
 IDB_SIGN_IN_F           BITMAP                  "res\\sign-in-f.bmp"
 
+IDB_BMP_CONNECTION      BITMAP                  "res\\connection_0.bmp"
+
+IDB_BMP_DISCONNECTION   BITMAP                  "res\\connection_1.bmp"
+
+IDB_ECHO_OFF            BITMAP                  "res\\echo_0.bmp"
+
+IDB_ECHO_ON             BITMAP                  "res\\echo_1.bmp"
+
+IDB_BMP_VAD_ON          BITMAP                  "res\\vad_0.bmp"
+
+IDB_BMP_VAD_OFF         BITMAP                  "res\\vad_1.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -380,7 +392,7 @@ BEGIN
     DEFPUSHBUTTON   "확인",IDOK,113,41,50,14,WS_GROUP
 END
 
-IDD_DLG_ACCOUNT_LOGIN DIALOGEX 0, 0, 249, 175
+IDD_DLG_ACCOUNT_LOGIN DIALOGEX 0, 0, 249, 191
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Account Login"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -390,7 +402,7 @@ BEGIN
     CONTROL         "Login",IDC_MFCBTN_LOGIN,"MfcButton",WS_TABSTOP,47,98,75,19
     CONTROL         "Sign In",IDC_MFCBTN_SIGN_IN,"MfcButton",WS_TABSTOP,128,98,76,19
     ICON            IDI_MASK,IDC_ST_LOGO,115,21,21,20
-    CONTROL         "Reset Password",IDC_MFCBTN_RESET_PW,"MfcButton",WS_TABSTOP,47,138,157,19
+    CONTROL         "Reset Password",IDC_MFCBTN_RESET_PW,"MfcButton",WS_TABSTOP,47,139,157,28
 END
 
 IDD_DLG_MANAGE_ACCOUNT DIALOGEX 0, 0, 251, 214
@@ -510,7 +522,7 @@ BEGIN
     PUSHBUTTON      "취소",IDCANCEL,252,155,50,14
     EDITTEXT        IDC_ED_SEARCH_NAME,7,7,182,17,ES_AUTOHSCROLL
     CONTROL         "Search",IDC_MFCBTN_SEARCH,"MfcButton",WS_TABSTOP,199,7,103,18
-    CONTROL         "",IDC_LT_CONTACT_NAMES,"SysListView32",LVS_REPORT | LVS_SORTASCENDING | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,28,182,141
+    CONTROL         "",IDC_LT_CONTACT_NAMES,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,28,182,141
 END
 
 IDD_RESET_PASSWORD DIALOGEX 0, 0, 267, 177
@@ -543,6 +555,16 @@ BEGIN
     LTEXT           "New Name",IDC_STATIC,27,44,35,8
     EDITTEXT        IDC_ED_PASSWORD,89,67,131,17,ES_AUTOHSCROLL
     LTEXT           "New Password",IDC_STATIC,28,72,48,8
+END
+
+IDD_DLG_MSGBOX DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "확인",IDOK,198,155,50,14
+    PUSHBUTTON      "취소",IDCANCEL,252,155,50,14
+    LTEXT           "Static",IDC_ST_MSG,83,47,138,37
 END
 
 
@@ -606,7 +628,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 242
         TOPMARGIN, 7
-        BOTTOMMARGIN, 168
+        BOTTOMMARGIN, 184
     END
 
     IDD_DLG_MANAGE_ACCOUNT, DIALOG
@@ -672,6 +694,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 129
     END
+
+    IDD_DLG_MSGBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -733,6 +763,11 @@ BEGIN
 END
 
 IDD_DLG_UPDATE_ACCOUNT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_MSGBOX AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

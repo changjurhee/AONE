@@ -11,6 +11,9 @@
 #define MSG_RESPONSE_DATA			1006 // Update contacts & conferences
 #define MSG_RESPONSE_CALLSTATE		1007 // Call and conference status
 
+#define MSG_RESPONSE_AUDIO_VAD		2001
+#define MSG_RESPONSE_AUDIO_AEC		2002
+
 class IUiController {
 public:
 	virtual void notify(int type, int result) = 0;

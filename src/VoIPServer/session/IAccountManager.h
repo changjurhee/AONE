@@ -2,10 +2,12 @@
 
 #include "SessionControl.h"
 #include "../../json/json.h"
+#include "ISUiController.h"
 
 class IAccountManager {
 public:
 	virtual void setSessionControl(SessionControl* control) = 0;
+	virtual void setUiControl(ISUiController* control) = 0;
 
     // JSON based callback methods
 	virtual void handleRegisterContact(Json::Value data, std::string from) = 0;
@@ -17,4 +19,5 @@ public:
 	virtual void handleCreateConference(Json::Value data, std::string from) = 0;
 	virtual void handleGetAllContact(std::string from) = 0;
 	virtual void handleGetAllConference(Json::Value data, std::string from) = 0;
+	virtual void handleDeleteConference(Json::Value data, std::string from) = 0;
 };
