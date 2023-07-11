@@ -73,14 +73,15 @@ void CContactRegisterDlg::OnBnClickedMfcbtnSearch()
 	
 	if (!result_list.empty()) {
 		m_ltContactNames.DeleteAllItems();
-		int num = m_ltContactNames.GetItemCount();
+
+		int itemIndex = 0;
 
 		m_ltContactNames.LockWindowUpdate();
 		for (ContactData p : result_list) {
-			m_ltContactNames.InsertItem(num, CString(p.cid.c_str()));
+			int num = m_ltContactNames.InsertItem(itemIndex, CString(p.cid.c_str()));
 			m_ltContactNames.SetItemText(num, 1, CString(p.email.c_str()));
 			m_ltContactNames.SetItemText(num, 2, CString(p.name.c_str()));
-			num++;
+			itemIndex++;
 		}
 		m_ltContactNames.UnlockWindowUpdate();
 	}
