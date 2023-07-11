@@ -1,5 +1,5 @@
-﻿#include <gst/gst.h>
-#include "sendMain.h"
+﻿#include "sendMain.h"
+#include <gst/gst.h>
 
 #define H_264_TUNE_NONE         (0x00000000)
 #define H_264_TUNE_STILLIMAGE   (0x00000001)
@@ -15,47 +15,27 @@ GstElement* gSendPipeline;
 // Create GStreamer pipline elements for video
 GstElement* gSendVideoSrc;
 GstElement* gSendVideoScale;
-GstElement* gSendVideoCapsFilter;
-GstElement* gSendVideoEnc;
-GstElement* gSendVideoPay;
+GstElement* gSendVideoResCaps;
+GstElement* gSendVideoH264Enc;
+GstElement* gSendVideoRTPH264Pay;
+GstElement* gSendVideoSRTPEnc;
+GstElement* gSendVideoSRTPCaps;
+GstElement* gSendVideoQueue;
 GstElement* gSendVideoSink;
 
 // Create GStreamer pipline elements for audio
-GstElement* gSendAudioSrc;
-GstElement* gSendAudioWebRTC;
+GstElement* gSendAudioSrc; 
 GstElement* gSendAudioConv;
 GstElement* gSendAudioResample;
 GstElement* gSendAudioOpusenc;
-GstElement* gSendAudioPay;
+GstElement* gSendAudioRTPOpusPay;
+GstElement* gSendAudioSRTPEnc;
+GstElement* gSendAudioSRTPCaps;
+GstElement* gSendAudioQueue;
 GstElement* gSendAudioSink;
 
-// level 요소의 메시지 처리 콜백 함수
-static gboolean handle_level_message(GstBus* bus, GstMessage* message, gpointer user_data) {
-    if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_ELEMENT) {
-        const GstStructure* structure = gst_message_get_structure(message);
-        if (gst_structure_has_name(structure, "level")) {
-            // 볼륨 레벨 정보 가져오기
-            const GValue* rms_value = gst_structure_get_value(structure, "rms");
-            const GValue* peak_value = gst_structure_get_value(structure, "peak");
-
-            if (rms_value != NULL && peak_value != NULL) {
-                if (G_VALUE_HOLDS_DOUBLE(rms_value) && G_VALUE_HOLDS_DOUBLE(peak_value)) {
-                    gdouble rms = g_value_get_double(rms_value);
-                    gdouble peak = g_value_get_double(peak_value);
-
-                    // 볼륨 레벨 출력
-                    g_print("RMS level: %f, Peak level: %f\n", rms, peak);
-                }
-                else {
-                    g_print("Invalid value type for rms or peak\n");
-                }
-            }
-        }
-    }
-
-    return TRUE;
-}
-
+GstCaps* gCaps;
+GstPad* gSinkpad;
 
 void changeVideoResolution(int width, int height)
 {
@@ -68,14 +48,14 @@ void changeVideoResolution(int width, int height)
     }
 
     // Set the video resolution using capsfilter
-    GstCaps* caps = gst_caps_new_simple("video/x-raw",
+    gCaps = gst_caps_new_simple("video/x-raw",
         "width", G_TYPE_INT, width,
         "height", G_TYPE_INT, height,
         "framerate", GST_TYPE_FRACTION, 30, 1,
         NULL);
 
-    g_object_set(gSendVideoCapsFilter, "caps", caps, NULL);
-    gst_caps_unref(caps);
+    g_object_set(gSendVideoResCaps, "caps", gCaps, NULL);
+    gst_caps_unref(gCaps);
 
     // Pipeline replay(?)
     ret = gst_element_set_state(gSendPipeline, GST_STATE_PLAYING);
@@ -95,42 +75,77 @@ int sendMain()
 
     // Create GStreamer pipline elements for video
     gSendVideoSrc = gst_element_factory_make("mfvideosrc", "videoSrc");
-    gSendVideoScale = gst_element_factory_make("videoscale", "VideoScale");
-    gSendVideoCapsFilter = gst_element_factory_make("capsfilter", "videoCapsFilter");
-    gSendVideoEnc = gst_element_factory_make("x264enc", "videoEnc");
-    gSendVideoPay = gst_element_factory_make("rtph264pay", "videoPay");
+    gSendVideoScale = gst_element_factory_make("videoscale", "videoScale");
+    gSendVideoResCaps = gst_element_factory_make("capsfilter", "videoResCaps");
+    gSendVideoH264Enc = gst_element_factory_make("x264enc", "videoEnc");
+    gSendVideoRTPH264Pay = gst_element_factory_make("rtph264pay", "videoPay");
+    gSendVideoSRTPEnc = gst_element_factory_make("srtpenc", "videoEncrypt");
+    gSendVideoSRTPCaps = gst_element_factory_make("capsfilter", "videoSRTPCaps");
+    gSendVideoQueue = gst_element_factory_make("queue", "videoQueue");
     gSendVideoSink = gst_element_factory_make("udpsink", "videoSink");
 
     // Create GStreamer pipline elements for audio
     gSendAudioSrc = gst_element_factory_make("autoaudiosrc", "audioSrc");
     gSendAudioConv = gst_element_factory_make("audioconvert", "audioConv");
-    gSendAudioWebRTC = gst_element_factory_make("webrtcdsp", "AudioWebRTC");
     gSendAudioResample = gst_element_factory_make("audioresample", "audioResample");
     gSendAudioOpusenc = gst_element_factory_make("opusenc", "audioOpusenc");
-    gSendAudioPay = gst_element_factory_make("rtpopuspay", "audioPay");
+    gSendAudioRTPOpusPay = gst_element_factory_make("rtpopuspay", "audioPay");
+    gSendAudioSRTPEnc = gst_element_factory_make("srtpenc", "audioEncrypt");
+    gSendAudioSRTPCaps = gst_element_factory_make("capsfilter", "audioSRTPCaps");
+    gSendAudioQueue = gst_element_factory_make("queue", "audioQueue");
     gSendAudioSink = gst_element_factory_make("udpsink", "audioSink");
 
     // Add element to pipeline
-    gst_bin_add_many(GST_BIN(gSendPipeline), gSendVideoSrc, gSendVideoScale, gSendVideoCapsFilter, gSendVideoEnc, gSendVideoPay, gSendVideoSink,
-        gSendAudioSrc, gSendAudioConv, gSendAudioResample, gSendAudioOpusenc, gSendAudioPay, gSendAudioSink, NULL);
+    gst_bin_add_many(GST_BIN(gSendPipeline),
+        gSendVideoSrc, gSendVideoScale, gSendVideoResCaps, gSendVideoH264Enc, gSendVideoRTPH264Pay, gSendVideoSRTPEnc, gSendVideoSRTPCaps, gSendVideoQueue, gSendVideoSink,
+        gSendAudioSrc, gSendAudioConv, gSendAudioResample, gSendAudioOpusenc, gSendAudioRTPOpusPay, gSendAudioSRTPEnc, gSendAudioSRTPCaps, gSendAudioQueue, gSendAudioSink,
+        NULL);
 
     // linking elements for video
-    gst_element_link_many(gSendVideoSrc, gSendVideoScale, gSendVideoCapsFilter, gSendVideoEnc, gSendVideoPay, gSendVideoSink, NULL);
+    gst_element_link_many(
+        gSendVideoSrc, gSendVideoScale, gSendVideoResCaps, gSendVideoH264Enc, gSendVideoRTPH264Pay, gSendVideoSRTPEnc, gSendVideoSRTPCaps, gSendVideoQueue, gSendVideoSink,
+        NULL);
 
     // linking elements for audio
-    gst_element_link_many(gSendAudioSrc, gSendAudioConv, gSendAudioResample, gSendAudioOpusenc, gSendAudioPay, gSendAudioSink, NULL);
-
-    // Set the receiving IP and port for video
-    g_object_set(gSendVideoSink, "host", "127.0.0.1", "port", 5001, NULL);
-
-    // Set the receiving IP and port for audio
-    g_object_set(gSendAudioSink, "host", "127.0.0.1", "port", 5002, NULL);
+    gst_element_link_many(
+        gSendAudioSrc, gSendAudioConv, gSendAudioResample, gSendAudioOpusenc, gSendAudioRTPOpusPay, gSendAudioSRTPEnc, gSendAudioSRTPCaps, gSendAudioQueue, gSendAudioSink,
+        NULL);
 
     // set up laptop camera
     g_object_set(gSendVideoSrc, "device-index", 0, NULL);  // 0은 첫 번째 카메라를 나타냅니다.
 
+    // Set the video resolution using capsfilter
+    gCaps = gst_caps_new_simple(
+        "video/x-raw",
+        "width", G_TYPE_INT, 1280,
+        "height", G_TYPE_INT, 720,
+        "framerate", GST_TYPE_FRACTION, 30, 1,
+        NULL);
+    g_object_set(gSendVideoResCaps, "caps", gCaps, NULL);
+    gst_caps_unref(gCaps);
+
     // Set the tune attribute of the x264enc element to "zerolatency"
-    g_object_set(gSendVideoEnc, "tune", H_264_TUNE_ZEROLATENCY, NULL);
+    g_object_set(gSendVideoH264Enc, "tune", H_264_TUNE_ZEROLATENCY, NULL);
+
+    // Set the SRTP encryption key for video
+    static guint8 data[30];
+    memset(data, 0, sizeof(data));
+    static guint size = sizeof(data);
+    GstBuffer* videoKeyBuffer = gst_buffer_new_wrapped(data, size);
+
+    g_object_set(gSendVideoSRTPEnc, "key", videoKeyBuffer, NULL);
+    g_object_set(gSendVideoSRTPEnc, "rtp-auth", 2, NULL);
+    g_object_set(gSendVideoSRTPEnc, "rtp-cipher", 1, NULL);
+    g_object_set(gSendVideoSRTPEnc, "rtcp-auth", 2, NULL);
+    g_object_set(gSendVideoSRTPEnc, "rtcp-cipher", 1, NULL);
+
+    // Set RTP for video
+    gCaps = gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
+    g_object_set(gSendVideoSRTPCaps, "caps", gCaps, NULL);
+    gst_caps_unref(gCaps);
+
+    // Set the receiving IP and port for video
+    g_object_set(gSendVideoSink, "host", "127.0.0.1", "port", 5001, NULL);
 
     // generic (2049)               – Generic audio
     // voice (2048)                 – Voice
@@ -138,18 +153,29 @@ int sendMain()
     // Set the opusenc element's audio-type attribute to "restricted-lowdelay"
     g_object_set(gSendAudioOpusenc, "audio-type", 2051, NULL);
 
-    // Set the video resolution using capsfilter
-    GstCaps* caps = gst_caps_new_simple("video/x-raw",
-        "width", G_TYPE_INT, 1280,
-        "height", G_TYPE_INT, 720,
-        "framerate", GST_TYPE_FRACTION, 30, 1,
-        NULL);
-    g_object_set(gSendVideoCapsFilter, "caps", caps, NULL);
-    gst_caps_unref(caps);
+    // Set RTP for audio
+    gSinkpad = gst_element_get_static_pad(gSendAudioRTPOpusPay, "src");
+    gCaps = gst_caps_from_string("application/x-rtp, media=(string)audio, payload=(int)96");
+    gst_pad_set_caps(gSinkpad, gCaps);
+    gst_caps_unref(gCaps);
+    gst_object_unref(gSinkpad);
 
-    // level 요소에서 발생하는 메시지 처리를 위한 버스 연결
-    GstBus* bus = gst_element_get_bus(gSendPipeline);
-    gst_bus_add_watch(bus, (GstBusFunc)handle_level_message, NULL);
+    // Set the SRTP encryption key for audio
+    GstBuffer* audioKeyBuffer = gst_buffer_new_wrapped(data, size);
+
+    g_object_set(gSendAudioSRTPEnc, "key", audioKeyBuffer, NULL);
+    g_object_set(gSendAudioSRTPEnc, "rtp-auth", 2, NULL);
+    g_object_set(gSendAudioSRTPEnc, "rtp-cipher", 1, NULL);
+    g_object_set(gSendAudioSRTPEnc, "rtcp-auth", 2, NULL);
+    g_object_set(gSendAudioSRTPEnc, "rtcp-cipher", 1, NULL);
+
+    // Set RTP for video
+    gCaps = gst_caps_from_string("application/x-srtp, payload=(int)96, ssrc=(uint)112233, roc=(uint)0");
+    g_object_set(gSendAudioSRTPCaps, "caps", gCaps, NULL);
+    gst_caps_unref(gCaps);
+
+    // Set the receiving IP and port for audio
+    g_object_set(gSendAudioSink, "host", "127.0.0.1", "port", 5002, NULL);
 
     // Pipeline execution
     GstStateChangeReturn ret = gst_element_set_state(gSendPipeline, GST_STATE_PLAYING);

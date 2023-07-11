@@ -16,7 +16,8 @@ IMPLEMENT_DYNCREATE(CCallView, CFormView)
 CCallView::CCallView()
 	: CFormView(IDD_DLG_CALL_VIEW)
 {
-
+    ClientMediaManager* test = ClientMediaManager::getInstance();
+    test->setViewHandler((handleptr)mDisplayBox.GetSafeHwnd());
 }
 
 CCallView::~CCallView()
@@ -29,6 +30,27 @@ void CCallView::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_DISPLAY, mDisplayBox);
 }
 
+// CCallView::OnInitialUpdate 함수 추가
+void CCallView::OnInitialUpdate()
+{
+    CFormView::OnInitialUpdate();
+
+    // mDisplayBox의 윈도우가 생성된 후에 이벤트를 발생시킴
+    PostMessage(WM_MY_WINDOW_CREATED, 0, (LPARAM)mDisplayBox.GetSafeHwnd());
+}
+
+// CCallView::OnMyWindowCreated 함수 추가
+LRESULT CCallView::OnMyWindowCreated(WPARAM wParam, LPARAM lParam)
+{
+    HWND displayBoxHandle = (HWND)lParam;
+
+    // displayBoxHandle을 사용하여 필요한 동작 수행
+    ClientMediaManager* test = ClientMediaManager::getInstance();
+    test->setViewHandler((handleptr)mDisplayBox.GetSafeHwnd());
+
+    return 0;
+}
+
 BEGIN_MESSAGE_MAP(CCallView, CFormView)
 	ON_MESSAGE(UM_VAD_STATE, &CCallView::OnVadNotify)
     ON_BN_CLICKED(IDC_Client_StartCall, &CCallView::OnBnClickedClientStartcall)
@@ -38,6 +60,7 @@ BEGIN_MESSAGE_MAP(CCallView, CFormView)
     ON_BN_CLICKED(IDC_Server_AddClient, &CCallView::OnBnClickedServerAddclient)
     ON_BN_CLICKED(IDC_Server_RemoveClient, &CCallView::OnBnClickedServerRemoveclient)
     ON_BN_CLICKED(IDC_SET_HANDLER, &CCallView::OnBnClickedSetHandler)
+    ON_MESSAGE(WM_MY_WINDOW_CREATED, OnMyWindowCreated)
 END_MESSAGE_MAP()
 
 
@@ -121,7 +144,6 @@ void CCallView::OnBnClickedClientStartcall()
     client_join_info["audioCodec"] = string(CT2CA(client_AudioCodec));
     client_join_info["encryption_alg"] = "TEST_ID";
     client_join_info["encryption_key"] = "TEST_ID";
-    test->setViewHandler((handleptr)mDisplayBox.GetSafeHwnd());
 
     test->startCall(client_join_info);
 

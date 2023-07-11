@@ -97,24 +97,12 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 
 SubElements VideoMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index) {
 	std::string name = get_elements_name(TYPE_INPUT_DEVICE, bin_index, client_index);
-	GstElement* input_element = gst_element_factory_make("ksvideosrc", name.c_str());
+	GstElement* input_element = gst_element_factory_make("mfvideosrc", name.c_str());
 	g_object_set(input_element, "device-index", 0, NULL);
 
-	std::string caps_name = get_elements_name(TYPE_INPUT_CAPS, bin_index, client_index);
-	GstElement* caps_element = gst_element_factory_make("capsfilter", caps_name.c_str());
-
-	GstCaps* caps = gst_caps_new_simple("video/x-raw",
-		"width", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width,
-		"height", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height,
-		"framerate", GST_TYPE_FRACTION, 30, 1,
-		NULL);
-	g_object_set(caps_element, "caps", caps, NULL);
-	gst_caps_unref(caps);
-
 	gst_bin_add(GST_BIN(parent_bin), input_element);
-	gst_bin_add(GST_BIN(parent_bin), caps_element);
-	gst_element_link(input_element, caps_element);
-	return SubElements(input_element, caps_element);
+
+	return SubElements(input_element, input_element);
 };
 
 SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, int bin_index, int client_index) {
@@ -137,10 +125,7 @@ SubElements VideoMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, 
 };
 
 SubElements VideoMediaPipeline::pipeline_make_convert(GstBin* parent_bin, int bin_index, int client_index) {
-	std::string name = get_elements_name(TYPE_CONVERT, bin_index, client_index);
-	GstElement* element = gst_element_factory_make("videoconvert", name.c_str());
-	gst_bin_add(GST_BIN(parent_bin), element);
-	return SubElements(element, element);
+	return SubElements(NULL, NULL);
 }
 
 SubElements VideoMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bin_index, int client_index, int level) {
@@ -152,9 +137,9 @@ SubElements VideoMediaPipeline::pipeline_make_rescale(GstBin* parent_bin, int bi
 
     // Set the video resolution using capsfilter
     GstCaps* caps = gst_caps_new_simple("video/x-raw",
-        "width", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width,
-        "height", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height,
-        "framerate", GST_TYPE_FRACTION, 30, 1,
+		"width", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).width,
+		"height", G_TYPE_INT, kVideoPresets.at(VideoPresetLevel::kVideoPreset5).height,
+		"framerate", GST_TYPE_FRACTION, 30, 1,
         NULL);
     g_object_set(caps_element, "caps", caps, NULL);
     gst_caps_unref(caps);
@@ -168,13 +153,13 @@ SubElements VideoMediaPipeline::pipeline_make_encoding(GstBin* parent_bin, int b
 	std::string encoding_name = get_elements_name(TYPE_ENCODING, bin_index, client_index);
     GstElement* encoding_element = gst_element_factory_make("x264enc", encoding_name.c_str());
 	  g_object_set(encoding_element,
-		"tune", H_264_TUNE_ZEROLATENCY,
-		"key-int-max", 30,
-		"bitrate", kVideoPresets.at(VideoPresetLevel::kVideoPreset5).bitrate
-		, NULL);
+		  "key-int-max", 30,
+		  "bitrate", kVideoPresets.at(VideoPresetLevel::kVideoPreset5).bitrate,
+		  NULL);
 
 	std::string rtp_name = get_elements_name(TYPE_ENCODING_RTP, bin_index, client_index);
     GstElement* rtp_element = gst_element_factory_make("rtph264pay", rtp_name.c_str());
+
 	gst_bin_add(GST_BIN(parent_bin), encoding_element);
 	gst_bin_add(GST_BIN(parent_bin), rtp_element);
 	gst_element_link(encoding_element, rtp_element);
@@ -238,7 +223,8 @@ SubElements VideoMediaPipeline::pipeline_make_udp_src(GstBin* parent_bin, int bi
 
 	std::string name = get_elements_name(TYPE_UDP_CAPS, bin_index, client_index);
 	GstElement* videoCapsfilter = gst_element_factory_make("capsfilter", name.c_str());
-	GstCaps* videoCaps = gst_caps_from_string("application/x-rtp, media=(string)video, payload=(int)96");
+	GstCaps* videoCaps = 
+		gst_caps_from_string("application/x-srtp, encoding-name=(string)H264, payload=(int)96, ssrc=(uint)112233, srtp-key=(buffer)000000000000000000000000000000000000000000000000000000000000, srtp-cipher=(string)aes-128-icm, srtp-auth=(string)hmac-sha1-80, srtcp-cipher=(string)aes-128-icm, srtcp-auth=(string)hmac-sha1-80, roc=(uint)0");
 	g_object_set(G_OBJECT(videoCapsfilter), "caps", videoCaps, NULL);
 	gst_caps_unref(videoCaps);
 
