@@ -143,6 +143,8 @@
 #define IDD_DLG_CONTACT_REGISTER        358
 #define IDD_RESET_PASSWORD              361
 #define IDD_DLG_UPDATE_ACCOUNT          366
+#define IDD_DIALOG1                     369
+#define IDD_DLG_MSGBOX                  369
 #define ID_VIEW_CALLVIEW                400
 #define IDC_ED_EMAIL_ID                 1000
 #define IDC_ED_PASSWORD                 1001
@@ -224,7 +226,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        369
+#define _APS_NEXT_RESOURCE_VALUE        371
 #define _APS_NEXT_COMMAND_VALUE         32781
 #define _APS_NEXT_CONTROL_VALUE         1041
 #define _APS_NEXT_SYMED_VALUE           310

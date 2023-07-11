@@ -226,6 +226,7 @@
     <ClInclude Include="IServerMediaManager.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="ManageUserAccountDlg.h" />
+    <ClInclude Include="MessageBoxDlg.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PropertiesWnd.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="CommandLineInterface.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="ManageUserAccountDlg.cpp" />
+    <ClCompile Include="MessageBoxDlg.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
