@@ -169,7 +169,7 @@ void TelephonyManager::manageConferenceLifetime(std::string connId) {
 
 	while (true) {
 		std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-		std::cout << displayConn << "current time: " << timePrint(now) << endl;
+		std::cout << displayConn << "Alive(" << timePrint(now) << ")" << std::endl;
 
 		// wait 1 minute
 		std::this_thread::sleep_for(std::chrono::minutes(1));
@@ -346,6 +346,7 @@ void TelephonyManager::handleCreateConference(Json::Value data) {
 }
 
 void TelephonyManager::postConferenceCreated(std::string connId, std::string myIp) {
+	std::cout << "handleCreateConference()/connId[" << connId << "]" << std::endl;
 	Connection conn = connectionMap[connId];
 	std::thread room(&TelephonyManager::manageConferenceLifetime, instance, connId);
 	room.detach();
@@ -355,8 +356,6 @@ void TelephonyManager::postConferenceCreated(std::string connId, std::string myI
 	media["conferenceSize"] = conn.getConferenceList().size();
 	media["myIp"] = myIp;
 	ServerMediaManager::getInstance()->startCall(media);
-
-	std::cout << "handleCreateConference()/connId[" << connId << "]" << std::endl;
 }
 
 void TelephonyManager::removeConference(std::string connId) {
