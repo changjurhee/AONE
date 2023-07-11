@@ -67,8 +67,17 @@ void CVoIPClientView::OnDraw(CDC* /*pDC*/)
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-
+	
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
+	CRect rectClient;
+	GetClientRect(rectClient);
+	CPoint StartPos = rectClient.CenterPoint();
+
+	// m_DisplayBox Size 
+	int bmWidth = 640;
+	int bmHeight = 480;
+	m_DisplayBox.SetWindowPos(NULL, StartPos.x - bmWidth / 2, StartPos.y - bmHeight / 2, bmWidth, bmHeight, SWP_DRAWFRAME);
+
 }
 
 
@@ -189,8 +198,6 @@ void CVoIPClientView::OnPaint()
 	dc.BitBlt(StartPos.x - bmpInfo.bmWidth / 2, StartPos.y - bmpInfo.bmHeight / 2, bmpInfo.bmWidth, bmpInfo.bmHeight, &MemDC, 0, 0, SRCCOPY);
 
 	MemDC.SelectObject(pOldBmp);
-
-	m_DisplayBox.SetWindowPos(NULL, StartPos.x - bmpInfo.bmWidth / 2, StartPos.y - bmpInfo.bmHeight / 2, bmpInfo.bmWidth, bmpInfo.bmHeight, SWP_DRAWFRAME);
 }
 
 
@@ -209,6 +216,8 @@ int CVoIPClientView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
 	CRect rectDummy;
 	rectDummy.SetRectEmpty();
+	GetClientRect(rectDummy);
+	CPoint StartPos = rectDummy.CenterPoint();
 
 	// 버튼을 만듭니다.
 	const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE;
