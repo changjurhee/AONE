@@ -599,8 +599,8 @@ void MediaPipeline::add_client_udp_remove_me(GstBin* parent_bin, int bin_index, 
 	SubElements adder_pair = pipeline_make_adder(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, adder_pair);
 
-	SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index, false);
-	ret_sub_elements = connect_subElements(ret_sub_elements, queue_pair);
+	//SubElements queue_pair = pipeline_make_queue(parent_bin, bin_index, client_index, false);
+	//ret_sub_elements = connect_subElements(ret_sub_elements, queue_pair);
 
 	SubElements convert_pair = pipeline_make_convert(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, convert_pair);
@@ -615,14 +615,17 @@ void MediaPipeline::add_client_udp_remove_me(GstBin* parent_bin, int bin_index, 
 	SubElements udp_sink_pair = pipeline_make_udp_sink(parent_bin, bin_index, client_index);
 	ret_sub_elements = connect_subElements(ret_sub_elements, udp_sink_pair);
 
-	for (const auto& item : client_id_list_) {
-		bool actived_client = item.second.second;
-		int other_client_id = item.second.first;
-		if (!actived_client || other_client_id == client_index)
-			continue;
 
+	//for (const auto& item : client_id_list_) {
+	//	bool actived_client = item.second.second;
+	//	int other_client_id = item.second.first;
+	//	if (!actived_client || other_client_id == client_index)
+	//		continue;
+	for (int other_client_id = 0; other_client_id < client_index; other_client_id++) {
 		SubElements other_adder = get_elements_by_name(parent_bin, TYPE_ADDER, bin_index, other_client_id);
 		SubElements other_tee = get_elements_by_name(parent_bin, TYPE_TEE, bin_index, other_client_id);
+
+		if (other_adder.first == NULL && other_adder.first == NULL) continue;
 
 		SubElements convert_1 = pipeline_make_convert(parent_bin, bin_index, REMOVE_ME_CONVERT_FLAG + client_index* REMOVE_ME_SHIFT+ other_client_id);
 		SubElements convert_2 = pipeline_make_convert(parent_bin, bin_index, REMOVE_ME_CONVERT_FLAG + other_client_id * REMOVE_ME_SHIFT + client_index);
