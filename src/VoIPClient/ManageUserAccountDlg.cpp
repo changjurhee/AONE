@@ -123,13 +123,14 @@ LRESULT CManageUserAccountDlg::processUiControlNotify(WPARAM wParam, LPARAM lPar
 	{
 	case MSG_RESPONSE_REGISTER:
 		if (lParam == 0) {
-			cout << "SUCCESS" << endl;
 			MessageBox(_T("SignIn Success"));
 			EndDialog((INT_PTR)KResponse::SIGNIN_COMPLETE);
-		}
-		else {
-			cout << "FAILED" << endl;
-			MessageBox(_T("SignIn FAILED"));
+		} else if ( lParam == 1)  {
+			MessageBox(_T("FAIL : Email or CID already exists"));
+		} else if (lParam == 2) {
+			MessageBox(_T("FAIL : Mandatory items are missing"));
+		} else {
+			MessageBox(_T("FAIL : Unknown error"));
 		}
 		break;
 	default:
