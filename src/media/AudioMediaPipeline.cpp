@@ -14,8 +14,8 @@ AudioMediaPipeline::AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_
 SubElements AudioMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index)
 {
 	std::string name = get_elements_name(TYPE_INPUT_DEVICE, bin_index, client_index);
-	GstElement* element = gst_element_factory_make("wasapi2src", name.c_str());
-	g_object_set(element, "low-latency", TRUE, NULL);
+	GstElement* element = gst_element_factory_make("autoaudiosrc", name.c_str());
+	//g_object_set(element, "low-latency", TRUE, NULL);
 
 	std::string cname = get_elements_name(TYPE_CONVERT, 1, client_index, "to1channel_for_vad");
 	GstElement* celement = gst_element_factory_make("audioconvert", cname.c_str());
