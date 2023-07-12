@@ -75,7 +75,7 @@ LRESULT CVoIPNewClient::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 		int result = res->result;
 		int cause = res->cause;
 		if (result == CallState::STATE_DISCONNECTED) {
-			if (result == CallState::STATE_ACTIVE) GetDocument()->SetConnection(FALSE);
+			GetDocument()->SetConnection(FALSE);
 			OnPaint();
 		}
 		break;

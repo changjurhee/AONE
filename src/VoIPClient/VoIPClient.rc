@@ -271,26 +271,24 @@ IDR_MAINFRAME MENU
 BEGIN
     POPUP "Setting(&S)"
     BEGIN
-        MENUITEM "로그인(&L)",                     ID_TEST_LOG_IN
-        MENUITEM "로그아웃",                        ID_TEST_LOG_OUT
+        MENUITEM "Login(&L)",                   ID_TEST_LOG_IN
+        MENUITEM "Logout",                      ID_TEST_LOG_OUT
         MENUITEM SEPARATOR
-        MENUITEM "사용자 등록",                      ID_TEST_CREATE_USER
-        MENUITEM "사용자 정보 수정",                   ID_TEST_UPDATE_USER
+        MENUITEM "User Modification",           ID_TEST_UPDATE_USER
         MENUITEM SEPARATOR
-        MENUITEM "Test",                        ID_SETTING_TEST
     END
-    POPUP "보기(&V)"
+    POPUP "View(&V)"
     BEGIN
-        POPUP "도구 모음 및 도킹 창(&T)"
+        POPUP "Tools(&T)"
         BEGIN
             MENUITEM "<자리 표시자>",                    ID_VIEW_TOOLBAR
         END
-        MENUITEM "상태 표시줄(&S)",                  ID_VIEW_STATUS_BAR
-        MENUITEM "캡션 표시줄(&C)",                  ID_VIEW_CAPTION_BAR
+        MENUITEM "Status(&S)",                  ID_VIEW_STATUS_BAR
+        MENUITEM "Caption(&C)",                 ID_VIEW_CAPTION_BAR
     END
-    POPUP "도움말(&H)"
+    POPUP "Help(&H)"
     BEGIN
-        MENUITEM "VoIPClient 정보(&A)...",        ID_APP_ABOUT
+        MENUITEM "VoIPClient Information(&A)...", ID_APP_ABOUT
     END
 END
 

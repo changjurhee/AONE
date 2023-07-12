@@ -58,8 +58,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_VIEW_PROPERTIESWND, &CMainFrame::OnViewPropertiesWindow)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_PROPERTIESWND, &CMainFrame::OnUpdateViewPropertiesWindow)
 	ON_WM_SETTINGCHANGE()
-	ON_COMMAND(ID_TEST_LOG_IN, &CMainFrame::OnUserLogIn)
-	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_IN, &CMainFrame::OnUpdateUserLogIn)
+	/*ON_COMMAND(ID_TEST_LOG_IN, &CMainFrame::OnUserLogIn)
+	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_IN, &CMainFrame::OnUpdateUserLogIn)*/
 	ON_COMMAND(ID_TEST_LOG_OUT, &CMainFrame::OnUserLogOut)
 	ON_UPDATE_COMMAND_UI(ID_TEST_LOG_OUT, &CMainFrame::OnUpdateUserLogOut)
 	ON_COMMAND(ID_SETTING_TEST, &CMainFrame::OnTestDlg)
@@ -237,11 +237,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_SORTING_GROUPBYTYPE);
 
 	// @ test menu
-	lstBasicCommands.AddTail(ID_TEST_LOG_IN);
+	//lstBasicCommands.AddTail(ID_TEST_LOG_IN);
 	lstBasicCommands.AddTail(ID_TEST_LOG_OUT);
-	lstBasicCommands.AddTail(ID_TEST_CREATE_USER);
+	//lstBasicCommands.AddTail(ID_TEST_CREATE_USER);
 	lstBasicCommands.AddTail(ID_TEST_UPDATE_USER);
-	lstBasicCommands.AddTail(ID_SETTING_TEST);
+	//lstBasicCommands.AddTail(ID_SETTING_TEST);
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
 
@@ -842,7 +842,7 @@ LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 			dlg.DoModal();
 		}
 		else if (result == CallState::STATE_DISCONNECTED) {
-			if (result == CallState::STATE_ACTIVE) pDoc->SetConnection(FALSE);
+			pDoc->SetConnection(FALSE);
 			pView->OnPaint();
 			MessageBox(_T("DISCONNECTED"));
 		}
