@@ -21,6 +21,8 @@ struct VideoPresetType {
 		level(VideoPresetLevel::kVideoPresetOff), width(0), height(0), bitrate(0) {}
 	VideoPresetType(VideoPresetLevel plevel, int pwidth, int pheight, int pbitrate):
 		level(plevel), width(pwidth), height(pheight), bitrate(pbitrate) {}
+	static VideoPresetLevel Lower(VideoPresetLevel level);
+	static VideoPresetLevel Upper(VideoPresetLevel level);
 
 	VideoPresetLevel level;
 	int width;

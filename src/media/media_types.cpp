@@ -13,4 +13,18 @@ const std::map<VideoPresetLevel, VideoPresetType> kVideoPresets = {
 	{VideoPresetLevel::kVideoPreset5, {VideoPresetLevel::kVideoPreset5, 640, 480, 1024}}
 };
 
+VideoPresetLevel VideoPresetType::Lower(VideoPresetLevel level) {
+	int leveli = static_cast<int>(level);
+	if (level > VideoPresetLevel::kVideoPresetOff) leveli--;
+
+	return static_cast<VideoPresetLevel>(leveli);
+}
+
+VideoPresetLevel VideoPresetType::Upper(VideoPresetLevel level) {
+	int leveli = static_cast<int>(level);
+	if (level < VideoPresetLevel::kVideoPresetMax) leveli++;
+
+	return static_cast<VideoPresetLevel>(leveli);
+}
+
 }
