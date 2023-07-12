@@ -842,7 +842,7 @@ LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 			dlg.DoModal();
 		}
 		else if (result == CallState::STATE_DISCONNECTED) {
-			if (result == CallState::STATE_ACTIVE) pDoc->SetConnection(FALSE);
+			pDoc->SetConnection(FALSE);
 			pView->OnPaint();
 			MessageBox(_T("DISCONNECTED"));
 		}
