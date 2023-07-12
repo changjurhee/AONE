@@ -180,4 +180,9 @@ void ServerMediaManager::endCall(Json::Value room_remove_info)
 	return end_call_with_rid(rid);
 };
 
+bool ServerMediaManager::notifyVideoQualityChangeNeeded(std::string rid, VideoPresetLevel level) {
+	sessionCallback_->notifyVideoQualityChanged(rid, static_cast<int>(level));
+	return true;
+}
+
 } // namespace media

@@ -26,6 +26,11 @@ void CContactListView::DoDataExchange(CDataExchange* pDX)
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LT_CONTACT, m_ltContactNames);
 	DDX_Control(pDX, IDC_LT_CONFERENCE, m_ltConferenceNames);
+	DDX_Control(pDX, IDC_MFCBTN_CHANGE_STATE, m_btnEnable);
+	DDX_Control(pDX, IDC_MFCBTN_CHANGE_DISABLE, m_btnDisable);
+	DDX_Control(pDX, IDC_MFCBTN_DELETE, m_btnDelete);
+	DDX_Control(pDX, IDC_MFCBTN_REFRESH_CONTACT, m_btnContactRefresh);
+	DDX_Control(pDX, IDC_MFCBTN_REFRESH_CONF, m_btnConfRefresh);
 }
 
 BEGIN_MESSAGE_MAP(CContactListView, CFormView)
@@ -36,6 +41,7 @@ BEGIN_MESSAGE_MAP(CContactListView, CFormView)
 	ON_BN_CLICKED(IDC_MFCBTN_CHANGE_DISABLE, &CContactListView::OnBnClickedMfcbtnChangeDisable)
 	ON_BN_CLICKED(IDC_MFCBTN_REFRESH_CONTACT, &CContactListView::OnBnClickedMfcbtnRefreshContact)
 	ON_BN_CLICKED(IDC_MFCBTN_REFRESH_CONF, &CContactListView::OnBnClickedMfcbtnRefreshConf)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -70,7 +76,8 @@ void CContactListView::OnInitialUpdate()
 	m_ltContactNames.InsertColumn(0, TEXT("ID"), LVCFMT_CENTER, rt.Width() * 10 / 100);
 	m_ltContactNames.InsertColumn(1, TEXT("EMAIL"), LVCFMT_CENTER, rt.Width() * 40 / 100);
 	m_ltContactNames.InsertColumn(2, TEXT("NAME"), LVCFMT_CENTER, rt.Width() * 30 / 100);
-	m_ltContactNames.InsertColumn(3, TEXT("ENABLED"), LVCFMT_CENTER, rt.Width() * 20 / 100);
+	m_ltContactNames.InsertColumn(3, TEXT("ENABLED"), LVCFMT_CENTER, rt.Width() * 10 / 100);
+	m_ltContactNames.InsertColumn(4, TEXT("LOGIN"), LVCFMT_CENTER, rt.Width() * 10 / 100);
 
 	m_ltConferenceNames.GetWindowRect(&rt);
 	m_ltConferenceNames.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
@@ -79,6 +86,7 @@ void CContactListView::OnInitialUpdate()
 	m_ltConferenceNames.InsertColumn(2, TEXT("START"), LVCFMT_CENTER, rt.Width() * 20 / 100);
 	m_ltConferenceNames.InsertColumn(3, TEXT("END"), LVCFMT_CENTER, rt.Width() * 20 / 100);
 
+	SUiController::getInstance()->setCallbackWnd(this);
 	UpdateContactView();
 	UpdateConferenceView();
 }
@@ -142,6 +150,7 @@ void CContactListView::UpdateContactView()
 			m_ltContactNames.SetItemText(num, 1, CString(p.email.c_str()));
 			m_ltContactNames.SetItemText(num, 2, CString(p.name.c_str()));
 			m_ltContactNames.SetItemText(num, 3, CString(p.enabled ? "TRUE" : "FALSE"));
+			m_ltContactNames.SetItemText(num, 4, CString(p.login ? "O" : ""));
 			itemIndex++;
 		}
 		m_ltContactNames.UnlockWindowUpdate();
@@ -192,3 +201,12 @@ LRESULT CContactListView::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 	return LRESULT();
 }
 
+HBRUSH CContactListView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CFormView::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO:  여기서 DC의 특성을 변경합니다.
+
+	// TODO:  기본값이 적당하지 않으면 다른 브러시를 반환합니다.
+	return (HBRUSH)GetStockObject(WHITE_BRUSH);
+}

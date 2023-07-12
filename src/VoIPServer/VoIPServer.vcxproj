@@ -285,6 +285,7 @@
     <Midl Include="VoIPServer.idl" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resource.hm" />
     <None Include="res\VoIPServer.rc2" />
     <None Include="VoIPServer.reg" />
   </ItemGroup>
@@ -296,6 +297,11 @@
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
     <Image Include="res\class_view_hc.ico" />
+    <Image Include="res\connected.bmp" />
+    <Image Include="res\delete.bmp" />
+    <Image Include="res\disable.bmp" />
+    <Image Include="res\disconnected.bmp" />
+    <Image Include="res\enable.bmp" />
     <Image Include="res\explorer.bmp" />
     <Image Include="res\explorer_hc.bmp" />
     <Image Include="res\fileview.bmp" />
@@ -326,6 +332,7 @@
     <Image Include="res\properties_hc.bmp" />
     <Image Include="res\properties_wnd.ico" />
     <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\refresh.bmp" />
     <Image Include="res\sort.bmp" />
     <Image Include="res\sort_hc.bmp" />
     <Image Include="res\Toolbar.bmp" />

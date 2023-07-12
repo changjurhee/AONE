@@ -7,6 +7,7 @@ struct ContactData {
 	std::string email;
 	std::string name;
 	bool enabled;
+	bool login;
 };
 
 struct ConferenceData {
