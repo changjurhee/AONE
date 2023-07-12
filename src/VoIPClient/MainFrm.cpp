@@ -806,14 +806,14 @@ void SetForegroundWindowForce(HWND hWnd)
 	DWORD My = ::GetWindowThreadProcessId(hWnd, NULL);
 	if (!::AttachThreadInput(Strange, My, TRUE))
 	{
-		ASSERT(0);
+		;// ASSERT(0);
 	}
 	::SetForegroundWindow(hWnd);
 	::BringWindowToTop(hWnd);
 	::ShowWindow(hWnd, SW_RESTORE);
 	if (!::AttachThreadInput(Strange, My, FALSE))
 	{
-		ASSERT(0);
+		;// ASSERT(0);
 	}
 }
 
@@ -845,6 +845,7 @@ LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 			if (result == CallState::STATE_ACTIVE) pDoc->SetConnection(FALSE);
 			pView->OnPaint();
 			MessageBox(_T("DISCONNECTED"));
+			pNewView->OnPaint();
 		}
 		break;
 	}

@@ -19,5 +19,6 @@ public:
 	virtual void handleGetAllContact(Json::Value data) = 0;
 	virtual void handleGetAllMyConference(Json::Value data) = 0;
 	virtual void handleUpdateMyContact(Json::Value data) = 0;
+	virtual void handleCreateConference(Json::Value data) = 0;
 	virtual void handleDeleteConference(Json::Value data) = 0;
 };

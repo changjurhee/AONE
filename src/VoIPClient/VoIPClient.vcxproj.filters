@@ -67,9 +67,6 @@
     <ClCompile Include="..\media\MediaPipeline.cpp">
       <Filter>media</Filter>
     </ClCompile>
-    <ClCompile Include="ServerMediaManager.cpp">
-      <Filter>media</Filter>
-    </ClCompile>
     <ClCompile Include="ClientMediaManager.cpp">
       <Filter>media</Filter>
     </ClCompile>
@@ -116,6 +113,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\media\media_config.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\ServerMediaManager.cpp">
       <Filter>media</Filter>
     </ClCompile>
     <ClCompile Include="VoIPNewClient.cpp">
@@ -204,15 +204,6 @@
     <ClInclude Include="..\media\audio_buffer.h">
       <Filter>media</Filter>
     </ClInclude>
-    <ClInclude Include="session\ISessionMediaCallback.h">
-      <Filter>Session</Filter>
-    </ClInclude>
-    <ClInclude Include="IServerMediaManager.h">
-      <Filter>media</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerMediaManager.h">
-      <Filter>media</Filter>
-    </ClInclude>
     <ClInclude Include="..\media\AudioMediaPipeline.h">
       <Filter>media</Filter>
     </ClInclude>
@@ -279,8 +270,17 @@
     <ClInclude Include="..\media\media_config.h">
       <Filter>media</Filter>
     </ClInclude>
+    <ClInclude Include="..\media\IServerMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
     <ClInclude Include="VoIPNewClient.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\ServerMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="session\IRequestSessionMediaCallback.h">
+      <Filter>Session</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -500,6 +500,7 @@
     <None Include="res\VoIPClient.rc2">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="res\sound1.bin" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Session">

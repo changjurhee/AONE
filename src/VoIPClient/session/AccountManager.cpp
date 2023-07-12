@@ -199,6 +199,19 @@ void AccountManager::createConference(long dateAndTime, long duration, std::list
 	sessionControl->sendData(jsonString.c_str());
 }
 
+void AccountManager::handleCreateConference(Json::Value data) {
+	int result = data["result"].asInt();
+	int cause = data["cause"].asInt();
+
+	if (result == 0) {
+		return;
+	}
+
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_CREATE_CONF, cause);
+	}
+}
+
 void AccountManager::getAllConference(std::string cid)
 {
 	Json::Value root;

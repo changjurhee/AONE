@@ -4,7 +4,7 @@
 #include <ctime>
 
 #include "TelephonyManager.h"
-#include "../ServerMediaManager.h"
+#include "media/ServerMediaManager.h"
 
 TelephonyManager* TelephonyManager::instance = nullptr;
 Json::FastWriter fastWriter;
@@ -365,6 +365,14 @@ void TelephonyManager::initializeConference(std::string myIp)
 }
 
 void TelephonyManager::handleCreateConference(Json::Value data) {
+	Json::Value payload;
+	if (data["duration"].asInt64() > 36000) {
+		std::cout << "CreateConference Failed! Invaild parameters" << std::endl;
+		payload["result"] = 1;
+		payload["cause"] = 1;
+		sessionControl->sendData(206, payload, data["host"].asString());
+		return;
+	}
 	std::string connId = generateConnectionId();
 	Connection conn(connId, data);
 	connectionMap.insert({ connId, conn });
@@ -374,7 +382,6 @@ void TelephonyManager::handleCreateConference(Json::Value data) {
 
 	logConnections();
 
-	Json::Value payload;
 	payload["result"] = 0;
 	payload["rid"] = connId;
 	sessionControl->sendData(206, payload, data["host"].asString()); // Send feedback

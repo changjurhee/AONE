@@ -10,7 +10,7 @@
 #include "TestCallDlg.h"
 
 #include "ClientMediaManager.h"
-#include "ServerMediaManager.h"
+#include "media/ServerMediaManager.h"
 
 using namespace media;
 

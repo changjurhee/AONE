@@ -401,6 +401,13 @@ LRESULT CSessionView::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 			case 3: MessageBox(_T("You are not invited")); break;
 		}
 		break;
+	case MSG_RESPONSE_CREATE_CONF:
+		switch (lParam) {
+		case 1: MessageBox(_T("Invaild Parameter")); break;
+		default:
+			break;
+		}
+		break;
 	case MSG_RESPONSE_DATA:
 		if (lParam == 0) {
 			FillSessionView();

@@ -138,6 +138,10 @@ void SessionManager::proc_recv() {
 				msgStr = "GET_ALL_CONFERENCE";
 				accountManager->handleGetAllMyConference(payloads);
 				break;
+			case 206: // 206 : CREATE_CONFERENCE
+				msgStr = "CREATE_CONFERENCE";
+				accountManager->handleCreateConference(payloads);
+				break;
 			case 207: // 207 : DELETE_CONFERENCE
 				accountManager->handleDeleteConference(payloads);
 				break;				

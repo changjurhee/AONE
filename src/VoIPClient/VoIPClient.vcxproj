@@ -207,11 +207,13 @@
   <ItemGroup>
     <ClInclude Include="..\common\logger.h" />
     <ClInclude Include="..\common\utility.h" />
+    <ClInclude Include="..\media\IServerMediaManager.h" />
     <ClInclude Include="..\media\litevad.h" />
     <ClInclude Include="..\media\audio_buffer.h" />
     <ClInclude Include="..\media\media_config.h" />
     <ClInclude Include="..\media\media_types.h" />
     <ClInclude Include="..\media\pipeline_monitorable.h" />
+    <ClInclude Include="..\media\ServerMediaManager.h" />
     <ClInclude Include="..\media\vad_processor.h" />
     <ClInclude Include="AccountLoginDlg.h" />
     <ClInclude Include="..\media\AudioMediaPipeline.h" />
@@ -225,7 +227,6 @@
     <ClInclude Include="ContactView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IClientMediaManager.h" />
-    <ClInclude Include="IServerMediaManager.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="ManageUserAccountDlg.h" />
     <ClInclude Include="MessageBoxDlg.h" />
@@ -236,7 +237,6 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SessionRegisterDlg.h" />
     <ClInclude Include="SessionView.h" />
-    <ClInclude Include="ServerMediaManager.h" />
     <ClInclude Include="session\AccountManager.h" />
     <ClInclude Include="session\Call.h" />
     <ClInclude Include="session\CallsManager.h" />
@@ -244,7 +244,7 @@
     <ClInclude Include="session\Data.h" />
     <ClInclude Include="session\IAccountManager.h" />
     <ClInclude Include="session\ICallsManager.h" />
-    <ClInclude Include="session\ISessionMediaCallback.h" />
+    <ClInclude Include="session\IRequestSessionMediaCallback.h" />
     <ClInclude Include="session\IUiController.h" />
     <ClInclude Include="session\SessionControl.h" />
     <ClInclude Include="session\SessionManager.h" />
@@ -266,6 +266,7 @@
     <ClCompile Include="..\media\litevad.cpp" />
     <ClCompile Include="..\media\media_config.cpp" />
     <ClCompile Include="..\media\media_types.cpp" />
+    <ClCompile Include="..\media\ServerMediaManager.cpp" />
     <ClCompile Include="..\media\vad_processor.cpp" />
     <ClCompile Include="AccountLoginDlg.cpp" />
     <ClCompile Include="..\media\AudioMediaPipeline.cpp" />
@@ -291,7 +292,6 @@
     <ClCompile Include="ResetPasswordDlg.cpp" />
     <ClCompile Include="SessionRegisterDlg.cpp" />
     <ClCompile Include="SessionView.cpp" />
-    <ClCompile Include="ServerMediaManager.cpp" />
     <ClCompile Include="session\AccountManager.cpp" />
     <ClCompile Include="session\Call.cpp" />
     <ClCompile Include="session\CallsManager.cpp" />
@@ -310,6 +310,7 @@
     <Midl Include="VoIPClient.idl" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\sound1.bin" />
     <None Include="res\VoIPClient.rc2" />
     <None Include="VoIPClient.reg" />
   </ItemGroup>
