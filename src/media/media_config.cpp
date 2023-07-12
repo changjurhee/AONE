@@ -8,4 +8,8 @@ unsigned int MediaConfig::GetRtpJitterBufferLatency() {
 	return 150;
 }
 
+uint64_t MediaConfig::ThresholdOfNumLostForChangingVideoQuality() {
+	return 100;
+}
+
 }

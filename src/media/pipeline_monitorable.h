@@ -11,6 +11,7 @@ namespace media {
 class PipelineMonitorable {
 public:
 	struct RtpStats {
+		std::string rid;
 		uint64_t num_lost;
 		uint64_t num_late;
 		uint64_t avg_jitter_us;

@@ -225,10 +225,10 @@ SubElements MediaPipeline::pipeline_make_encryption(GstBin* parent_bin, int bin_
 	GstElement* videoSRTPEncCapsfilter = gst_element_factory_make("capsfilter", nameEncCaps.c_str());
 
 	// Set the SRTP encryption key for video
-	static guint8 data[30];
+	guint8 data[30];
 	memset(data, 0, sizeof(data));
 	guint size = sizeof(data);
-	GstBuffer* keyBuffer = gst_buffer_new_wrapped(data, size);
+	GstBuffer* keyBuffer = gst_buffer_new_memdup(data, size);
 
 	g_object_set(VideoSRTPEnc, "key", keyBuffer, NULL);
 	g_object_set(VideoSRTPEnc, "rtp-auth", 2, NULL);
@@ -1094,6 +1094,7 @@ void MediaPipeline::ReadAndNotifyRtpStats() {
 			gst_structure_get_uint64(s, "num-late", &stats.num_late);
 			gst_structure_get_uint64(s, "avg-jitter", &stats.avg_jitter_us);
 			stats.avg_jitter_us = stats.avg_jitter_us / 1000;
+			stats.rid = rid_;
 
 			LOG_OBJ_LOG() << gst_element_get_name(elem) << ": lost " << stats.num_lost << ", late "
 				<< stats.num_late << ", avg_jitter " << stats.avg_jitter_us << " us" << std::endl;

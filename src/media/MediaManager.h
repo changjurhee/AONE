@@ -16,12 +16,20 @@ struct Pipelines {
 
 class MediaManager : public PipelineMonitorable::Callback
 {
-	static VideoPresetType ShouldChangeVideoQuality(const VideoPresetType& current_preset,
+	VideoPresetLevel ShouldChangeVideoQuality(const VideoPresetType& current_preset,
 		const PipelineMonitorable::RtpStats& stats);
 
 protected:
+	struct VqaData {
+		VqaData() :
+			num_lost(0), begin_time(0), elapsed_time(0) {}
+		uint64_t num_lost;
+		clock_t begin_time;
+		clock_t elapsed_time;
+	};
 	int max_pipleline_;
 	map<string, Pipelines> pipelineMap_;
+	std::map<std::string, VqaData> vqa_data_per_room_;
 	vector<VideoMediaPipeline*> getVideoPipeLine(string rid);
 	vector<AudioMediaPipeline*> getAudioPipeLine(string rid);
 	int get_port_number(string dest_ip, string type);
@@ -37,6 +45,8 @@ private:
 	// media::PipelineMonitorable::Callback implementation.
 	virtual void OnRtpStats(const VideoPresetType& current_preset, const PipelineMonitorable::RtpStats& stats) override ;
 	virtual bool OnAudioBuffer(const AudioBuffer& buffer, size_t frames_per_buffer) override ;
+
+	virtual bool notifyVideoQualityChangeNeeded(std::string rid, VideoPresetLevel level) { return true; };
 };
 
 } // namespace media

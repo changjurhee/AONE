@@ -2,18 +2,35 @@
 //#include <winsock2.h>
 
 #include "common/logger.h"
+#include "media_config.h"
 
 namespace media {
 
-VideoPresetType MediaManager::ShouldChangeVideoQuality(const VideoPresetType& current_preset,
+VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& current_preset,
 	const PipelineMonitorable::RtpStats& stats) {
-	
+	VideoPresetLevel ret = current_preset.level;
+
 	LOG_OBJ_LOG() << "cur_bitrate " << current_preset.bitrate << ", num_lost " << stats.num_lost
 		<< ", num_late " << stats.num_late << ", avg_jitter " << stats.avg_jitter_us << " us" << std::endl;
 
-	// TODO: Check if changing is needed
+	vqa_data_per_room_[stats.rid].num_lost += stats.num_lost;
+	vqa_data_per_room_[stats.rid].elapsed_time = clock() - vqa_data_per_room_[stats.rid].begin_time;
+	if (vqa_data_per_room_[stats.rid].elapsed_time > CLOCKS_PER_SEC) {
+		LOG_OBJ_INFO() << "[rid:" << stats.rid << "] cur_bitrate " << current_preset.bitrate
+			<< ", num_lost " << stats.num_lost << ", num_late " << stats.num_late
+			<< ", avg_jitter " << stats.avg_jitter_us << " us"
+			<< ", num_lost_per_room_ " << vqa_data_per_room_[stats.rid].num_lost << std::endl;
 
-	return current_preset;
+		if (vqa_data_per_room_[stats.rid].num_lost > MediaConfig::ThresholdOfNumLostForChangingVideoQuality()) {
+			if (current_preset.level > VideoPresetLevel::kVideoPreset1)
+				ret = VideoPresetType::Lower(current_preset.level);
+		}
+
+		vqa_data_per_room_[stats.rid].begin_time = clock();
+		vqa_data_per_room_[stats.rid].num_lost = 0;
+	}
+
+	return ret;
 }
 
 MediaManager::MediaManager(int max_pipeline) {
@@ -133,16 +150,18 @@ void MediaManager::end_call_with_rid(string rid)
 		pipeline->end_call();
 	}
 	pipelineMap_.erase(rid);
+	vqa_data_per_room_[rid] = VqaData();
 }
 
 void MediaManager::OnRtpStats(const VideoPresetType& current_preset, const PipelineMonitorable::RtpStats& stats) {
 	LOG_LOG("IN");
 
-	VideoPresetType next_preset = ShouldChangeVideoQuality(current_preset, stats);
-	if (next_preset.level != current_preset.level) {
-		LOG_OBJ_INFO() << "Need to change video quality! current " << static_cast<int>(current_preset.level)
-			<< " to " << static_cast<int>(next_preset.level) << std::endl;
-		// TODO: Notify sesstion mgr of changing needed!
+	VideoPresetLevel next_preset_level = ShouldChangeVideoQuality(current_preset, stats);
+	if (next_preset_level != current_preset.level) {
+		//LOG_OBJ_INFO() << "Need to change video quality! current " << static_cast<int>(current_preset.level)
+		//	<< " to " << static_cast<int>(next_preset_level) << std::endl;
+
+		notifyVideoQualityChangeNeeded(stats.rid, next_preset_level);
 	}
 }
 
