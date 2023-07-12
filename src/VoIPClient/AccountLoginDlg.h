@@ -23,9 +23,9 @@ private:
 	std::shared_ptr<userInfo> spUserInfo;
 	CString m_edEmailID;
 	CString m_edPassword;
-	CBitmapButton m_btnLogIn;
-	CBitmapButton m_btnSignIn;
-	CBitmapButton m_btnResetPw;
+	CMFCButton m_btnLogIn;
+	CMFCButton m_btnSignIn;
+	CMFCButton m_btnResetPw;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.

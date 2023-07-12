@@ -72,13 +72,13 @@ BOOL CAccountLoginDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
-	m_btnLogIn.LoadBitmaps(IDB_LOG_IN, IDB_LOG_IN_D, NULL , IDB_LOG_IN_F);
+	/*m_btnLogIn.LoadBitmaps(IDB_LOG_IN, IDB_LOG_IN_D, NULL , IDB_LOG_IN_F);
 	m_btnSignIn.LoadBitmaps(IDB_SIGN_IN, IDB_SIGN_IN_D, NULL, IDB_SIGN_IN_F);
 	m_btnResetPw.LoadBitmaps(IDB_RESET_PW, IDB_RESET_PW_D, NULL, IDB_RESET_PW_F);
 
 	m_btnLogIn.SizeToContent();
 	m_btnSignIn.SizeToContent();
-	m_btnResetPw.SizeToContent();
+	m_btnResetPw.SizeToContent();*/
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
