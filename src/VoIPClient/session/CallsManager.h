@@ -3,7 +3,7 @@
 #include "ICallsManager.h"
 #include "Call.h"
 #include "SessionControl.h"
-#include "ISessionMediaCallback.h"
+#include "IRequestSessionMediaCallback.h"
 #include "../../json/json.h"
 
 #define MEDIA_ENABLED true
@@ -13,7 +13,7 @@ namespace media {
 }
 using namespace media;
 
-class CallsManager : public ICallsManager, public ISessionMediaCallback {
+class CallsManager : public ICallsManager, public IRequestSessionMediaCallback {
 private:
 	static CallsManager* instance;
 

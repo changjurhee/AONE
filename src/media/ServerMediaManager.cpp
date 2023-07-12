@@ -29,7 +29,6 @@ void ServerMediaManager::releaseInstance() {
 
 void ServerMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
 	sessionCallback_ = callback;
-	//sessionCallback_->notifyVideoQualityChanged("rid", 3);
 }
 
 void ServerMediaManager::updateClientVideoQuality(Json::Value info)
@@ -126,6 +125,8 @@ void ServerMediaManager::addClient(Json::Value add_client_info)
 		return;
 	}
 
+	vqa_data_per_room_[rid].num_clients++;
+
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
 	ContactInfo* client_info = get_contact_info(add_client_info, false);;
 	for (auto pipeline : video_pipelines) {
@@ -147,6 +148,8 @@ void ServerMediaManager::removeClient(Json::Value remove_client_info)
 		LOG_OBJ_INFO() << " Invalid RID (" << rid << ")" << endl;
 		return;
 	}
+
+	vqa_data_per_room_[rid].num_clients--;
 
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
 	ContactInfo* client_info = get_contact_info(remove_client_info, true);

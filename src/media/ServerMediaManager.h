@@ -3,7 +3,7 @@
 #include "../media/MediaManager.h"
 #include "../media/VideoMediaPipeline.h"
 #include "../media/AudioMediaPipeline.h"
-#include "session/ISessionMediaCallback.h"
+#include "../VoIPServer/session/ISessionMediaCallback.h"
 
 namespace media {
 //class ServerMediaManager : public MediaManager, public IServerMediaManager, public ISessionMediaCallback {
@@ -18,8 +18,6 @@ private:
 	string server_ip;
 	ISessionMediaCallback* sessionCallback_;
 	ContactInfo* get_dummy_contact(int number);
-
-	virtual bool notifyVideoQualityChangeNeeded(std::string rid, VideoPresetLevel level) override ;
 public:
 	void updateClientVideoQuality(Json::Value info) override;
 	void startCall(Json::Value room_creat_info);

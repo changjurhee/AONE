@@ -30,7 +30,7 @@ void ClientMediaManager::releaseInstance() {
 	}
 }
 
-void ClientMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
+void ClientMediaManager::setSessionCallback(IRequestSessionMediaCallback* callback) {
 	sessionCallback_ = callback;
 	// sessionCallback_->requestVideoQualityChange(3);
 }

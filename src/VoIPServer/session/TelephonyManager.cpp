@@ -4,7 +4,7 @@
 #include <ctime>
 
 #include "TelephonyManager.h"
-#include "../ServerMediaManager.h"
+#include "media/ServerMediaManager.h"
 
 TelephonyManager* TelephonyManager::instance = nullptr;
 Json::FastWriter fastWriter;
