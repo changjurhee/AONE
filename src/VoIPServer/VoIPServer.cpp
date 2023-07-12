@@ -205,6 +205,7 @@ BOOL CVoIPServerApp::InitInstance()
 	SessionManager::getInstance()->init();
 
 	media::ServerMediaManager* server = media::ServerMediaManager::getInstance();
+	server->setSessionCallback(TelephonyManager::getInstance());
 
 	SUiController::getInstance()->startCommandLineInterface();
 

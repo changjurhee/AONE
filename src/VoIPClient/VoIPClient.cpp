@@ -238,6 +238,7 @@ BOOL CVoIPClientApp::InitInstance()
 #if 1
 	// Make client media manager
 	media::ClientMediaManager* clientMediaManager = media::ClientMediaManager::getInstance();
+	clientMediaManager->setSessionCallback(CallsManager::getInstance());
 
 	// Pass handle to output video screen
 	CVoIPClientView* pView = (CVoIPClientView*)((CMainFrame*)AfxGetMainWnd())->GetActiveView();
