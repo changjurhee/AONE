@@ -13,6 +13,7 @@
 
 #define MSG_RESPONSE_DELETE_CONF	1008 // Delete conference
 #define MSG_RESPONSE_JOIN_CONF		1009 // Join conference
+#define MSG_RESPONSE_CREATE_CONF	1010 // Create conference
 
 #define MSG_RESPONSE_AUDIO_VAD		2001
 #define MSG_RESPONSE_AUDIO_AEC		2002

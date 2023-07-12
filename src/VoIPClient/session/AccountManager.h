@@ -58,5 +58,6 @@ public:
 	void handleGetAllContact(Json::Value data) override;
 	void handleGetAllMyConference(Json::Value data) override;
 	void handleUpdateMyContact(Json::Value data) override;
+	void handleCreateConference(Json::Value data) override;
 	void handleDeleteConference(Json::Value data) override;
 };
