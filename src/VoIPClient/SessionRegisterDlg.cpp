@@ -143,38 +143,55 @@ void CSessionRegisterDlg::OnNMThemeChangedDpTimeEnd(NMHDR* pNMHDR, LRESULT* pRes
 void CSessionRegisterDlg::OnBnClickedMfcbtnRight()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	int num = m_ltParticipants.GetItemCount();
-
-	tstring tmp_cid(m_ltContact.GetItemText(m_nIndexContact, 0));
-	tstring tmp_email(m_ltContact.GetItemText(m_nIndexContact, 1));
-	tstring tmp_name(m_ltContact.GetItemText(m_nIndexContact, 2));
-
-	int index_num = m_ltParticipants.InsertItem(num, tmp_cid.data());
-	m_ltParticipants.SetItemText(index_num, 1, tmp_email.data());
-	m_ltParticipants.SetItemText(index_num, 2, tmp_name.data());
-
+	POSITION pos;
+	pos = m_ltContact.GetFirstSelectedItemPosition();
+	std::vector<INT> vSelectedIndex;
+	m_ltParticipants.LockWindowUpdate();
 	m_ltContact.LockWindowUpdate();
-	m_ltContact.DeleteItem(m_nIndexContact);
-	m_ltContact.UnlockWindowUpdate();
-}
+	while (pos) {
+		int nSelected = m_ltContact.GetNextSelectedItem(pos);
+		tstring tmp_cid(m_ltContact.GetItemText(nSelected, 0));
+		tstring tmp_email(m_ltContact.GetItemText(nSelected, 1));
+		tstring tmp_name(m_ltContact.GetItemText(nSelected, 2));
+		vSelectedIndex.push_back(nSelected);
 
+		int num = m_ltParticipants.GetItemCount();
+		int index_num = m_ltParticipants.InsertItem(num, tmp_cid.data());
+		m_ltParticipants.SetItemText(index_num, 1, tmp_email.data());
+		m_ltParticipants.SetItemText(index_num, 2, tmp_name.data());
+	}
+	for (auto iter = vSelectedIndex.rbegin(); iter != vSelectedIndex.rend(); iter++) {
+		m_ltContact.DeleteItem(*iter);
+	}
+	m_ltContact.UnlockWindowUpdate();
+	m_ltParticipants.UnlockWindowUpdate();
+}
 
 void CSessionRegisterDlg::OnBnClickedMfcbtnLeft()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 
-	int num = m_ltContact.GetItemCount();
-
-	tstring tmp_cid(m_ltParticipants.GetItemText(m_nIndexParticipants, 0));
-	tstring tmp_email(m_ltParticipants.GetItemText(m_nIndexParticipants, 1));
-	tstring tmp_name(m_ltParticipants.GetItemText(m_nIndexParticipants, 2));
-
-	int index_num = m_ltContact.InsertItem(num, tmp_cid.data());
-	m_ltContact.SetItemText(index_num, 1, tmp_email.data());
-	m_ltContact.SetItemText(index_num, 2, tmp_name.data());
-
+	POSITION pos;
+	pos = m_ltParticipants.GetFirstSelectedItemPosition();
+	std::vector<INT> vSelectedIndex;
 	m_ltParticipants.LockWindowUpdate();
-	m_ltParticipants.DeleteItem(m_nIndexParticipants);
+	m_ltContact.LockWindowUpdate();
+	while (pos) {
+		int nSelected = m_ltParticipants.GetNextSelectedItem(pos);
+		tstring tmp_cid(m_ltParticipants.GetItemText(nSelected, 0));
+		tstring tmp_email(m_ltParticipants.GetItemText(nSelected, 1));
+		tstring tmp_name(m_ltParticipants.GetItemText(nSelected, 2));
+		vSelectedIndex.push_back(nSelected);
+
+		int num = m_ltContact.GetItemCount();
+		int index_num = m_ltContact.InsertItem(num, tmp_cid.data());
+		m_ltContact.SetItemText(index_num, 1, tmp_email.data());
+		m_ltContact.SetItemText(index_num, 2, tmp_name.data());
+	}
+	for (auto iter = vSelectedIndex.rbegin(); iter != vSelectedIndex.rend(); iter++) {
+		m_ltParticipants.DeleteItem(*iter);
+	}
+	m_ltContact.UnlockWindowUpdate();
 	m_ltParticipants.UnlockWindowUpdate();
 }
 

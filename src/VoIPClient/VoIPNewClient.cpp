@@ -36,6 +36,7 @@ BEGIN_MESSAGE_MAP(CVoIPNewClient, CFormView)
 	ON_BN_CLICKED(IDC_MFC_ECHO, &CVoIPNewClient::OnBnClickedMfcEcho)
 	ON_WM_PAINT()
 	ON_WM_CTLCOLOR()
+	ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
 
@@ -105,6 +106,10 @@ void CVoIPNewClient::OnBnClickedMfcEcho()
 
 void CVoIPNewClient::OnDraw(CDC* /*pDC*/)
 {
+	CRect rectClient;
+	GetClientRect(rectClient);
+	CPoint StartPos = rectClient.CenterPoint();
+
 	if (FALSE == GetDocument()->GetConnection()) {
 		// Picture Control DC를 생성.
 		CClientDC dc(GetDlgItem(IDC_IMAGE_VIEW));
@@ -126,7 +131,7 @@ void CVoIPNewClient::OnDraw(CDC* /*pDC*/)
 		// 임시 버퍼에서 방금 생성한 비트맵을 선택하면서, 이전 비트맵을 보존.
 		pOldBitmap = memDC.SelectObject(&bitmap);
 
-		// 임시 버퍼에 검은색으로 채움.
+		// 임시 버퍼에 WHITENESS으로 채움.
 		memDC.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
 
 		// 임시 버퍼(memDC)에 그리는 동작을 수행.
@@ -164,4 +169,12 @@ HBRUSH CVoIPNewClient::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	// TODO:  기본값이 적당하지 않으면 다른 브러시를 반환합니다.
 	return (HBRUSH)GetStockObject(WHITE_BRUSH);
+}
+
+
+void CVoIPNewClient::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	CFormView::OnGetMinMaxInfo(lpMMI);
 }

@@ -124,14 +124,17 @@ void CContactRegisterDlg::OnNMClickLtContactNames(NMHDR* pNMHDR, LRESULT* pResul
 	*pResult = 0;
 
 	m_ltIndex = pNMItemActivate->iItem;
-
 }
 
 void CContactRegisterDlg::OnBnClickedOk()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	
-	CString cid = m_ltContactNames.GetItemText(m_ltIndex, 0);
-	if (cid.IsEmpty() || cid.GetLength() == 0) return;
-	UiController::getInstance()->req_AddMyContact(this, std::string(CT2CA(cid)));
+	POSITION pos;
+	pos = m_ltContactNames.GetFirstSelectedItemPosition();
+	while (pos) {
+		int nSelected = m_ltContactNames.GetNextSelectedItem(pos);
+		CString cid = m_ltContactNames.GetItemText(nSelected, 0);
+		if (cid.IsEmpty() || cid.GetLength() == 0) continue;
+		UiController::getInstance()->req_AddMyContact(this, std::string(CT2CA(cid)));
+	}
 }
