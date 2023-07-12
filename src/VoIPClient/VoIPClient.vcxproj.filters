@@ -494,6 +494,9 @@
     <Image Include="res\start-64.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="res\disconnect.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="VoIPClient.reg" />
@@ -531,5 +534,10 @@
     <ResourceCompile Include="VoIPClient.rc">
       <Filter>리소스 파일</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\ringtone.wav">
+      <Filter>리소스 파일</Filter>
+    </Media>
   </ItemGroup>
 </Project>

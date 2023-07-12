@@ -154,6 +154,11 @@
 #define IDB_SHUTDOWN                    377
 #define IDB_START                       378
 #define IDD_CLIENT_VIEW                 379
+#define IDR_WAVE1                       383
+#define IDR_WAVE2                       385
+#define IDB_PNG8                        386
+#define IDB_BITMAP2                     393
+#define IDB_BMP_DISCONNECT              393
 #define ID_VIEW_CALLVIEW                400
 #define IDC_ED_EMAIL_ID                 1000
 #define IDC_ED_PASSWORD                 1001
