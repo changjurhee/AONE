@@ -149,6 +149,9 @@ void SessionManager::HandleClient(int clientSocket) {
 		if (bytesRead == 0) {
 			std::cout << "disconnected to client." << displayName << std::endl;
 			telephonyManager->releaseConnection(contactId);
+			Json::Value data;
+			data["cid"] = contactId;
+			accountManager->handleLogout(data);
 			break;
 		}
 		std::string msg(buffer);
