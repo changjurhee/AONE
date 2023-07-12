@@ -226,6 +226,7 @@ void CallsManager::joinConference(std::string callId) {
 
 void CallsManager::onSuccessfulJoinConference(Json::Value data) {
 	call->setCallState(CallState::STATE_ACTIVE);
+	call->setConference(true);
 	std::cout << "[Received] -> (STATE_ACTIVE) onSuccessfulJoinConference" << std::endl;
 
 	if (mediaManager != nullptr) {
