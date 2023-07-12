@@ -327,6 +327,7 @@
     <Image Include="res\class_view_hc.ico" />
     <Image Include="res\connection_0.bmp" />
     <Image Include="res\connection_1.bmp" />
+    <Image Include="res\disconnect.bmp" />
     <Image Include="res\echo_0.bmp" />
     <Image Include="res\echo_1.bmp" />
     <Image Include="res\explorer.bmp" />
@@ -388,6 +389,9 @@
     <Image Include="res\vad_1.bmp" />
     <Image Include="res\VoIPClient.ico" />
     <Image Include="res\VoIPClientDoc.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\ringtone.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

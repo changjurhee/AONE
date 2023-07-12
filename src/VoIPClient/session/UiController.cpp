@@ -201,6 +201,10 @@ void UiController::request_deleteConference(CWnd* wnd, string rid)
 void UiController::request_EndOrExitCall(CWnd* wnd)
 {
 	Call* call = callsManager->getCall();
+	if (call == nullptr) {
+		return;
+	}
+
 	if (call->isConference()) {
 		request_ExitConference(wnd);
 	}
