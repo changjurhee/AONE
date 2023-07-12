@@ -845,7 +845,6 @@ LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 			if (result == CallState::STATE_ACTIVE) pDoc->SetConnection(FALSE);
 			pView->OnPaint();
 			MessageBox(_T("DISCONNECTED"));
-			pNewView->OnPaint();
 		}
 		break;
 	}
