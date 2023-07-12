@@ -1,4 +1,5 @@
 #include "AudioMediaPipeline.h"
+#include "common/logger.h"
 
 #include "media_config.h"
 
@@ -117,6 +118,24 @@ SubElements AudioMediaPipeline::pipeline_make_jitter_buffer(GstBin* parent_bin, 
 	gst_bin_add(GST_BIN(parent_bin), element);
 	return make_pair(element, element);
 };
+
+void AudioMediaPipeline::pipeline_update_udp_sink(GstBin* parent_bin, int bin_index, int client_index)
+{
+	GstElement* element = get_elements_by_name(parent_bin, TYPE_UDP_SINK, bin_index, client_index).second;
+
+	std::string host = contact_info_list_[client_index].dest_ip;
+	int port = contact_info_list_[client_index].dest_audio_port;
+
+	LOG_OBJ_INFO() << get_pipeline_info(0) << "host " << host << " port : " << port << endl;
+	g_object_set(element, "host", host.c_str(), "port", port, "sync", FALSE, "processing-deadline", 0, NULL);
+}
+
+void AudioMediaPipeline::pipeline_update_udp_src(GstBin* parent_bin, int bin_index, int client_index)
+{
+	GstElement* element = get_elements_by_name(parent_bin, TYPE_UDP_SINK, bin_index, client_index).second;
+	int port = contact_info_list_[client_index].org_audio_port;
+	g_object_set(element, "port", port, NULL);
+}
 
 SubElements AudioMediaPipeline::pipeline_make_udp_sink(GstBin* parent_bin, int bin_index, int client_index) {
 	return MediaPipeline::pipeline_make_udp_sink_with_port(parent_bin, bin_index, client_index, contact_info_list_[client_index].dest_audio_port);

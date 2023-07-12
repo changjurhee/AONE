@@ -17,6 +17,7 @@ private:
 	ContactInfo* get_contact_info(Json::Value add_client_info, bool is_remove);
 	string server_ip;
 	ISessionMediaCallback* sessionCallback_;
+	ContactInfo* get_dummy_contact(int number);
 public:
 	void updateClientVideoQuality(Json::Value info) override;
 	void startCall(Json::Value room_creat_info);

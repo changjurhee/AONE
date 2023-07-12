@@ -451,6 +451,13 @@ void MediaPipeline::makePipeline(vector<ContactInfo> &contact_info_list, Operati
 	memcpy(&operate_info_, &operate_info, sizeof(OperatingInfo));
 	view_handler_ = view_handler;
 
+	for (const auto& item : contact_info_list) {
+		ContactInfo* dummpy = new ContactInfo;
+		memcpy(dummpy, &item, sizeof(ContactInfo));
+		dummpy->dummy_client = true;
+		request_add_client(dummpy);
+	}
+
 	pipeline_thread_ = std::thread(&MediaPipeline::pipeline_run, this);
 }
 
@@ -475,6 +482,12 @@ int MediaPipeline::get_client_index(ContactInfo* client_info, bool new_client)
 {
 	string cid = client_info->cid;
 	int client_id = 0;
+	if (client_info->dummy_client) {
+		client_id = contact_info_list_.size();
+		contact_info_list_[client_id] = *client_info;
+		return client_id;
+	}
+
 	if (client_id_list_.find(cid) == client_id_list_.end()) {
 		if (!new_client) return -1;
 		client_id = client_id_list_.size();
@@ -722,11 +735,31 @@ void MediaPipeline::request_add_client(ContactInfo* client_info)
 	message_mutex_.unlock();
 }
 
+void MediaPipeline::update_client_info(ContactInfo* client_info)
+{
+	string cid = client_info->cid;
+	int client_index = client_id_list_.size();
+	client_id_list_[cid] = make_pair(client_index, true);
+	contact_info_list_[client_index] = *client_info;
+	stop_state_pipeline(true);
+	for (int index = 0; index < pipe_mode_list_.size(); index++) {
+		std::string name = "bin_" + std::to_string(index);
+		GstBin* bin = GST_BIN(gst_bin_get_by_name(GST_BIN(pipeline), name.c_str()));
+		pipeline_update_udp_sink(bin, index, client_index);
+		pipeline_update_udp_src(bin, index, client_index);
+	}
+
+	LOG_OBJ_INFO() << get_pipeline_info(0) << " Get pipeline view (update client)" << endl;
+	logPipelineElements(pipeline, 0);
+}
+
 void MediaPipeline::add_client(ContactInfo* client_info)
 {
 	string cid = client_info->cid;
-	if (client_id_list_.find(cid) != client_id_list_.end())
+	if (client_id_list_.find(cid) != client_id_list_.end()) {
+		update_client_info(client_info);
 		return;
+	}
 
 	int client_index = get_client_index(client_info, true);
 	if (client_index < 0) return;
