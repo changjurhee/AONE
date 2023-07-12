@@ -130,4 +130,5 @@ struct userInfo {
 	tstring server_ip_num;
 };
 
+enum class PageIcon : INT { HUMAN, MAIL, ETHERIUM, DATE, BOX };
 #endif //PCH_H

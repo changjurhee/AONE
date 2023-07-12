@@ -36,5 +36,6 @@ public:
 	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnNMClickLtContactNames(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedMbContactAdd();
+	afx_msg void OnBnClickedMbContactCancel();
 };

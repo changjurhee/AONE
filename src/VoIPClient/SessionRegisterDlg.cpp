@@ -44,7 +44,6 @@ void CSessionRegisterDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CSessionRegisterDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
-	ON_BN_CLICKED(IDOK, &CSessionRegisterDlg::OnBnClickedOk)
 	ON_NOTIFY(NM_CLICK, IDC_LT_CONTACT, &CSessionRegisterDlg::OnNMClickLtContact)
 	ON_NOTIFY(NM_CLICK, IDC_LT_PARTICIPANTS, &CSessionRegisterDlg::OnNMClickLtParticipants)
 	ON_NOTIFY(NM_THEMECHANGED, IDC_DP_DATE, &CSessionRegisterDlg::OnNMThemeChangedDpDate)
@@ -53,6 +52,8 @@ BEGIN_MESSAGE_MAP(CSessionRegisterDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCBTN_RIGHT, &CSessionRegisterDlg::OnBnClickedMfcbtnRight)
 	ON_BN_CLICKED(IDC_MFCBTN_LEFT, &CSessionRegisterDlg::OnBnClickedMfcbtnLeft)
 	ON_MESSAGE(UWM_UI_CONTROLLER, processUiControlNotify)
+	ON_BN_CLICKED(IDC_MB_SESSION_CANCEL, &CSessionRegisterDlg::OnBnClickedMbSessionCancel)
+	ON_BN_CLICKED(IDC_MB_SESSEION_CREATE, &CSessionRegisterDlg::OnBnClickedMbSesseionCreate)
 END_MESSAGE_MAP()
 
 
@@ -73,27 +74,6 @@ HBRUSH CSessionRegisterDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	// TODO:  기본값이 적당하지 않으면 다른 브러시를 반환합니다.
 	return (HBRUSH)GetStockObject(WHITE_BRUSH);
 }
-
-void CSessionRegisterDlg::OnBnClickedOk()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(TRUE);
-
-	stOleToDate res = SetDateTime(m_Date, m_StartTime, m_endTime);
-	if (res.duration < 0) {
-		MessageBox(_T("Invalid Data and Time. Please Check the schedule."), _T("Error"));
-		return;
-	}
-	int num = m_ltParticipants.GetItemCount();
-	std::list<std::string> Participants;
-
-	for (int i = 0; i < num; i++) {
-		Participants.push_back(std::string(CT2CA(m_ltParticipants.GetItemText(i, 0))));
-	}
-
-	if(num != 0) UiController::getInstance()->request_CreateConference(this, res.dataAndTime, res.duration, Participants);
-}
-
 
 void CSessionRegisterDlg::OnNMClickLtContact(NMHDR* pNMHDR, LRESULT* pResult)
 {
@@ -247,4 +227,31 @@ LRESULT CSessionRegisterDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam
 	}
 
 	return LRESULT();
+}
+
+void CSessionRegisterDlg::OnBnClickedMbSessionCancel()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	EndDialog(IDCANCEL);
+}
+
+
+void CSessionRegisterDlg::OnBnClickedMbSesseionCreate()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+
+	stOleToDate res = SetDateTime(m_Date, m_StartTime, m_endTime);
+	if (res.duration < 0) {
+		MessageBox(_T("Invalid Data and Time. Please Check the schedule."), _T("Error"));
+		return;
+	}
+	int num = m_ltParticipants.GetItemCount();
+	std::list<std::string> Participants;
+
+	for (int i = 0; i < num; i++) {
+		Participants.push_back(std::string(CT2CA(m_ltParticipants.GetItemText(i, 0))));
+	}
+
+	if (num != 0) UiController::getInstance()->request_CreateConference(this, res.dataAndTime, res.duration, Participants);
 }

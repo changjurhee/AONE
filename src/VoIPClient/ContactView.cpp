@@ -179,20 +179,20 @@ void CContactView::FillContactView()
 
 	auto pAccountList = UiController::getInstance()->get_MyContacts();
 
-	HTREEITEM hRoot = m_wndContactView.InsertItem(_T("Contact List"), 2, 2);
+	HTREEITEM hRoot = m_wndContactView.InsertItem(_T("Contact List"), (int)PageIcon::BOX, (int)PageIcon::BOX);
 	m_wndContactView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
 
 	for (ContactData p : pAccountList) {
 		tstring tmp_cid, tmp_email, tmp_name;
 		
 		tmp_cid.assign(p.cid.begin(), p.cid.end());
-		HTREEITEM hSrc = m_wndContactView.InsertItem(tmp_cid.data(), 1, 1, hRoot);
+		HTREEITEM hSrc = m_wndContactView.InsertItem(tmp_cid.data(), (int)PageIcon::ETHERIUM, (int)PageIcon::ETHERIUM, hRoot);
 
 		tmp_email.assign(p.email.begin(), p.email.end());
-		m_wndContactView.InsertItem(tmp_email.data(), 0, 0, hSrc);
+		m_wndContactView.InsertItem(tmp_email.data(), (int)PageIcon::MAIL, (int)PageIcon::MAIL, hSrc);
 
 		tmp_name.assign(p.name.begin(), p.name.end());
-		m_wndContactView.InsertItem(tmp_name.data(), 3, 3, hSrc);
+		m_wndContactView.InsertItem(tmp_name.data(), (int)PageIcon::HUMAN, (int)PageIcon::HUMAN, hSrc);
 		
 		m_wndContactView.Expand(hRoot, TVE_EXPAND);
 		m_wndContactView.Expand(hSrc, TVE_EXPAND);

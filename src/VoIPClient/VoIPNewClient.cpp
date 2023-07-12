@@ -75,6 +75,7 @@ LRESULT CVoIPNewClient::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 		int result = res->result;
 		int cause = res->cause;
 		if (result == CallState::STATE_DISCONNECTED) {
+			TRACE("void CVoIPNewClient::processUiControlNotify()");
 			GetDocument()->SetConnection(FALSE);
 			OnPaint();
 		}
@@ -84,6 +85,20 @@ LRESULT CVoIPNewClient::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return LRESULT();
+}
+
+void CVoIPNewClient::AdjustLayout()
+{
+	if (GetSafeHwnd() == nullptr)
+	{
+		return;
+	}
+
+	CRect rectClient, rect;
+	GetClientRect(rectClient);
+	
+	GetDlgItem(IDC_MFCBTN_CONNECT)->GetClientRect(&rect);
+	m_DisplayBox.SetWindowPos(nullptr, rect.right + 50, rect.top, 1280, 960, SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
 void CVoIPNewClient::OnBnClickedMfcbtnConnect()
@@ -106,10 +121,6 @@ void CVoIPNewClient::OnBnClickedMfcEcho()
 
 void CVoIPNewClient::OnDraw(CDC* /*pDC*/)
 {
-	CRect rectClient;
-	GetClientRect(rectClient);
-	CPoint StartPos = rectClient.CenterPoint();
-
 	if (FALSE == GetDocument()->GetConnection()) {
 		// Picture Control DC를 생성.
 		CClientDC dc(GetDlgItem(IDC_IMAGE_VIEW));
@@ -118,35 +129,42 @@ void CVoIPNewClient::OnDraw(CDC* /*pDC*/)
 		CRect rect;
 		GetDlgItem(IDC_IMAGE_VIEW)->GetClientRect(&rect);
 
-		CDC memDC;
+		CDC memDC, memDC_bg;
 		CBitmap* pOldBitmap, bitmap;
+		CBitmap* pOldBitmap_bg, bitmap_bg;
 
 		// Picture Control DC에 호환되는 새로운 CDC를 생성. (임시 버퍼)
+		memDC_bg.CreateCompatibleDC(&dc);
 		memDC.CreateCompatibleDC(&dc);
 
 		// Picture Control의 크기와 동일한 비트맵을 생성.
-		//bitmap.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
+		bitmap_bg.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
 		bitmap.LoadBitmapW(IDB_MASK);
 
 		// 임시 버퍼에서 방금 생성한 비트맵을 선택하면서, 이전 비트맵을 보존.
+		pOldBitmap_bg = memDC_bg.SelectObject(&bitmap_bg);
 		pOldBitmap = memDC.SelectObject(&bitmap);
 
 		// 임시 버퍼에 WHITENESS으로 채움.
-		memDC.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
+		memDC_bg.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
+		memDC.PatBlt(0, 0, rect.Width(), rect.Height(), SRCCOPY);
 
 		// 임시 버퍼(memDC)에 그리는 동작을 수행.
 		// 
 		// ...
-		// ...
 
 	// 임시 버퍼를 Picture Control에 그린다.
+		dc.BitBlt(0, 0, rect.Width(), rect.Height(), &memDC_bg, 0, 0, SRCCOPY);
 		dc.BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
 
 		// 이전 비트맵으로 재설정.
+		memDC_bg.SelectObject(pOldBitmap_bg);
 		memDC.SelectObject(pOldBitmap);
 
 		// 생성한 리소스 해제.
+		memDC_bg.DeleteDC();
 		memDC.DeleteDC();
+		bitmap_bg.DeleteObject();
 		bitmap.DeleteObject();
 	}
 }
@@ -177,4 +195,13 @@ void CVoIPNewClient::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	CFormView::OnGetMinMaxInfo(lpMMI);
+}
+
+
+void CVoIPNewClient::OnInitialUpdate()
+{
+	CFormView::OnInitialUpdate();
+
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	AdjustLayout();
 }

@@ -30,6 +30,7 @@ public:
 
 public:
 	HWND GetBitmapHandle() { return m_DisplayBox.GetSafeHwnd(); }
+	void AdjustLayout();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -45,6 +46,7 @@ public:
 	afx_msg void OnPaint();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+	virtual void OnInitialUpdate();
 };
 
 

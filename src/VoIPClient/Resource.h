@@ -155,10 +155,21 @@
 #define IDB_START                       378
 #define IDD_CLIENT_VIEW                 379
 #define IDR_WAVE1                       383
+#define IDB_ADD_USER                    384
 #define IDR_WAVE2                       385
+#define IDB_CANCEL                      385
 #define IDB_PNG8                        386
+#define IDB_RESET                       386
+#define IDB_CANCEL_30                   387
+#define IDB_CANCEL_60                   388
+#define IDB_CANCEL_90                   389
+#define IDB_SEARCH_30                   390
+#define IDB_SEARCH_60                   391
+#define IDB_SEARCH_90                   392
 #define IDB_BITMAP2                     393
 #define IDB_BMP_DISCONNECT              393
+#define IDB_ADD_USER_60                 394
+#define IDB_RESET_60                    395
 #define ID_VIEW_CALLVIEW                400
 #define IDC_ED_EMAIL_ID                 1000
 #define IDC_ED_PASSWORD                 1001
@@ -232,6 +243,13 @@
 #define IDC_MFC_ECHO                    1046
 #define IDC_IMAGE_VIEW                  1047
 #define IDC_SPIN_PRESET                 1049
+#define IDC_MFCBTN_RESET                1052
+#define IDC_RESET_CANCEL                1054
+#define IDC_MB_SESSEION_CREATE          1055
+#define IDC_MB_SESSION_CANCEL           1056
+#define IDC_MB_CONTACT_ADD              1056
+#define IDC_MFCBUTTON2                  1057
+#define IDC_MB_CONTACT_CANCEL           1057
 #define ID_TEST_32771                   32771
 #define ID_TEST_32772                   32772
 #define ID_TEST_LOG_IN                  32773
@@ -249,9 +267,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        383
+#define _APS_NEXT_RESOURCE_VALUE        396
 #define _APS_NEXT_COMMAND_VALUE         32781
-#define _APS_NEXT_CONTROL_VALUE         1052
+#define _APS_NEXT_CONTROL_VALUE         1057
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

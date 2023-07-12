@@ -37,8 +37,8 @@ void CResetPasswordDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CResetPasswordDlg, CDialogEx)
-	ON_BN_CLICKED(ID_MFCBTN_RESET, &CResetPasswordDlg::OnBnClickedMfcbtnReset)
-	ON_BN_CLICKED(IDC_MFCBTN_CANCEL, &CResetPasswordDlg::OnBnClickedMfcbtnCancel)
+	ON_BN_CLICKED(IDC_MFCBTN_RESET, &CResetPasswordDlg::OnBnClickedMfcbtnReset)
+	ON_BN_CLICKED(IDC_RESET_CANCEL, &CResetPasswordDlg::OnBnClickedMfcbtnCancel)
 	ON_MESSAGE(UWM_UI_CONTROLLER, &CResetPasswordDlg::processUiControlNotify)
 	ON_WM_CTLCOLOR()
 	ON_WM_SYSCOMMAND()

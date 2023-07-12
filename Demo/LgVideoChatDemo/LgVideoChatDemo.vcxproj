@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\webrtcVAD\webrtcVAD\webrtc\inc;D:\opencv\build\include;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,6 +123,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\webrtcVAD\webrtcVAD\webrtc\inc;D:\opencv\build\include;D:\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include;D:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0;D:\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

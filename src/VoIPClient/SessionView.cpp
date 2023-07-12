@@ -139,31 +139,31 @@ void CSessionView::FillSessionView()
 
 	auto ConfDataList = UiController::getInstance()->get_MyConferences();
 
-	HTREEITEM hRoot = m_wndSessionView.InsertItem(_T("Session List"), 2, 2);
+	HTREEITEM hRoot = m_wndSessionView.InsertItem(_T("Session List"), (int)PageIcon::BOX, (int)PageIcon::BOX);
 	m_wndSessionView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
 	
 	for (ConferenceData p : ConfDataList) {
 		tstring tmp_rid, tmp_time_s, tmp_time_e;
 
 		tmp_rid.assign(p.rid.begin(), p.rid.end());
-		HTREEITEM hRoom = m_wndSessionView.InsertItem(tmp_rid.data(), 1, 1, hRoot);
+		HTREEITEM hRoom = m_wndSessionView.InsertItem(tmp_rid.data(), (int)PageIcon::ETHERIUM, (int)PageIcon::ETHERIUM, hRoot);
 
 		std::pair<std::string, std::string> res = GetDateTime(p.dataAndTime, p.duration);
 
 		tstring tmp1, tmp2;
 		tmp1.assign(res.first.begin(), res.first.end());
 		tmp_time_s = _T("start : ") + tmp1;
-		m_wndSessionView.InsertItem(tmp_time_s.data(), 3, 3, hRoom);
+		m_wndSessionView.InsertItem(tmp_time_s.data(), (int)PageIcon::DATE, (int)PageIcon::DATE, hRoom);
 
 		tmp2.assign(res.second.begin(), res.second.end());
 		tmp_time_e = _T("end : ") + tmp2;
-		m_wndSessionView.InsertItem(tmp_time_e.data(), 3, 3, hRoom);
+		m_wndSessionView.InsertItem(tmp_time_e.data(), (int)PageIcon::DATE, (int)PageIcon::DATE, hRoom);
 
-		HTREEITEM hParticipant = m_wndSessionView.InsertItem(_T("Participant"), 0, 0, hRoom);
+		HTREEITEM hParticipant = m_wndSessionView.InsertItem(_T("Participant"), (int)PageIcon::BOX, (int)PageIcon::BOX, hRoom);
 		for (auto participant : p.participants) {
 			tstring tmp_name;
 			tmp_name.assign(participant.begin(), participant.end());
-			m_wndSessionView.InsertItem(tmp_name.data(), 2, 2, hParticipant);
+			m_wndSessionView.InsertItem(tmp_name.data(), (int)PageIcon::HUMAN, (int)PageIcon::HUMAN, hParticipant);
 		}
 		m_wndSessionView.Expand(hRoot, TVE_EXPAND);
 		m_wndSessionView.Expand(hRoom, TVE_EXPAND);

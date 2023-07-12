@@ -101,7 +101,7 @@
       <SubSystem>Windows</SubSystem>
       <RegisterOutput>true</RegisterOutput>
       <AdditionalLibraryDirectories>D:\gstreamer\1.0\msvc_x86_64\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static.lib;$(SolutionDir)openssl/libcrypto.lib;$(SolutionDir)openssl/libssl.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;gstvideo-1.0.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)json/jsoncpp_static-d.lib;$(SolutionDir)openssl/libcrypto.lib;$(SolutionDir)openssl/libssl.lib;ws2_32.lib;gobject-2.0.lib;glib-2.0.lib;gstreamer-1.0.lib;gstvideo-1.0.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -320,7 +320,10 @@
   <ItemGroup>
     <Image Include="..\VoIPServer\res\icons8-homer-simpson-32x32.ico" />
     <Image Include="..\VoIPServer\res\icons8-homer-simpson-480.png" />
+    <Image Include="res\add-male-user-60.bmp" />
+    <Image Include="res\add-user-64.bmp" />
     <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\cancel-64.bmp" />
     <Image Include="res\classview.bmp" />
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
@@ -347,8 +350,14 @@
     <Image Include="res\icons8-anonymous-mask-480.png" />
     <Image Include="res\icons8-anonymous-mask-60.png" />
     <Image Include="res\icons8-anonymous-mask-90.png" />
+    <Image Include="res\icons8-cancel-30.bmp" />
+    <Image Include="res\icons8-cancel-60.bmp" />
+    <Image Include="res\icons8-cancel-90.bmp" />
     <Image Include="res\icons8-homer-simpson-32x32.ico" />
     <Image Include="res\icons8-homer-simpson-480.png" />
+    <Image Include="res\icons8-search-30.bmp" />
+    <Image Include="res\icons8-search-60.bmp" />
+    <Image Include="res\icons8-search-90.bmp" />
     <Image Include="res\info.bmp" />
     <Image Include="res\log-in-d.bmp" />
     <Image Include="res\log-in-f.bmp" />
@@ -373,6 +382,8 @@
     <Image Include="res\properties_hc.bmp" />
     <Image Include="res\properties_wnd.ico" />
     <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\refresh.bmp" />
+    <Image Include="res\refresh_60.bmp" />
     <Image Include="res\shutdown-64.bmp" />
     <Image Include="res\sign-in-d.bmp" />
     <Image Include="res\sign-in-f.bmp" />

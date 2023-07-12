@@ -41,7 +41,8 @@ BEGIN_MESSAGE_MAP(CContactRegisterDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCBTN_SEARCH, &CContactRegisterDlg::OnBnClickedMfcbtnSearch)
 	ON_MESSAGE(UWM_UI_CONTROLLER, processUiControlNotify)
 	ON_NOTIFY(NM_CLICK, IDC_LT_CONTACT_NAMES, &CContactRegisterDlg::OnNMClickLtContactNames)
-	ON_BN_CLICKED(IDOK, &CContactRegisterDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDC_MB_CONTACT_ADD, &CContactRegisterDlg::OnBnClickedMbContactAdd)
+	ON_BN_CLICKED(IDC_MB_CONTACT_CANCEL, &CContactRegisterDlg::OnBnClickedMbContactCancel)
 END_MESSAGE_MAP()
 
 
@@ -126,7 +127,7 @@ void CContactRegisterDlg::OnNMClickLtContactNames(NMHDR* pNMHDR, LRESULT* pResul
 	m_ltIndex = pNMItemActivate->iItem;
 }
 
-void CContactRegisterDlg::OnBnClickedOk()
+void CContactRegisterDlg::OnBnClickedMbContactAdd()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	POSITION pos;
@@ -137,4 +138,11 @@ void CContactRegisterDlg::OnBnClickedOk()
 		if (cid.IsEmpty() || cid.GetLength() == 0) continue;
 		UiController::getInstance()->req_AddMyContact(this, std::string(CT2CA(cid)));
 	}
+}
+
+
+void CContactRegisterDlg::OnBnClickedMbContactCancel()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	EndDialog(IDCANCEL);
 }

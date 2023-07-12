@@ -497,13 +497,48 @@
     <Image Include="res\disconnect.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="res\icons8-cancel-30.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-cancel-60.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-cancel-90.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-search-30.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-search-60.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icons8-search-90.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\add-male-user-60.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\add-user-64.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\cancel-64.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\refresh.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\refresh_60.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="VoIPClient.reg" />
     <None Include="res\VoIPClient.rc2">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="res\sound1.bin" />
+    <None Include="res\sound1.bin">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Session">

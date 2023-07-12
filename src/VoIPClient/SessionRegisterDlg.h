@@ -33,7 +33,6 @@ protected:
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
-	afx_msg void OnBnClickedOk();
 	afx_msg void OnNMClickLtContact(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnNMClickLtParticipants(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnNMThemeChangedDpDate(NMHDR* pNMHDR, LRESULT* pResult);
@@ -51,4 +50,6 @@ public:
 	COleDateTime m_StartTime;
 	// // second
 	COleDateTime m_endTime;
+	afx_msg void OnBnClickedMbSessionCancel();
+	afx_msg void OnBnClickedMbSesseionCreate();
 };
