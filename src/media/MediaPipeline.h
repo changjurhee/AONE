@@ -75,6 +75,7 @@ namespace media {
 class MediaPipeline : public PipelineMonitorable
 {
 protected :
+	static int dummy_port;
 	std::mutex message_mutex_;
 	string rid_;
 	string media_mode_;

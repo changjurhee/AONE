@@ -6,7 +6,10 @@
 
 #include "common/logger.h"
 
+
 namespace media {
+
+int MediaPipeline::dummy_port = 10000;
 
 MediaPipeline::MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list,
 	PipelineMonitorable::Callback* rtpstats_cb, PipelineMonitorable::Callback* data_cb) :
@@ -831,7 +834,21 @@ void MediaPipeline::remove_client(ContactInfo * client_info)
 #else
 	int client_index = get_client_index(client_info, false);
 	if (client_index < 0) return;
+	stop_state_pipeline(true);
 	disable_client_index(client_info);
+	contact_info_list_[client_index].dest_ip = "0.0.0.1";
+	contact_info_list_[client_index].dest_video_port = dummy_port++;
+	contact_info_list_[client_index].dest_audio_port = dummy_port++;
+	contact_info_list_[client_index].org_video_port = dummy_port++;
+	contact_info_list_[client_index].org_audio_port = dummy_port++;
+
+	for (int index = 0; index < pipe_mode_list_.size(); index++) {
+		std::string name = "bin_" + std::to_string(index);
+		GstBin* bin = GST_BIN(gst_bin_get_by_name(GST_BIN(pipeline), name.c_str()));
+		pipeline_update_udp_sink(bin, index, client_index);
+		pipeline_update_udp_src(bin, index, client_index);
+	}
+
 	LOG_OBJ_INFO() << get_pipeline_info(0) << " CID : " << client_info->cid << ", client_id : " << client_index << endl;
 #endif
 }

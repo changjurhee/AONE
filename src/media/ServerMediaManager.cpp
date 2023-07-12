@@ -4,6 +4,7 @@
 namespace media {
 
 ServerMediaManager* ServerMediaManager::instance = nullptr;
+int ServerMediaManager::dummy_port = 10000;
 
 ServerMediaManager::ServerMediaManager(int max_pipeline) : MediaManager(max_pipeline) {
 	video_pipe_mode_list_.push_back(PipeMode(MODE_UDP_N, MODE_UDP_N));
@@ -55,13 +56,13 @@ ContactInfo* ServerMediaManager::get_dummy_contact(int number)
 	contact_info->cid = "__dummy_"+std::to_string(number);
 	string my_ip = server_ip;
 	contact_info->my_ip = my_ip;
-	contact_info->dest_ip = "192.168.4." + std::to_string(number+2);
+	contact_info->dest_ip = "0.0.0.0";
 	contact_info->client_name = "__dummy_" + std::to_string(number);
-	contact_info->dest_video_port = get_port_number(my_ip, "video");
-	contact_info->dest_audio_port = get_port_number(my_ip, "audio");
+	contact_info->dest_video_port = dummy_port++;
+	contact_info->dest_audio_port = dummy_port++;
 
-	contact_info->org_video_port = get_port_number(contact_info->dest_ip, "video");
-	contact_info->org_audio_port = get_port_number(contact_info->dest_ip, "audio");
+	contact_info->org_video_port = dummy_port++;
+	contact_info->org_audio_port = dummy_port++;
 	return contact_info;
 }
 
@@ -101,6 +102,7 @@ ContactInfo* ServerMediaManager::get_contact_info(Json::Value add_client_info, b
 	ContactInfo* contact_info = new ContactInfo;
 	contact_info->cid = add_client_info["cid"].asString();
 
+	contact_info->dummy_client = false;
 	if (is_remove) return contact_info;
 	string my_ip = server_ip;
 	contact_info->my_ip = my_ip;
@@ -111,7 +113,6 @@ ContactInfo* ServerMediaManager::get_contact_info(Json::Value add_client_info, b
 
 	contact_info->org_video_port = get_port_number(contact_info->dest_ip, "video");
 	contact_info->org_audio_port = get_port_number(contact_info->dest_ip, "audio");
-	contact_info->dummy_client = false;
 
 	return contact_info;
 }

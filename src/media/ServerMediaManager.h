@@ -10,6 +10,7 @@ namespace media {
 class ServerMediaManager : public MediaManager, public IServerMediaManager {
 private:
 	static ServerMediaManager* instance;
+	static int dummy_port;
 	vector<PipeMode> video_pipe_mode_list_;
 	vector<PipeMode> audio_pipe_mode_list_;
 	OperatingInfo* ServerMediaManager::get_operate_info(void);
