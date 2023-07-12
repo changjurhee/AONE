@@ -9,6 +9,12 @@ ContactDb* ContactDb::getInstance()
 	if (instance == nullptr) {
 		instance = new ContactDb(DB_CONTACT);
 	}
+	Json::Value allContacts = instance->get();
+	if (!allContacts.empty()) {
+		for (int i = 0; i < allContacts.size(); i++) {
+			instance->update(allContacts[i]["cid"].asString(), "login", false);
+		}
+	}
 	return instance;
 }
 

@@ -64,6 +64,7 @@ void CContactListView::Dump(CDumpContext& dc) const
 
 // CContactListView 메시지 처리기
 
+
 void CContactListView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
@@ -75,7 +76,8 @@ void CContactListView::OnInitialUpdate()
 	m_ltContactNames.InsertColumn(0, TEXT("ID"), LVCFMT_CENTER, rt.Width() * 10 / 100);
 	m_ltContactNames.InsertColumn(1, TEXT("EMAIL"), LVCFMT_CENTER, rt.Width() * 40 / 100);
 	m_ltContactNames.InsertColumn(2, TEXT("NAME"), LVCFMT_CENTER, rt.Width() * 30 / 100);
-	m_ltContactNames.InsertColumn(3, TEXT("ENABLED"), LVCFMT_CENTER, rt.Width() * 20 / 100);
+	m_ltContactNames.InsertColumn(3, TEXT("ENABLED"), LVCFMT_CENTER, rt.Width() * 10 / 100);
+	m_ltContactNames.InsertColumn(4, TEXT("LOGIN"), LVCFMT_CENTER, rt.Width() * 10 / 100);
 
 	m_ltConferenceNames.GetWindowRect(&rt);
 	m_ltConferenceNames.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
@@ -84,18 +86,7 @@ void CContactListView::OnInitialUpdate()
 	m_ltConferenceNames.InsertColumn(2, TEXT("START"), LVCFMT_CENTER, rt.Width() * 20 / 100);
 	m_ltConferenceNames.InsertColumn(3, TEXT("END"), LVCFMT_CENTER, rt.Width() * 20 / 100);
 
-	/*m_btnEnable.LoadBitmaps(IDB_ENABLE, NULL, NULL, NULL);
-	m_btnDisable.LoadBitmaps(IDB_DISABLE, NULL, NULL, NULL);
-	m_btnDelete.LoadBitmaps(IDB_DELETE, NULL, NULL, NULL);
-	m_btnContactRefresh.LoadBitmaps(IDB_REFRESH, NULL, NULL, NULL);
-	m_btnConfRefresh.LoadBitmaps(IDB_REFRESH, NULL, NULL, NULL);
-
-	m_btnEnable.SizeToContent();
-	m_btnDisable.SizeToContent();
-	m_btnDelete.SizeToContent();
-	m_btnContactRefresh.SizeToContent();
-	m_btnConfRefresh.SizeToContent();*/
-
+	SUiController::getInstance()->setCallbackWnd(this);
 	UpdateContactView();
 	UpdateConferenceView();
 }
@@ -159,6 +150,7 @@ void CContactListView::UpdateContactView()
 			m_ltContactNames.SetItemText(num, 1, CString(p.email.c_str()));
 			m_ltContactNames.SetItemText(num, 2, CString(p.name.c_str()));
 			m_ltContactNames.SetItemText(num, 3, CString(p.enabled ? "TRUE" : "FALSE"));
+			m_ltContactNames.SetItemText(num, 4, CString(p.login ? "O" : ""));
 			itemIndex++;
 		}
 		m_ltContactNames.UnlockWindowUpdate();
