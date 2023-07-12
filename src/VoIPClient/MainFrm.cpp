@@ -8,7 +8,8 @@
 
 #include "MainFrm.h"
 #include "VoIPClientDoc.h"
-#include "VoIPClientView.h"
+//#include "VoIPClientView.h"
+#include "VoIPNewClient.h"
 
 #include "AccountLoginDlg.h"
 #include "ManageUserAccountDlg.h"

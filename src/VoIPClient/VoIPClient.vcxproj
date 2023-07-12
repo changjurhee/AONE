@@ -257,6 +257,7 @@
     <ClInclude Include="VoIPClient.h" />
     <ClInclude Include="VoIPClientDoc.h" />
     <ClInclude Include="VoIPClientView.h" />
+    <ClInclude Include="VoIPNewClient.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\logger.cpp" />
@@ -303,6 +304,7 @@
     <ClCompile Include="VoIPClient.cpp" />
     <ClCompile Include="VoIPClientDoc.cpp" />
     <ClCompile Include="VoIPClientView.cpp" />
+    <ClCompile Include="VoIPNewClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="VoIPClient.idl" />

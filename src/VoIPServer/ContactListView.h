@@ -28,6 +28,13 @@ public:
 	CMFCButton m_btnDelete;
 	CMFCButton m_btnContactRefresh;
 	CMFCButton m_btnConfRefresh;
+	CListCtrl m_ltContactNames;
+	CListCtrl m_ltConferenceNames;
+	INT m_ltIndex;
+	CString m_edPreSet;
+	CString m_edLatency;
+	INT m_PreSetValue;
+	INT m_LatencyValue;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -35,9 +42,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
-	CListCtrl m_ltContactNames;
-	CListCtrl m_ltConferenceNames;
-	INT m_ltIndex;
 	afx_msg void OnNMClickLtContact(NMHDR* pNMHDR, LRESULT* pResult);
 	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedMfcbtnChangeState();
@@ -47,8 +51,11 @@ public:
 	void UpdateConferenceView();
 	afx_msg void OnBnClickedMfcbtnRefreshContact();
 	afx_msg void OnBnClickedMfcbtnRefreshConf();
-
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg void OnDeltaposSpinPreset(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnDeltaposSpinLatency(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnEnChangeEdPreset();
+	afx_msg void OnEnChangeEdLatency();
 };
 
 
