@@ -26,6 +26,11 @@ void CContactListView::DoDataExchange(CDataExchange* pDX)
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LT_CONTACT, m_ltContactNames);
 	DDX_Control(pDX, IDC_LT_CONFERENCE, m_ltConferenceNames);
+	DDX_Control(pDX, IDC_MFCBTN_CHANGE_STATE, m_btnEnable);
+	DDX_Control(pDX, IDC_MFCBTN_CHANGE_DISABLE, m_btnDisable);
+	DDX_Control(pDX, IDC_MFCBTN_DELETE, m_btnDelete);
+	DDX_Control(pDX, IDC_MFCBTN_REFRESH_CONTACT, m_btnContactRefresh);
+	DDX_Control(pDX, IDC_MFCBTN_REFRESH_CONF, m_btnConfRefresh);
 }
 
 BEGIN_MESSAGE_MAP(CContactListView, CFormView)
@@ -36,6 +41,7 @@ BEGIN_MESSAGE_MAP(CContactListView, CFormView)
 	ON_BN_CLICKED(IDC_MFCBTN_CHANGE_DISABLE, &CContactListView::OnBnClickedMfcbtnChangeDisable)
 	ON_BN_CLICKED(IDC_MFCBTN_REFRESH_CONTACT, &CContactListView::OnBnClickedMfcbtnRefreshContact)
 	ON_BN_CLICKED(IDC_MFCBTN_REFRESH_CONF, &CContactListView::OnBnClickedMfcbtnRefreshConf)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -58,7 +64,6 @@ void CContactListView::Dump(CDumpContext& dc) const
 
 // CContactListView 메시지 처리기
 
-
 void CContactListView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
@@ -78,6 +83,18 @@ void CContactListView::OnInitialUpdate()
 	m_ltConferenceNames.InsertColumn(1, TEXT("PARTICIPANTS"), LVCFMT_CENTER, rt.Width() * 40 / 100);
 	m_ltConferenceNames.InsertColumn(2, TEXT("START"), LVCFMT_CENTER, rt.Width() * 20 / 100);
 	m_ltConferenceNames.InsertColumn(3, TEXT("END"), LVCFMT_CENTER, rt.Width() * 20 / 100);
+
+	/*m_btnEnable.LoadBitmaps(IDB_ENABLE, NULL, NULL, NULL);
+	m_btnDisable.LoadBitmaps(IDB_DISABLE, NULL, NULL, NULL);
+	m_btnDelete.LoadBitmaps(IDB_DELETE, NULL, NULL, NULL);
+	m_btnContactRefresh.LoadBitmaps(IDB_REFRESH, NULL, NULL, NULL);
+	m_btnConfRefresh.LoadBitmaps(IDB_REFRESH, NULL, NULL, NULL);
+
+	m_btnEnable.SizeToContent();
+	m_btnDisable.SizeToContent();
+	m_btnDelete.SizeToContent();
+	m_btnContactRefresh.SizeToContent();
+	m_btnConfRefresh.SizeToContent();*/
 
 	UpdateContactView();
 	UpdateConferenceView();
@@ -192,3 +209,12 @@ LRESULT CContactListView::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 	return LRESULT();
 }
 
+HBRUSH CContactListView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CFormView::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO:  여기서 DC의 특성을 변경합니다.
+
+	// TODO:  기본값이 적당하지 않으면 다른 브러시를 반환합니다.
+	return (HBRUSH)GetStockObject(WHITE_BRUSH);
+}

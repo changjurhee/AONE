@@ -22,6 +22,12 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 #endif
+	
+	CMFCButton m_btnEnable;
+	CMFCButton m_btnDisable;
+	CMFCButton m_btnDelete;
+	CMFCButton m_btnContactRefresh;
+	CMFCButton m_btnConfRefresh;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -41,6 +47,8 @@ public:
 	void UpdateConferenceView();
 	afx_msg void OnBnClickedMfcbtnRefreshContact();
 	afx_msg void OnBnClickedMfcbtnRefreshConf();
+
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };
 
 
