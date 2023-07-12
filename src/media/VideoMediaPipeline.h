@@ -21,6 +21,8 @@ class VideoMediaPipeline: public MediaPipeline
 	SubElements pipeline_make_decoding(GstBin* parent_bin, int bin_index, int client_index) override;
 	SubElements pipeline_make_adder(GstBin* parent_bin, int bin_index, int client_index) override;
 	SubElements pipeline_make_jitter_buffer(GstBin* parent_bin, int bin_index, int client_index) override;
+	void pipeline_update_udp_sink(GstBin* parent_bin, int bin_index, int client_index) override;
+	void pipeline_update_udp_src(GstBin* parent_bin, int bin_index, int client_index) override;
 	SubElements pipeline_make_udp_sink(GstBin* parent_bin, int port, int client_index) override;
 	SubElements pipeline_make_udp_src(GstBin* parent_bin, int port, int client_index) override;
 	SubElements pipeline_make_overlay(GstBin* parent_bin, int bin_index, int client_index) override;

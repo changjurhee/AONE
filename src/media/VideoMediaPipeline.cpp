@@ -209,6 +209,25 @@ SubElements VideoMediaPipeline::pipeline_make_jitter_buffer(GstBin* parent_bin, 
 	return SubElements(element, element);
 }
 
+void VideoMediaPipeline::pipeline_update_udp_sink(GstBin* parent_bin, int bin_index, int client_index)
+{
+	GstElement* element = get_elements_by_name(parent_bin, TYPE_UDP_SINK, bin_index, client_index).second;
+
+	std::string host = contact_info_list_[client_index].dest_ip;
+	int port = contact_info_list_[client_index].dest_video_port;
+
+	LOG_OBJ_INFO() << get_pipeline_info(0) << "host " << host << " port : " << port << endl;
+	g_object_set(element, "host", host.c_str(), "port", port, "sync", FALSE, "processing-deadline", 0, NULL);
+}
+
+
+void VideoMediaPipeline::pipeline_update_udp_src(GstBin* parent_bin, int bin_index, int client_index)
+{
+	GstElement* element = get_elements_by_name(parent_bin, TYPE_UDP_SRC, bin_index, client_index).second;
+	int port = contact_info_list_[client_index].org_video_port;
+	g_object_set(element, "port", port, NULL);
+}
+
 SubElements VideoMediaPipeline::pipeline_make_udp_sink(GstBin* parent_bin, int bin_index, int client_index) {
 	return MediaPipeline::pipeline_make_udp_sink_with_port(parent_bin, bin_index, client_index, contact_info_list_[client_index].dest_video_port);
 };

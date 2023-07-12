@@ -50,15 +50,34 @@ OperatingInfo* ServerMediaManager::get_operate_info(void)
 	return operate_info;
 }
 
+ContactInfo* ServerMediaManager::get_dummy_contact(int number)
+{
+	ContactInfo* contact_info = new ContactInfo;
+	contact_info->cid = "__dummy_"+std::to_string(number);
+	string my_ip = server_ip;
+	contact_info->my_ip = my_ip;
+	contact_info->dest_ip = "192.168.4." + std::to_string(number+2);
+	contact_info->client_name = "__dummy_" + std::to_string(number);
+	contact_info->dest_video_port = get_port_number(my_ip, "video");
+	contact_info->dest_audio_port = get_port_number(my_ip, "audio");
+
+	contact_info->org_video_port = get_port_number(contact_info->dest_ip, "video");
+	contact_info->org_audio_port = get_port_number(contact_info->dest_ip, "audio");
+	return contact_info;
+}
+
 void ServerMediaManager::startCall(Json::Value room_creat_info)
 {
 
 	vector<ContactInfo> contact_info_list;
 	string rid = room_creat_info["rid"].asString();
 	server_ip = room_creat_info["myIp"].asString();
+	int conferenceSize = room_creat_info["conferenceSize"].asInt();
 
 	OperatingInfo* operate_info = get_operate_info();
 	LOG_OBJ_INFO() << "rid : " << rid << endl;
+	for (int i = 0; i < conferenceSize; i++)
+		contact_info_list.push_back(*get_dummy_contact(i));
 
 	Pipelines pipelines;
 	pipelines.video_pipelines.push_back(new VideoMediaPipeline(rid, video_pipe_mode_list_, this, nullptr));
@@ -84,14 +103,17 @@ ContactInfo* ServerMediaManager::get_contact_info(Json::Value add_client_info, b
 	contact_info->cid = add_client_info["cid"].asString();
 
 	if (is_remove) return contact_info;
+	string my_ip = server_ip;
+	contact_info->my_ip = my_ip;
 	contact_info->dest_ip = split(add_client_info["clientIp"].asString(), ':')[0];
 	contact_info->client_name = add_client_info["name"].asString();;
-	string my_ip = server_ip;
 	contact_info->dest_video_port = get_port_number(my_ip, "video");
 	contact_info->dest_audio_port = get_port_number(my_ip, "audio");
 
 	contact_info->org_video_port = get_port_number(contact_info->dest_ip, "video");
 	contact_info->org_audio_port = get_port_number(contact_info->dest_ip, "audio");
+	contact_info->dummy_client = false;
+
 	return contact_info;
 }
 

@@ -60,6 +60,7 @@ ContactInfo* ClientMediaManager::get_contact_info(Json::Value client_join_info)
 
 	contact_info->org_video_port = get_port_number(contact_info->dest_ip, "video");
 	contact_info->org_audio_port = get_port_number(contact_info->dest_ip, "audio");
+	contact_info->dummy_client = false;
 	return contact_info;
 }
 
@@ -80,7 +81,7 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 	ContactInfo* contact_info = get_contact_info(client_join_info);
 	OperatingInfo* operate_info = get_operate_info(client_join_info);
 
-	contact_info_list.push_back(*contact_info);
+	//contact_info_list.push_back(*contact_info);
 	LOG_INFO("In");
 
 	Pipelines pipelines;
@@ -93,14 +94,14 @@ void ClientMediaManager::startCall(Json::Value client_join_info)
 	vector<VideoMediaPipeline*> video_pipelines = getVideoPipeLine(rid);
 	for (auto pipeline : video_pipelines) {
 		if (pipeline == NULL) continue;
-		pipeline->request_add_client(&contact_info_list[0]);
+		pipeline->request_add_client(contact_info);
 		pipeline->makePipeline(contact_info_list, *operate_info, view_handler_);
 	}
 
 	vector<AudioMediaPipeline*> audio_pipelines = getAudioPipeLine(rid);
 	for (auto pipeline : audio_pipelines) {
 		if (pipeline == NULL) continue;
-		pipeline->request_add_client(&contact_info_list[0]);
+		pipeline->request_add_client(contact_info);
 		pipeline->makePipeline(contact_info_list, *operate_info, NULL);
 	}
 

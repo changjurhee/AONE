@@ -17,6 +17,7 @@ private:
 	ContactInfo* get_contact_info(Json::Value add_client_info, bool is_remove);
 	string server_ip;
 	ISessionMediaCallback* sessionCallback_;
+	ContactInfo* get_dummy_contact(int number);
 
 	virtual bool notifyVideoQualityChangeNeeded(std::string rid, VideoPresetLevel level) override ;
 public:

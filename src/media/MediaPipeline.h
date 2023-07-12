@@ -118,6 +118,8 @@ protected :
 	void add_client_in_front(GstBin* parent_bin, int bin_index, int client_index);
 	void add_client_in_back(GstBin* parent_bin, int bin_index, int client_index);
 	SubElements add_client_at_src(GstBin* parent_bin, int bin_index, int client_index);
+	virtual void pipeline_update_udp_sink(GstBin* parent_bin, int bin_index, int client_index) = 0;
+	virtual void pipeline_update_udp_src(GstBin* parent_bin, int bin_index, int client_index) = 0;
 
 	void add_client_udp_remove_me(GstBin* parent_bin, int bin_index, int client_index);
 	void remove_element_list(GstBin* parent_bin, string current_name, string target_name, string pad_type);
@@ -138,6 +140,7 @@ protected :
 	string get_pipeline_info(int bin_index);
 	string get_pipe_mode_name(int mode);
 	int count_active_client(void);
+	void update_client_info(ContactInfo* client_info);
 public:
 	MediaPipeline(string rid, const vector<PipeMode>& pipe_mode_list,
 		PipelineMonitorable::Callback* rtpstats_cb, PipelineMonitorable::Callback* data_cb);
