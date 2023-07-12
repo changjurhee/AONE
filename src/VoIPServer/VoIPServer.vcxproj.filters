@@ -105,9 +105,6 @@
     <ClInclude Include="..\media\call_info.h">
       <Filter>media</Filter>
     </ClInclude>
-    <ClInclude Include="IServerMediaManager.h">
-      <Filter>media</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\logger.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -115,9 +112,6 @@
       <Filter>media</Filter>
     </ClInclude>
     <ClInclude Include="..\media\MediaPipeline.h">
-      <Filter>media</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerMediaManager.h">
       <Filter>media</Filter>
     </ClInclude>
     <ClInclude Include="..\media\VideoMediaPipeline.h">
@@ -143,6 +137,12 @@
     </ClInclude>
     <ClInclude Include="ContactListView.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\IServerMediaManager.h">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\media\ServerMediaManager.h">
+      <Filter>media</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +212,6 @@
     <ClCompile Include="..\media\MediaPipeline.cpp">
       <Filter>media</Filter>
     </ClCompile>
-    <ClCompile Include="ServerMediaManager.cpp">
-      <Filter>media</Filter>
-    </ClCompile>
     <ClCompile Include="..\media\VideoMediaPipeline.cpp">
       <Filter>media</Filter>
     </ClCompile>
@@ -235,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="ContactListView.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\media\ServerMediaManager.cpp">
+      <Filter>media</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

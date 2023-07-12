@@ -19,7 +19,7 @@
 #include "TestCallDlg.h"
 
 #include "ClientMediaManager.h"
-#include "ServerMediaManager.h"
+#include "media/ServerMediaManager.h"
 #include "common/logger.h"
 
 #ifdef _DEBUG

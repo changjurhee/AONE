@@ -207,10 +207,12 @@
     <ClInclude Include="..\media\AudioMediaPipeline.h" />
     <ClInclude Include="..\media\audio_buffer.h" />
     <ClInclude Include="..\media\call_info.h" />
+    <ClInclude Include="..\media\IServerMediaManager.h" />
     <ClInclude Include="..\media\MediaManager.h" />
     <ClInclude Include="..\media\MediaPipeline.h" />
     <ClInclude Include="..\media\media_config.h" />
     <ClInclude Include="..\media\media_types.h" />
+    <ClInclude Include="..\media\ServerMediaManager.h" />
     <ClInclude Include="..\media\VideoMediaPipeline.h" />
     <ClInclude Include="calendarbar.h" />
     <ClInclude Include="ClassView.h" />
@@ -218,13 +220,11 @@
     <ClInclude Include="ContactListView.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="IServerMediaManager.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="ServerMediaManager.h" />
     <ClInclude Include="session\AccountManager.h" />
     <ClInclude Include="session\ConferenceDb.h" />
     <ClInclude Include="session\Connection.h" />
@@ -252,6 +252,7 @@
     <ClCompile Include="..\media\MediaPipeline.cpp" />
     <ClCompile Include="..\media\media_config.cpp" />
     <ClCompile Include="..\media\media_types.cpp" />
+    <ClCompile Include="..\media\ServerMediaManager.cpp" />
     <ClCompile Include="..\media\VideoMediaPipeline.cpp" />
     <ClCompile Include="calendarbar.cpp" />
     <ClCompile Include="ClassView.cpp" />
@@ -267,7 +268,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PropertiesWnd.cpp" />
-    <ClCompile Include="ServerMediaManager.cpp" />
     <ClCompile Include="session\AccountManager.cpp" />
     <ClCompile Include="session\ConferenceDb.cpp" />
     <ClCompile Include="session\Connection.cpp" />

@@ -3,7 +3,7 @@
 #include "../media/MediaManager.h"
 #include "../media/VideoMediaPipeline.h"
 #include "../media/AudioMediaPipeline.h"
-#include "session/ISessionMediaCallback.h"
+#include "session/IRequestSessionMediaCallback.h"
 #include "media/vad_processor.h"
 
 #define DEFAULT_CLIENT_CID "0"
@@ -22,7 +22,7 @@ private:
 	ContactInfo* get_contact_info(Json::Value client_join_info);
 	OperatingInfo* get_operate_info(Json::Value client_join_info);
 
-	ISessionMediaCallback* sessionCallback_;
+	IRequestSessionMediaCallback* sessionCallback_;
 	media::VadProcessor vad_;
 	bool vad_on_;
 	ClientMediaManager(int max_pipeline);
@@ -33,7 +33,7 @@ public:
 	void startCall(Json::Value client_join_info) override;
 	void setViewHandler(handleptr view_handler) override;
 	void endCall(Json::Value client_join_info) override;
-	void setSessionCallback(ISessionMediaCallback* callback);
+	void setSessionCallback(IRequestSessionMediaCallback* callback);
 	static ClientMediaManager* getInstance();
 	static void releaseInstance();
 };

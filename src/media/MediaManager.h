@@ -22,10 +22,11 @@ class MediaManager : public PipelineMonitorable::Callback
 protected:
 	struct VqaData {
 		VqaData() :
-			num_lost(0), begin_time(0), elapsed_time(0) {}
-		uint64_t num_lost;
+			num_lost_last(0), begin_time(0), elapsed_time(0), num_clients(0) {}
+		uint64_t num_lost_last; // store last seen num_lost every 1 sec.
 		clock_t begin_time;
 		clock_t elapsed_time;
+		int num_clients;
 	};
 	int max_pipleline_;
 	map<string, Pipelines> pipelineMap_;

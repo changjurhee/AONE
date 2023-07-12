@@ -10,24 +10,33 @@ VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& c
 	const PipelineMonitorable::RtpStats& stats) {
 	VideoPresetLevel ret = current_preset.level;
 
+	if (!vqa_data_per_room_[stats.rid].num_clients)
+		return current_preset.level;
+
 	LOG_OBJ_LOG() << "cur_bitrate " << current_preset.bitrate << ", num_lost " << stats.num_lost
 		<< ", num_late " << stats.num_late << ", avg_jitter " << stats.avg_jitter_us << " us" << std::endl;
 
-	vqa_data_per_room_[stats.rid].num_lost += stats.num_lost;
 	vqa_data_per_room_[stats.rid].elapsed_time = clock() - vqa_data_per_room_[stats.rid].begin_time;
 	if (vqa_data_per_room_[stats.rid].elapsed_time > CLOCKS_PER_SEC) {
+		uint64_t num_lost_per_sec = stats.num_lost - vqa_data_per_room_[stats.rid].num_lost_last;
+
 		LOG_OBJ_INFO() << "[rid:" << stats.rid << "] cur_bitrate " << current_preset.bitrate
 			<< ", num_lost " << stats.num_lost << ", num_late " << stats.num_late
 			<< ", avg_jitter " << stats.avg_jitter_us << " us"
-			<< ", num_lost_per_room_ " << vqa_data_per_room_[stats.rid].num_lost << std::endl;
+			<< ", num_lost_per_last_1sec " << num_lost_per_sec << std::endl;
 
-		if (vqa_data_per_room_[stats.rid].num_lost > MediaConfig::ThresholdOfNumLostForChangingVideoQuality()) {
+		if ((num_lost_per_sec/vqa_data_per_room_[stats.rid].num_clients) >
+			MediaConfig::ThresholdOfNumLostForChangingVideoQuality()) {
+			LOG_OBJ_WARN() << "[rid:" << stats.rid << "] avg num_lost(num_lost/clients) "
+				<< num_lost_per_sec / vqa_data_per_room_[stats.rid].num_clients << " is bigger than threshold("
+				<< MediaConfig::ThresholdOfNumLostForChangingVideoQuality() << "). Need to Notify!" << std::endl;
+
 			if (current_preset.level > VideoPresetLevel::kVideoPreset1)
 				ret = VideoPresetType::Lower(current_preset.level);
 		}
 
 		vqa_data_per_room_[stats.rid].begin_time = clock();
-		vqa_data_per_room_[stats.rid].num_lost = 0;
+		vqa_data_per_room_[stats.rid].num_lost_last = stats.num_lost;
 	}
 
 	return ret;
@@ -158,8 +167,8 @@ void MediaManager::OnRtpStats(const VideoPresetType& current_preset, const Pipel
 
 	VideoPresetLevel next_preset_level = ShouldChangeVideoQuality(current_preset, stats);
 	if (next_preset_level != current_preset.level) {
-		//LOG_OBJ_INFO() << "Need to change video quality! current " << static_cast<int>(current_preset.level)
-		//	<< " to " << static_cast<int>(next_preset_level) << std::endl;
+		LOG_OBJ_WARN() << "Request to change video quality! current " << static_cast<int>(current_preset.level)
+			<< " to " << static_cast<int>(next_preset_level) << std::endl;
 
 		notifyVideoQualityChangeNeeded(stats.rid, next_preset_level);
 	}

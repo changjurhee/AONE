@@ -13,7 +13,7 @@
 #include "VoIPServerView.h"
 #include "ContactListView.h"
 
-#include "ServerMediaManager.h"
+#include "media/ServerMediaManager.h"
 #include "common/logger.h"
 
 #ifdef _DEBUG
