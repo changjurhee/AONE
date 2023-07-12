@@ -13,8 +13,11 @@ IMPLEMENT_DYNCREATE(CContactListView, CFormView)
 
 CContactListView::CContactListView()
 	: CFormView(IDD_LIST_VIEW)
+	, m_edPreSet(_T("0"))
+	, m_edLatency(_T("100"))
 {
-
+	m_PreSetValue = 0;
+	m_LatencyValue = 100;
 }
 
 CContactListView::~CContactListView()
@@ -31,6 +34,8 @@ void CContactListView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_MFCBTN_DELETE, m_btnDelete);
 	DDX_Control(pDX, IDC_MFCBTN_REFRESH_CONTACT, m_btnContactRefresh);
 	DDX_Control(pDX, IDC_MFCBTN_REFRESH_CONF, m_btnConfRefresh);
+	DDX_Text(pDX, IDC_ED_PRESET, m_edPreSet);
+	DDX_Text(pDX, IDC_ED_LATENCY, m_edLatency);
 }
 
 BEGIN_MESSAGE_MAP(CContactListView, CFormView)
@@ -42,6 +47,10 @@ BEGIN_MESSAGE_MAP(CContactListView, CFormView)
 	ON_BN_CLICKED(IDC_MFCBTN_REFRESH_CONTACT, &CContactListView::OnBnClickedMfcbtnRefreshContact)
 	ON_BN_CLICKED(IDC_MFCBTN_REFRESH_CONF, &CContactListView::OnBnClickedMfcbtnRefreshConf)
 	ON_WM_CTLCOLOR()
+	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_PRESET, &CContactListView::OnDeltaposSpinPreset)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_LATENCY, &CContactListView::OnDeltaposSpinLatency)
+	ON_EN_CHANGE(IDC_ED_PRESET, &CContactListView::OnEnChangeEdPreset)
+	ON_EN_CHANGE(IDC_ED_LATENCY, &CContactListView::OnEnChangeEdLatency)
 END_MESSAGE_MAP()
 
 
@@ -209,4 +218,63 @@ HBRUSH CContactListView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	// TODO:  기본값이 적당하지 않으면 다른 브러시를 반환합니다.
 	return (HBRUSH)GetStockObject(WHITE_BRUSH);
+}
+
+void CContactListView::OnDeltaposSpinPreset(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0; // 0 ~ 5
+	if (pNMUpDown->iDelta < 0) {
+		if (m_PreSetValue < 5) m_PreSetValue++;
+	}
+	else {
+		if (m_PreSetValue > 0) m_PreSetValue--;
+	}
+	SetDlgItemInt(IDC_ED_PRESET, m_PreSetValue);
+	//m_edPreSet.Format(_T("%d"), m_PreSetValue);
+}
+
+
+void CContactListView::OnDeltaposSpinLatency(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0; // 100 ~ 2000
+	if (pNMUpDown->iDelta < 0) {
+		if (m_LatencyValue < 2000) m_LatencyValue++;
+	}
+	else {
+		if (m_LatencyValue > 100) m_LatencyValue--;
+	}
+
+	SetDlgItemInt(IDC_ED_LATENCY, m_LatencyValue);
+	//m_edLatency.Format(_T("%d"), m_LatencyValue);
+}
+
+
+void CContactListView::OnEnChangeEdPreset()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CFormView::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	TRACE1("%d", m_PreSetValue);
+	// 여기에 필요한 작업 하세요.
+}
+
+
+void CContactListView::OnEnChangeEdLatency()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CFormView::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	TRACE1("%d", m_LatencyValue);
+	// 여기에 필요한 작업 하세요.
+
 }

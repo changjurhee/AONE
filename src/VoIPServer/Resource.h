@@ -131,6 +131,10 @@
 #define IDC_MFCBTN_CHANGE_DISABLE       1004
 #define IDC_MFCBTN_REFRESH_CONF         1005
 #define IDC_MFCBTN_REFRESH_CONTACT      1006
+#define IDC_SPIN_PRESET                 1049
+#define IDC_ED_PRESET                   1050
+#define IDC_SPIN_LATENCY                1051
+#define IDC_ED_LATENCY                  1052
 
 // Next default values for new objects
 // 

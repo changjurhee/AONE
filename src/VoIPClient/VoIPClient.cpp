@@ -10,7 +10,8 @@
 #include "MainFrm.h"
 
 #include "VoIPClientDoc.h"
-#include "VoIPClientView.h"
+//#include "VoIPClientView.h"
+#include "VoIPNewClient.h"
 
 #include "StartDlg.h"
 #include "AccountLoginDlg.h"
@@ -153,7 +154,7 @@ BOOL CVoIPClientApp::InitInstance()
 		IDR_MAINFRAME,
 		RUNTIME_CLASS(CVoIPClientDoc),
 		RUNTIME_CLASS(CMainFrame),       // 주 SDI 프레임 창입니다.
-		RUNTIME_CLASS(CVoIPClientView));
+		RUNTIME_CLASS(CVoIPNewClient));
 	if (!pDocTemplate)
 		return FALSE;
 
@@ -241,7 +242,8 @@ BOOL CVoIPClientApp::InitInstance()
 	clientMediaManager->setSessionCallback(CallsManager::getInstance());
 
 	// Pass handle to output video screen
-	CVoIPClientView* pView = (CVoIPClientView*)((CMainFrame*)AfxGetMainWnd())->GetActiveView();
+	//CVoIPClientView* pView = (CVoIPClientView*)((CMainFrame*)AfxGetMainWnd())->GetActiveView();
+	CVoIPNewClient* pView = (CVoIPNewClient*)((CMainFrame*)AfxGetMainWnd())->GetActiveView();
 	clientMediaManager->setViewHandler((handleptr)pView->GetBitmapHandle());
 
 
