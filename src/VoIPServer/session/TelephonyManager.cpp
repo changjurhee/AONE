@@ -382,7 +382,6 @@ void TelephonyManager::handleCreateConference(Json::Value data) {
 
 	logConnections();
 
-	Json::Value payload;
 	payload["result"] = 0;
 	payload["rid"] = connId;
 	sessionControl->sendData(206, payload, data["host"].asString()); // Send feedback
