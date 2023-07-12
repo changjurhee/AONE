@@ -132,7 +132,7 @@ void AudioMediaPipeline::pipeline_update_udp_sink(GstBin* parent_bin, int bin_in
 
 void AudioMediaPipeline::pipeline_update_udp_src(GstBin* parent_bin, int bin_index, int client_index)
 {
-	GstElement* element = get_elements_by_name(parent_bin, TYPE_UDP_SINK, bin_index, client_index).second;
+	GstElement* element = get_elements_by_name(parent_bin, TYPE_UDP_SRC, bin_index, client_index).second;
 	int port = contact_info_list_[client_index].org_audio_port;
 	g_object_set(element, "port", port, NULL);
 }
