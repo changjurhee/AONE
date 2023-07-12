@@ -91,6 +91,9 @@ void AccountManager::handleRegisterContact(Json::Value data, string from)
 		result 2 : FAILED (MANDATORY ITEMS ARE MISSING)
 	*/
 	sessionControl->sendData(101, payload, from);
+	if (payload["result"].asInt() == 0) {
+		uiControl->notify(MSG_RESPONSE_UPDATE_DATA_CONTACT, 0);
+	}
 }
 
 string AccountManager::handleLogin(Json::Value data, string ipAddress, string from)
@@ -266,7 +269,11 @@ void AccountManager::handleUpdateMyContact(Json::Value data, string from)
 		cout << "handleUpdateMyContact()[" << cid << "]FAIL/Same email exists" << endl;
 		payload["result"] = 3;
 		sessionControl->sendData(107, payload, from);
-	}		
+	}
+
+	if (payload["result"].asInt() == 0) {
+		uiControl->notify(MSG_RESPONSE_UPDATE_DATA_CONTACT, 0);
+	}
 }
 
 void AccountManager::handleCreateConference(Json::Value data, string from)
@@ -275,6 +282,7 @@ void AccountManager::handleCreateConference(Json::Value data, string from)
 	cidData["cid"] = from;
 	string cid = cidData["cid"].asString();
 	handleGetAllConference(cidData, from);
+	uiControl->notify(MSG_RESPONSE_UPDATE_DATA_CONFERENCE, 0);
 }
 
 void AccountManager::handleGetAllContact( string from)
@@ -334,5 +342,6 @@ void AccountManager::handleDeleteConference(Json::Value data, std::string from)
 	Json::Value getMyConference;
 	getMyConference["cid"] = cid;
 	handleGetAllConference(getMyConference, from);
+	uiControl->notify(MSG_RESPONSE_UPDATE_DATA_CONFERENCE, 0);
 }
 

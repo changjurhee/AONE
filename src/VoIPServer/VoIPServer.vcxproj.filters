@@ -141,6 +141,9 @@
     <ClInclude Include="CommandLineInterface.h">
       <Filter>Session</Filter>
     </ClInclude>
+    <ClInclude Include="ContactListView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VoIPServer.cpp">
@@ -229,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="CommandLineInterface.cpp">
       <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="ContactListView.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
