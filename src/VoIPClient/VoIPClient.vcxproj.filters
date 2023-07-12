@@ -500,6 +500,7 @@
     <None Include="res\VoIPClient.rc2">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="res\sound1.bin" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Session">

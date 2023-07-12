@@ -310,6 +310,7 @@
     <Midl Include="VoIPClient.idl" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\sound1.bin" />
     <None Include="res\VoIPClient.rc2" />
     <None Include="VoIPClient.reg" />
   </ItemGroup>
