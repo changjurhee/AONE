@@ -820,7 +820,7 @@ void SetForegroundWindowForce(HWND hWnd)
 LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 {
 	CVoIPClientDoc* pDoc = (CVoIPClientDoc*)GetActiveDocument();
-	CVoIPNewClient* pNewView = (CVoIPNewClient*)GetActiveView();
+	CVoIPNewClient* pView = (CVoIPNewClient*)GetActiveView();
 
 	switch (wParam)
 	{
@@ -843,6 +843,7 @@ LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 		}
 		else if (result == CallState::STATE_DISCONNECTED) {
 			if (result == CallState::STATE_ACTIVE) pDoc->SetConnection(FALSE);
+			pView->OnPaint();
 			MessageBox(_T("DISCONNECTED"));
 			pNewView->OnPaint();
 		}
