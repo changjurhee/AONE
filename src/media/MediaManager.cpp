@@ -8,10 +8,12 @@ namespace media {
 
 VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& current_preset,
 	const PipelineMonitorable::RtpStats& stats) {
-	VideoPresetLevel ret = current_preset.level;
+	// do not use current_preset.
+	VideoPresetLevel cur_level = vqa_data_per_room_[stats.rid].cur_level; //current_preset.level;
+	VideoPresetLevel ret = cur_level;
 
 	if (!vqa_data_per_room_[stats.rid].num_clients)
-		return current_preset.level;
+		return cur_level;
 
 	LOG_OBJ_LOG() << "cur_bitrate " << current_preset.bitrate << ", num_lost " << stats.num_lost
 		<< ", num_late " << stats.num_late << ", avg_jitter " << stats.avg_jitter_us << " us" << std::endl;
@@ -36,8 +38,8 @@ VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& c
 				<< "). Need to Notify!" << std::endl;
 
 
-			if (current_preset.level > VideoPresetLevel::kVideoPreset1)
-				ret = VideoPresetType::Lower(current_preset.level);
+			if (cur_level > VideoPresetLevel::kVideoPresetOff)
+				ret = VideoPresetType::Lower(cur_level);
 		}
 
 		vqa_data_per_room_[stats.rid].begin_time = clock();
@@ -171,8 +173,10 @@ void MediaManager::OnRtpStats(const VideoPresetType& current_preset, const Pipel
 	LOG_LOG("IN");
 
 	VideoPresetLevel next_preset_level = ShouldChangeVideoQuality(current_preset, stats);
-	if (next_preset_level != current_preset.level) {
-		LOG_OBJ_WARN() << "Request to change video quality! current " << static_cast<int>(current_preset.level)
+	//if (next_preset_level != current_preset.level) {
+	// Do not use the level of current_preset of pipeline because we decided to keep server's video quality due to no time for testing
+	if (next_preset_level != vqa_data_per_room_[stats.rid].cur_level) {
+		LOG_OBJ_WARN() << "Request to change video quality! current " << static_cast<int>(vqa_data_per_room_[stats.rid].cur_level)
 			<< " to " << static_cast<int>(next_preset_level) << std::endl;
 
 		notifyVideoQualityChangeNeeded(stats.rid, next_preset_level);
