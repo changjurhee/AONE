@@ -80,7 +80,10 @@ void CSessionRegisterDlg::OnBnClickedOk()
 	UpdateData(TRUE);
 
 	stOleToDate res = SetDateTime(m_Date, m_StartTime, m_endTime);
-
+	if (res.duration < 0) {
+		MessageBox(_T("Invalid Data and Time. Please Check the schedule."), _T("Error"));
+		return;
+	}
 	int num = m_ltParticipants.GetItemCount();
 	std::list<std::string> Participants;
 
