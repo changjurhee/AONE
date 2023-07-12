@@ -208,7 +208,7 @@ BOOL CVoIPClientApp::InitInstance()
 
 	m_pMainWnd->ShowWindow(SW_HIDE);
 	
-#if 1
+#if 0
 	CTestCallDlg dlg;
 	dlg.DoModal();
 #endif
