@@ -25,11 +25,16 @@ VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& c
 			<< ", avg_jitter " << stats.avg_jitter_us << " us"
 			<< ", num_lost_per_last_1sec " << num_lost_per_sec << std::endl;
 
-		if ((num_lost_per_sec/vqa_data_per_room_[stats.rid].num_clients) >
-			MediaConfig::ThresholdOfNumLostForChangingVideoQuality()) {
-			LOG_OBJ_WARN() << "[rid:" << stats.rid << "] avg num_lost(num_lost/clients) "
-				<< num_lost_per_sec / vqa_data_per_room_[stats.rid].num_clients << " is bigger than threshold("
-				<< MediaConfig::ThresholdOfNumLostForChangingVideoQuality() << "). Need to Notify!" << std::endl;
+		//if ((num_lost_per_sec/vqa_data_per_room_[stats.rid].num_clients) >
+		//	MediaConfig::ThresholdOfNumLostForChangingVideoQuality()) {
+		//	LOG_OBJ_WARN() << "[rid:" << stats.rid << "] avg num_lost(num_lost/clients) "
+		//		<< num_lost_per_sec / vqa_data_per_room_[stats.rid].num_clients << " is bigger than threshold("
+		//		<< MediaConfig::ThresholdOfNumLostForChangingVideoQuality() << "). Need to Notify!" << std::endl;
+		if ((num_lost_per_sec > MediaConfig::ThresholdOfNumLostForChangingVideoQuality())) {
+			LOG_OBJ_WARN() << "[rid:" << stats.rid << "] num_lost_per_sec(" << num_lost_per_sec
+				<< ") is bigger than threshold(" << MediaConfig::ThresholdOfNumLostForChangingVideoQuality()
+				<< "). Need to Notify!" << std::endl;
+
 
 			if (current_preset.level > VideoPresetLevel::kVideoPreset1)
 				ret = VideoPresetType::Lower(current_preset.level);
@@ -159,7 +164,7 @@ void MediaManager::end_call_with_rid(string rid)
 		pipeline->end_call();
 	}
 	pipelineMap_.erase(rid);
-	vqa_data_per_room_[rid] = VqaData();
+	vqa_data_per_room_.erase(rid);
 }
 
 void MediaManager::OnRtpStats(const VideoPresetType& current_preset, const PipelineMonitorable::RtpStats& stats) {

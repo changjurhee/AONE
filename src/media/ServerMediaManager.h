@@ -19,8 +19,13 @@ private:
 	string server_ip;
 	ISessionMediaCallback* sessionCallback_;
 	ContactInfo* get_dummy_contact(int number);
+
+	virtual bool notifyVideoQualityChangeNeeded(std::string rid, VideoPresetLevel level) override;
 public:
+	// For Test
 	void updateClientVideoQuality(Json::Value info) override;
+	void updateRtpJitterBufferLatency(Json::Value info) override;
+
 	void startCall(Json::Value room_creat_info);
 	void endCall(Json::Value room_remove_info) override;
 	void addClient(Json::Value add_client_info) override;

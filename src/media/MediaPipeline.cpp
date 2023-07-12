@@ -1149,7 +1149,7 @@ void MediaPipeline::ReadAndNotifyRtpStats() {
 			stats.avg_jitter_us = stats.avg_jitter_us / 1000;
 			stats.rid = rid_;
 
-			LOG_OBJ_LOG() << gst_element_get_name(elem) << ": lost " << stats.num_lost << ", late "
+			LOG_OBJ_DEBUG() << elem << gst_element_get_name(elem) << ": lost " << stats.num_lost << ", late "
 				<< stats.num_late << ", avg_jitter " << stats.avg_jitter_us << " us" << std::endl;
 
 			if (rtpstats_cb_)

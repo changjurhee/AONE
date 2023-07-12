@@ -530,6 +530,12 @@ void TelephonyManager::handleRequestVideoQualityChange(Json::Value data) {
 	}
 }
 
+void TelephonyManager::handleRequestRtpJitterBufferLatencyChange(Json::Value data) {
+	if (mediaManager != nullptr) {
+		mediaManager->updateRtpJitterBufferLatency(data);
+	}
+}
+
 void TelephonyManager::notifyVideoQualityChanged(std::string rid, int quality) {
 	// send to client (request quality change)
 	Connection conn = connectionMap[rid];

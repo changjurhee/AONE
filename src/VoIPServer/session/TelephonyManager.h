@@ -59,6 +59,7 @@ public:
 	void handleJoinConference(Json::Value data) override;
 	void handleExitConference(Json::Value data) override;
 	void handleRequestVideoQualityChange(Json::Value data) override;
+	void handleRequestRtpJitterBufferLatencyChange(Json::Value data) override;
 
 	// Media Interface
 	void notifyVideoQualityChanged(std::string rid, int quality) override;

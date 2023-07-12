@@ -61,14 +61,14 @@ void VideoMediaPipeline::setVideoQuality(int video_quality_index)
 	stop_state_pipeline(true);
 
 	// Set the video resolution using capsfilter
-	GstCaps* capsRescale = gst_caps_new_simple("video/x-raw",
-		"width", G_TYPE_INT, videoWidth,
-		"height", G_TYPE_INT, videoHeight,
-		"framerate", GST_TYPE_FRACTION, 30, 1,
-		NULL);
+	//GstCaps* capsRescale = gst_caps_new_simple("video/x-raw",
+	//	"width", G_TYPE_INT, videoWidth,
+	//	"height", G_TYPE_INT, videoHeight,
+	//	"framerate", GST_TYPE_FRACTION, 30, 1,
+	//	NULL);
 
-	g_object_set(rescaleElements, "caps", capsRescale, NULL);
-	gst_caps_unref(capsRescale);
+	//g_object_set(rescaleElements, "caps", capsRescale, NULL);
+	//gst_caps_unref(capsRescale);
 
 	// Get endcode element
 	element_encode = get_elements_list(TYPE_ENCODING);

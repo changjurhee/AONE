@@ -34,9 +34,42 @@ void ServerMediaManager::setSessionCallback(ISessionMediaCallback* callback) {
 
 void ServerMediaManager::updateClientVideoQuality(Json::Value info)
 {
-	// TODO : VideoQuality 변경 로직 적용
-	//string rid, string cid, int level
+	int level = std::stoi(info["level"].asString());
+	LOG_OBJ_INFO() << level << std::endl;
+
+	if (pipelineMap_.begin() == pipelineMap_.end()) {
+		LOG_WARN("Currently no running room! just return");
+		return;
+	}
+	if (!sessionCallback_) {
+		LOG_WARN("Currently no sessionCallback_ just return");
+		return;
+	}
+
+	for_each(pipelineMap_.begin(), pipelineMap_.end(), [this, level](auto elem) {
+		LOG_OBJ_INFO() << "notifyVideoQualityChanged rid " << elem.first << ", level " << level << std::endl;
+		sessionCallback_->notifyVideoQualityChanged(elem.first, level);
+		});
 };
+
+void ServerMediaManager::updateRtpJitterBufferLatency(Json::Value info) {
+	int latency = std::stoi(info["latency"].asString());
+	LOG_OBJ_INFO() << latency << std::endl;
+
+	if (pipelineMap_.begin() == pipelineMap_.end()) {
+		LOG_WARN("Currently no running room! just return");
+		return;
+	}
+
+	auto set_latency = [latency](MediaPipeline* pipeline) {
+		pipeline->set_rtp_jitter_buffer_latency(latency);
+	};
+
+	for_each(pipelineMap_.begin()->second.audio_pipelines.begin(),
+		pipelineMap_.begin()->second.audio_pipelines.end(), set_latency);
+	for_each(pipelineMap_.begin()->second.video_pipelines.begin(),
+		pipelineMap_.begin()->second.video_pipelines.end(), set_latency);
+}
 
 
 OperatingInfo* ServerMediaManager::get_operate_info(void)
@@ -64,6 +97,14 @@ ContactInfo* ServerMediaManager::get_dummy_contact(int number)
 	contact_info->org_video_port = dummy_port++;
 	contact_info->org_audio_port = dummy_port++;
 	return contact_info;
+}
+
+bool ServerMediaManager::notifyVideoQualityChangeNeeded(std::string rid, VideoPresetLevel level) {
+	if (!sessionCallback_)
+		return false;
+
+	sessionCallback_->notifyVideoQualityChanged(rid, (int)level);
+	return true;
 }
 
 void ServerMediaManager::startCall(Json::Value room_creat_info)

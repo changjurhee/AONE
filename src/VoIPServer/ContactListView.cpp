@@ -6,6 +6,8 @@
 #include "ContactListView.h"
 
 #include "session/SUiController.h"
+#include <gst/gst.h>
+#include "common/logger.h"
 
 // CContactListView
 
@@ -13,11 +15,11 @@ IMPLEMENT_DYNCREATE(CContactListView, CFormView)
 
 CContactListView::CContactListView()
 	: CFormView(IDD_LIST_VIEW)
-	, m_edPreSet(_T("0"))
-	, m_edLatency(_T("100"))
+	, m_edPreSet(_T("5"))
+	, m_edLatency(_T("150"))
 {
-	m_PreSetValue = 0;
-	m_LatencyValue = 100;
+	m_PreSetValue = 5;
+	m_LatencyValue = 150;
 }
 
 CContactListView::~CContactListView()
@@ -51,6 +53,9 @@ BEGIN_MESSAGE_MAP(CContactListView, CFormView)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_LATENCY, &CContactListView::OnDeltaposSpinLatency)
 	ON_EN_CHANGE(IDC_ED_PRESET, &CContactListView::OnEnChangeEdPreset)
 	ON_EN_CHANGE(IDC_ED_LATENCY, &CContactListView::OnEnChangeEdLatency)
+	ON_BN_CLICKED(IDC_RTPLOG, &CContactListView::OnBnClickedRtplog)
+	ON_BN_CLICKED(IDC_SCHUDLOG, &CContactListView::OnBnClickedSchudlog)
+	ON_BN_CLICKED(IDC_MFCBUTTON3, &CContactListView::OnBnClickedMfcbutton3)
 END_MESSAGE_MAP()
 
 
@@ -242,10 +247,10 @@ void CContactListView::OnDeltaposSpinLatency(NMHDR* pNMHDR, LRESULT* pResult)
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	*pResult = 0; // 100 ~ 2000
 	if (pNMUpDown->iDelta < 0) {
-		if (m_LatencyValue < 2000) m_LatencyValue++;
+		if (m_LatencyValue < 2000) m_LatencyValue += 50;
 	}
 	else {
-		if (m_LatencyValue > 100) m_LatencyValue--;
+		if (m_LatencyValue > 100) m_LatencyValue -= 50;
 	}
 
 	SetDlgItemInt(IDC_ED_LATENCY, m_LatencyValue);
@@ -278,6 +283,59 @@ void CContactListView::OnEnChangeEdLatency()
 
 	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	TRACE1("%d", m_LatencyValue);
+	Json::Value media;
+	media["latency"] = m_LatencyValue;
+	TelephonyManager::getInstance()->handleRequestRtpJitterBufferLatencyChange(media);
 	// 여기에 필요한 작업 하세요.
 
+}
+
+
+void CContactListView::OnBnClickedRtplog()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	static bool rtplog = false;
+	rtplog = !rtplog;
+	if (rtplog) {
+		//GstDebugLevel logLevel = GST_LEVEL_DEBUG;
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_DEBUG);
+		gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_DEBUG);
+		gst_debug_set_default_threshold(GST_LEVEL_FIXME);
+	}
+	else {
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_NONE);
+		gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_NONE);
+		gst_debug_set_default_threshold(GST_LEVEL_NONE);
+	}
+}
+
+
+void CContactListView::OnBnClickedSchudlog()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	static bool schedlog = false;
+	schedlog = !schedlog;
+	if (schedlog) {
+		//GstDebugLevel logLevel = GST_LEVEL_DEBUG;
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_DEBUG);
+		gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_DEBUG);
+		gst_debug_set_default_threshold(GST_LEVEL_FIXME);
+	}
+	else {
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_NONE);
+		gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_NONE);
+		gst_debug_set_default_threshold(GST_LEVEL_NONE);
+	}
+}
+
+
+void CContactListView::OnBnClickedMfcbutton3()
+{
+	static bool log = false;
+	log = !log;
+	if (log)
+		Logger::GetInstance()->SetLogLevel(LogLevel::LL_DEBUG);
+	else
+		Logger::GetInstance()->SetLogLevel(LogLevel::LL_INFO);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }

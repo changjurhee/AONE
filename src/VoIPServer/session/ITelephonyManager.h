@@ -21,4 +21,5 @@ public:
 	virtual void removeConferenceSilent(Json::Value data) = 0;
 
 	virtual void handleRequestVideoQualityChange(Json::Value data) = 0;
+	virtual void handleRequestRtpJitterBufferLatencyChange(Json::Value data) = 0;
 };

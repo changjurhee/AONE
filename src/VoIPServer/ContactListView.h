@@ -56,6 +56,9 @@ public:
 	afx_msg void OnDeltaposSpinLatency(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnEnChangeEdPreset();
 	afx_msg void OnEnChangeEdLatency();
+	afx_msg void OnBnClickedRtplog();
+	afx_msg void OnBnClickedSchudlog();
+	afx_msg void OnBnClickedMfcbutton3();
 };
 
 
