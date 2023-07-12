@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(CStartDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
 	ON_WM_NCPAINT()
 	ON_WM_SYSCOMMAND()
+	ON_BN_CLICKED(IDC_MFCBTN_SHUTDOWN, &CStartDlg::OnBnClickedMfcbtnShutdown)
 END_MESSAGE_MAP()
 
 // CStartDlg 메시지 처리기
@@ -132,4 +133,11 @@ LRESULT CStartDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return LRESULT();
+}
+
+
+void CStartDlg::OnBnClickedMfcbtnShutdown()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	EndDialog((INT_PTR)KResponse::SHUT_DOWN);
 }

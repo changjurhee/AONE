@@ -369,6 +369,7 @@
     <Image Include="res\properties_hc.bmp" />
     <Image Include="res\properties_wnd.ico" />
     <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\shutdown-64.bmp" />
     <Image Include="res\sign-in-d.bmp" />
     <Image Include="res\sign-in-f.bmp" />
     <Image Include="res\sign-in.bmp" />
@@ -376,6 +377,7 @@
     <Image Include="res\sign_6358961_64x64.ico" />
     <Image Include="res\sort.bmp" />
     <Image Include="res\sort_hc.bmp" />
+    <Image Include="res\start-64.bmp" />
     <Image Include="res\Toolbar.bmp" />
     <Image Include="res\Toolbar256.bmp" />
     <Image Include="res\userimages.bmp" />

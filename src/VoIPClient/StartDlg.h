@@ -35,4 +35,5 @@ public:
 	afx_msg void OnNcPaint();
 
 	LRESULT processUiControlNotify(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnBnClickedMfcbtnShutdown();
 };
