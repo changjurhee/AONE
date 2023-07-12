@@ -80,6 +80,10 @@ list<ContactData> SUiController::get_AllContacts()
 		if (!item["enable"].empty()) {
 			contact.enabled = item["enable"].asBool();
 		}
+		contact.login = false;
+		if (!item["login"].empty()) {
+			contact.login = item["login"].asBool();
+		}
 		contactDataList.push_back(contact);
 	}
 	return contactDataList;
