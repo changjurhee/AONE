@@ -482,6 +482,12 @@
     <Image Include="res\vad_1.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="res\shutdown-64.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\start-64.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="VoIPClient.reg" />

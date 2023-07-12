@@ -133,6 +133,8 @@ void CSessionView::OnSize(UINT nType, int cx, int cy)
 
 void CSessionView::FillSessionView()
 {
+	m_wndSessionView.LockWindowUpdate();
+
 	m_wndSessionView.DeleteAllItems();
 
 	auto ConfDataList = UiController::getInstance()->get_MyConferences();
@@ -168,33 +170,7 @@ void CSessionView::FillSessionView()
 		m_wndSessionView.Expand(hParticipant, TVE_EXPAND);
 	}
 
-#ifdef DEBUG
-	if (ConfDataList.size() == 0) {
-		tstring tmp_rid = _T("hello"), tmp_time_s, tmp_time_e;
-
-		HTREEITEM hRoom = m_wndSessionView.InsertItem(tmp_rid.data(), 1, 1, hRoot);
-
-		std::pair<std::string, std::string> res = GetDateTime(1688955000, 600);
-
-		tstring tmp1, tmp2;
-		tmp1.assign(res.first.begin(), res.first.end());
-		tmp_time_s = _T("start : ") + tmp1;
-		m_wndSessionView.InsertItem(tmp_time_s.data(), 3, 3, hRoom);
-
-		tmp2.assign(res.second.begin(), res.second.end());
-		tmp_time_e = _T("end : ") + tmp2;
-		m_wndSessionView.InsertItem(tmp_time_e.data(), 3, 3, hRoom);
-
-		HTREEITEM hParticipant = m_wndSessionView.InsertItem(_T("Participant"), 0, 0, hRoom);
-		tstring tmp_name = _T("hog.gildong"), tmp_name2 = _T("steve.jobs");
-		m_wndSessionView.InsertItem(tmp_name.data(), 2, 2, hParticipant);
-		m_wndSessionView.InsertItem(tmp_name2.data(), 2, 2, hParticipant);
-
-		m_wndSessionView.Expand(hRoot, TVE_EXPAND);
-		m_wndSessionView.Expand(hRoom, TVE_EXPAND);
-		m_wndSessionView.Expand(hParticipant, TVE_EXPAND);
-	}
-#endif // DEBUG
+	m_wndSessionView.UnlockWindowUpdate();
 
 	AdjustLayout();
 }

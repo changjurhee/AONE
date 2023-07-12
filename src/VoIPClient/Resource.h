@@ -151,6 +151,8 @@
 #define IDB_ECHO_ON                     374
 #define IDB_BMP_VAD_ON                  375
 #define IDB_BMP_VAD_OFF                 376
+#define IDB_SHUTDOWN                    377
+#define IDB_START                       378
 #define ID_VIEW_CALLVIEW                400
 #define IDC_ED_EMAIL_ID                 1000
 #define IDC_ED_PASSWORD                 1001
@@ -216,6 +218,8 @@
 #define ID_MFCBTN_RESET                 1039
 #define IDC_MFCBTN_UPDATE_CONTACT       1040
 #define IDC_ST_MSG                      1041
+#define IDC_MFCBTN_SHUTDOWN             1042
+#define IDC_CUSTOM1                     1043
 #define ID_TEST_32771                   32771
 #define ID_TEST_32772                   32772
 #define ID_TEST_LOG_IN                  32773
@@ -233,9 +237,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        377
+#define _APS_NEXT_RESOURCE_VALUE        379
 #define _APS_NEXT_COMMAND_VALUE         32781
-#define _APS_NEXT_CONTROL_VALUE         1042
+#define _APS_NEXT_CONTROL_VALUE         1044
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

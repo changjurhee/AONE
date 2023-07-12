@@ -675,7 +675,8 @@ void CMainFrame::Connect()
 		sip_server.assign(wsip_server.begin(), wsip_server.end());
 		UserLogIn();
 	} else {
-		DestroyWindow();
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_APP_EXIT, 0); 
+		//DestroyWindow();
 	}
 }
 
@@ -693,7 +694,8 @@ void CMainFrame::UserLogIn()
 		ResetPassword();
 	}
 	else {
-		DestroyWindow();
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_APP_EXIT, 0); 
+		//DestroyWindow();
 	}
 }
 
@@ -706,7 +708,8 @@ void CMainFrame::UserSignIn()
 	} else if ((KResponse)retValue == KResponse::SIGNIN_CANCELED) {
 		UserLogIn();
 	}else {
-		DestroyWindow();
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_APP_EXIT, 0);
+		//DestroyWindow();
 	}
 }
 
@@ -719,7 +722,8 @@ void CMainFrame::ResetPassword()
 	} else if ((KResponse)retValue == KResponse::RESET_PASSWORD_CANCELED) {
 		UserLogIn();
 	} else {
-		DestroyWindow();
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_APP_EXIT, 0);
+		//DestroyWindow();
 	}
 }
 
@@ -733,7 +737,8 @@ void CMainFrame::UpdateAccount()
 	else if ((KResponse)retValue == KResponse::UPDATE_USER_CANCELED) {
 		// Do nothing (Go to mainframe screen)
 	} else {
-		DestroyWindow();
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_APP_EXIT, 0);
+		//DestroyWindow();
 	}
 }
 

@@ -173,6 +173,8 @@ void CContactView::OnSize(UINT nType, int cx, int cy)
 
 void CContactView::FillContactView()
 {
+	m_wndContactView.LockWindowUpdate();
+
 	m_wndContactView.DeleteAllItems();
 
 	auto pAccountList = UiController::getInstance()->get_MyContacts();
@@ -196,18 +198,7 @@ void CContactView::FillContactView()
 		m_wndContactView.Expand(hSrc, TVE_EXPAND);
 	}
 
-#ifdef DEBUG
-	if (pAccountList.size() == 0) {
-		tstring tmp_cid = _T("hello"), tmp_email = _T("hello@g.com"), tmp_name = _T("hello");
-
-		HTREEITEM hSrc = m_wndContactView.InsertItem(tmp_cid.data(), 1, 1, hRoot);
-		m_wndContactView.InsertItem(tmp_email.data(), 0, 0, hSrc);
-		m_wndContactView.InsertItem(tmp_name.data(), 3, 3, hSrc);
-
-		m_wndContactView.Expand(hRoot, TVE_EXPAND);
-		m_wndContactView.Expand(hSrc, TVE_EXPAND);
-	}
-#endif // DEBUG
+	m_wndContactView.UnlockWindowUpdate();
 
 	AdjustLayout();
 }
