@@ -756,7 +756,7 @@ void MediaPipeline::update_client_info(ContactInfo* client_info)
 void MediaPipeline::add_client(ContactInfo* client_info)
 {
 	string cid = client_info->cid;
-	if (client_id_list_.find(cid) != client_id_list_.end()) {
+	if (!client_info->dummy_client && contact_info_list_.size() != 0) {
 		update_client_info(client_info);
 		return;
 	}

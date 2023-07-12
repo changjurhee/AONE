@@ -113,6 +113,7 @@ ContactInfo* ServerMediaManager::get_contact_info(Json::Value add_client_info, b
 	contact_info->org_video_port = get_port_number(contact_info->dest_ip, "video");
 	contact_info->org_audio_port = get_port_number(contact_info->dest_ip, "audio");
 	contact_info->dummy_client = false;
+
 	return contact_info;
 }
 

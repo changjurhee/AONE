@@ -179,7 +179,7 @@ void CTestCallDlg::OnBnClickedServerStartcall()
     room_creat_info["rid"] = string(CT2CA(server_RIDForStart));
     room_creat_info["myIp"] = string(CT2CA(server_ServerIP));
     //room_creat_info["myIp"] = string(CT2CA(server_AudioCodec));
-    room_creat_info["conferenceSize"] = string(CT2CA(server_MaxClients));
+    room_creat_info["conferenceSize"] = stoi(string(CT2CA(server_MaxClients)));
     //room_creat_info["videocodec"] = string(CT2CA(server_VideoCodec));
     //room_creat_info["audiocodec"] = string(CT2CA(server_AudioCodec));
 
