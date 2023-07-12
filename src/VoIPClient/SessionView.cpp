@@ -172,6 +172,7 @@ void CSessionView::FillSessionView()
 
 	m_wndSessionView.UnlockWindowUpdate();
 
+
 	AdjustLayout();
 }
 
