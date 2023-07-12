@@ -262,6 +262,9 @@ void CContactListView::OnEnChangeEdPreset()
 
 	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	TRACE1("%d", m_PreSetValue);
+	Json::Value media;
+	media["level"] = m_PreSetValue;
+	TelephonyManager::getInstance()->handleRequestVideoQualityChange(media);
 	// 여기에 필요한 작업 하세요.
 }
 
