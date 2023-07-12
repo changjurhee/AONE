@@ -146,49 +146,12 @@ void CContactListView::UpdateContactView()
 		}
 		m_ltContactNames.UnlockWindowUpdate();
 	}
-
-	auto conference_list = SUiController::getInstance()->get_AllConferences();
-	m_ltConferenceNames.DeleteAllItems();
-	if (!conference_list.empty()) {
-		int itemIndex = 0;
-		m_ltConferenceNames.LockWindowUpdate();
-		for (ConferenceData p : conference_list) {
-			int num = m_ltConferenceNames.InsertItem(itemIndex, CString(p.rid.c_str()));
-			string allParticipants;
-			for (string parti : p.participants) {
-				allParticipants += parti + " ";
-			}
-			m_ltConferenceNames.SetItemText(num, 1, CString(allParticipants.c_str()));
-			std::pair<std::string, std::string> res = GetDateTime(p.dataAndTime, p.duration);
-			m_ltConferenceNames.SetItemText(num, 2, CString(res.first.c_str()));
-			m_ltConferenceNames.SetItemText(num, 3, CString(res.second.c_str()));
-			itemIndex++;
-		}
-		m_ltContactNames.UnlockWindowUpdate();
-	}
-
 	UpdateData(FALSE);
 }
 
 void CContactListView::UpdateConferenceView()
 {
 	UpdateData(TRUE);
-
-	auto contact_list = SUiController::getInstance()->get_AllContacts();
-	m_ltContactNames.DeleteAllItems();
-	if (!contact_list.empty()) {
-		int itemIndex = 0;
-		m_ltContactNames.LockWindowUpdate();
-		for (ContactData p : contact_list) {
-			int num = m_ltContactNames.InsertItem(itemIndex, CString(p.cid.c_str()));
-			m_ltContactNames.SetItemText(num, 1, CString(p.email.c_str()));
-			m_ltContactNames.SetItemText(num, 2, CString(p.name.c_str()));
-			m_ltContactNames.SetItemText(num, 3, CString(p.enabled ? "TRUE" : "FALSE"));
-			itemIndex++;
-		}
-		m_ltContactNames.UnlockWindowUpdate();
-	}
-
 	auto conference_list = SUiController::getInstance()->get_AllConferences();
 	m_ltConferenceNames.DeleteAllItems();
 	if (!conference_list.empty()) {
