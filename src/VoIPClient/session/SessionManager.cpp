@@ -140,7 +140,7 @@ void SessionManager::proc_recv() {
 				break;
 			case 206: // 206 : CREATE_CONFERENCE
 				msgStr = "CREATE_CONFERENCE";
-				accountManager->onCreateConference(payloads);
+				accountManager->handleCreateConference(payloads);
 				break;
 			case 207: // 207 : DELETE_CONFERENCE
 				accountManager->handleDeleteConference(payloads);
