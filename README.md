@@ -1,3 +1,5 @@
+/github/release-date-pre/:user/:repo
+/github/release-date/:user/:repo
 
 # AONE
 - 2023 LG SA 
