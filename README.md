@@ -1,4 +1,3 @@
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/bernedom/SI/master/LICENSE)
 
 # AONE
 - 2023 LG SA 
