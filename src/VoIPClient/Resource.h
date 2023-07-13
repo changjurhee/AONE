@@ -181,6 +181,7 @@
 #define IDC_ED_NAME                     1007
 #define IDC_ED_EMAIL                    1007
 #define IDC_MFCBTN_CREATE               1008
+#define IDC_MFCBTN_CREATE_SI            1008
 #define IDC_MFCBTN_UPDATE               1009
 #define IDC_MFCBTN_CANCEL               1009
 #define IDC_LIST1                       1010
@@ -250,6 +251,10 @@
 #define IDC_MB_CONTACT_ADD              1056
 #define IDC_MFCBUTTON2                  1057
 #define IDC_MB_CONTACT_CANCEL           1057
+#define IDC_MFCBTN_CANCEL_SI            1057
+#define IDC_CHECK1                      1058
+#define IDC_CHECK_ECHO                  1058
+#define IDC_CHECK_VAD                   1059
 #define ID_TEST_32771                   32771
 #define ID_TEST_32772                   32772
 #define ID_TEST_LOG_IN                  32773
@@ -269,7 +274,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        396
 #define _APS_NEXT_COMMAND_VALUE         32781
-#define _APS_NEXT_CONTROL_VALUE         1057
+#define _APS_NEXT_CONTROL_VALUE         1059
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

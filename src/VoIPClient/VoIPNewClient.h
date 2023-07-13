@@ -47,6 +47,10 @@ public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	virtual void OnInitialUpdate();
+	afx_msg void OnBnClickedCheckVad();
+	afx_msg void OnBnClickedCheckEcho();
+	CButton m_chkVAD;
+	CButton m_chkEcho;
 };
 
 

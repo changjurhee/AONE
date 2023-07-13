@@ -28,6 +28,8 @@ void CVoIPNewClient::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_IMAGE_VIEW, m_DisplayBox);
+	DDX_Control(pDX, IDC_CHECK_VAD, m_chkVAD);
+	DDX_Control(pDX, IDC_CHECK_ECHO, m_chkEcho);
 }
 
 BEGIN_MESSAGE_MAP(CVoIPNewClient, CFormView)
@@ -37,6 +39,8 @@ BEGIN_MESSAGE_MAP(CVoIPNewClient, CFormView)
 	ON_WM_PAINT()
 	ON_WM_CTLCOLOR()
 	ON_WM_GETMINMAXINFO()
+	ON_BN_CLICKED(IDC_CHECK_VAD, &CVoIPNewClient::OnBnClickedCheckVad)
+	ON_BN_CLICKED(IDC_CHECK_ECHO, &CVoIPNewClient::OnBnClickedCheckEcho)
 END_MESSAGE_MAP()
 
 
@@ -204,4 +208,36 @@ void CVoIPNewClient::OnInitialUpdate()
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 	AdjustLayout();
+}
+
+
+void CVoIPNewClient::OnBnClickedCheckVad()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_chkVAD.GetCheck() == BST_CHECKED) {
+		// @todo
+
+		TRACE0("VAD_CHECKED");
+	}
+	else {
+		// @todo
+		TRACE0("VAD_UNCHECKED");
+
+	}
+}
+
+
+void CVoIPNewClient::OnBnClickedCheckEcho()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_chkEcho.GetCheck() == BST_CHECKED) {
+		// @todo
+		TRACE0("ECHO_CHECKED");
+
+	}
+	else {
+		// @todo
+		TRACE0("ECHO_UNCHECKED");
+
+	}
 }

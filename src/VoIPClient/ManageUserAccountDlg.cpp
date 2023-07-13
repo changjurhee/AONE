@@ -39,8 +39,8 @@ void CManageUserAccountDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CManageUserAccountDlg, CDialogEx)
-	ON_BN_CLICKED(IDC_MFCBTN_CREATE, &CManageUserAccountDlg::OnBnClickedMfcbtnCreate)
-	ON_BN_CLICKED(IDC_MFCBTN_CANCEL, &CManageUserAccountDlg::OnBnClickedMfcbtnCancel)
+	ON_BN_CLICKED(IDC_MFCBTN_CREATE_SI, &CManageUserAccountDlg::OnBnClickedMfcbtnCreate)
+	ON_BN_CLICKED(IDC_MFCBTN_CANCEL_SI, &CManageUserAccountDlg::OnBnClickedMfcbtnCancel)
 	ON_MESSAGE(UWM_UI_CONTROLLER, &CManageUserAccountDlg::processUiControlNotify)
 	ON_WM_CTLCOLOR()
 	ON_WM_SYSCOMMAND()
