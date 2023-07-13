@@ -10,6 +10,7 @@
 #include "session/UiController.h"
 #include "session/Constants.h"
 #include "ClientMediaManager.h"
+#include <gst/gst.h>
 
 // CVoIPNewClient
 
@@ -42,6 +43,8 @@ BEGIN_MESSAGE_MAP(CVoIPNewClient, CFormView)
 	ON_WM_GETMINMAXINFO()
 	ON_BN_CLICKED(IDC_CHECK_VAD, &CVoIPNewClient::OnBnClickedCheckVad)
 	ON_BN_CLICKED(IDC_CHECK_ECHO, &CVoIPNewClient::OnBnClickedCheckEcho)
+	ON_BN_CLICKED(IDC_rtplog, &CVoIPNewClient::OnBnClickedrtplog)
+	ON_BN_CLICKED(IDC_MFC_ECHO2, &CVoIPNewClient::OnBnClickedMfcEcho2)
 END_MESSAGE_MAP()
 
 
@@ -236,11 +239,61 @@ void CVoIPNewClient::OnBnClickedCheckEcho()
 	if (m_chkEcho.GetCheck() == BST_CHECKED) {
 		// @todo
 		TRACE0("ECHO_CHECKED");
+		//GstDebugLevel logLevel = GST_LEVEL_DEBUG;
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_DEBUG);
+		gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_DEBUG);
+		//gst_debug_set_default_threshold(GST_LEVEL_FIXME);
 
 	}
 	else {
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_NONE);
+		gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_NONE);
+		//gst_debug_set_default_threshold(GST_LEVEL_NONE);
 		// @todo
 		TRACE0("ECHO_UNCHECKED");
 
 	}
+
+	cout << "OnBnClickedMfcEcho2" << endl;
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	static bool rtplog = false;
+	rtplog = !rtplog;
+	if (rtplog) {
+		//GstDebugLevel logLevel = GST_LEVEL_DEBUG;
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_DEBUG);
+		gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_DEBUG);
+		//gst_debug_set_default_threshold(GST_LEVEL_FIXME);
+	}
+	else {
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_NONE);
+		gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_NONE);
+		//gst_debug_set_default_threshold(GST_LEVEL_NONE);
+	}
+}
+
+
+void CVoIPNewClient::OnBnClickedrtplog()
+{
+
+}
+
+
+void CVoIPNewClient::OnBnClickedMfcEcho2()
+{
+	cout << "OnBnClickedMfcEcho2" << endl;
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	static bool rtplog = false;
+	rtplog = !rtplog;
+	if (rtplog) {
+		//GstDebugLevel logLevel = GST_LEVEL_DEBUG;
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_DEBUG);
+		gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_DEBUG);
+		//gst_debug_set_default_threshold(GST_LEVEL_FIXME);
+	}
+	else {
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_NONE);
+		gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_NONE);
+		//gst_debug_set_default_threshold(GST_LEVEL_NONE);
+	}
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }

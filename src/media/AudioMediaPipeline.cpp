@@ -14,8 +14,9 @@ AudioMediaPipeline::AudioMediaPipeline(string rid, const vector<PipeMode>& pipe_
 SubElements AudioMediaPipeline::pipeline_make_input_device(GstBin* parent_bin, int bin_index, int client_index)
 {
 	std::string name = get_elements_name(TYPE_INPUT_DEVICE, bin_index, client_index);
-	GstElement* element = gst_element_factory_make("autoaudiosrc", name.c_str());
-	//g_object_set(element, "low-latency", TRUE, NULL);
+	//GstElement* element = gst_element_factory_make("autoaudiosrc", name.c_str());
+	 GstElement* element = gst_element_factory_make("wasapi2src", name.c_str());
+	g_object_set(element, "low-latency", TRUE, "buffer-time", 5000000, NULL);
 
 	std::string cname = get_elements_name(TYPE_CONVERT, 1, client_index, "to1channel_for_vad");
 	GstElement* celement = gst_element_factory_make("audioconvert", cname.c_str());
@@ -53,7 +54,7 @@ SubElements AudioMediaPipeline::pipeline_make_output_device(GstBin* parent_bin, 
 {
 	std::string name = get_elements_name(TYPE_OUTPUT_DEVICE, bin_index, client_index);
 	GstElement* element =  gst_element_factory_make("wasapi2sink", name.c_str());
-	g_object_set(element, "low-latency", TRUE, "sync", TRUE, NULL);
+	g_object_set(element, "low-latency", TRUE, "sync", FALSE, NULL);
 	gst_bin_add(GST_BIN(parent_bin), element);
 
 	return SubElements(element, element);

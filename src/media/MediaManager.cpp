@@ -28,7 +28,7 @@ VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& c
 	// initialize if 0
 	if (vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] == 0) {
 		vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] = stats.num_lost;
-		LOG_OBJ_INFO() << "[rid:" << stats.rid << "] INIT " << stats.buffer_name << " " << vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] << std::endl;
+		//LOG_OBJ_INFO() << "[rid:" << stats.rid << "] INIT " << stats.buffer_name << " " << vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] << std::endl;
 		return cur_level;
 	}
 
@@ -100,10 +100,11 @@ VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& c
 			while (vqa_data_per_room_[stats.rid].lost_status.size() > MediaConfig::GetNumOfContinousLost() - 1) {
 				vqa_data_per_room_[stats.rid].lost_status.pop();
 			}
-			vqa_data_per_room_[stats.rid].lost_status.push(true);
+			vqa_data_per_room_[stats.rid].lost_status.push(false);
 			bool need_to_upper = true;
 			std::queue<bool> lost_checkq = vqa_data_per_room_[stats.rid].lost_status;
 			while (!lost_checkq.empty()) {
+				LOG_OBJ_WARN() << "[rid:" << stats.rid << "] upper check " << lost_checkq.front() << std::endl;
 				if (lost_checkq.front()) need_to_upper = false;
 				lost_checkq.pop();
 			};
