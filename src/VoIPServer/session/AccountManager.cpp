@@ -166,7 +166,7 @@ bool AccountManager::handleLogout(Json::Value data)
 	bool retValue = false;
 	string cid = data["cid"].asString();	
 	if (!cid.empty()) {
-		if (contactDb->get(cid, "login") == true) { // Already loggined in
+		if (contactDb->get(cid, "login").asBool() == true) { // Already loggined in
 			contactDb->update(cid, "login", false); // Update login status
 			contactDb->remove(cid, "ipAddress");// Update IP address
 			retValue = true;
