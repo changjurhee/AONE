@@ -238,9 +238,16 @@ void CVoIPNewClient::OnBnClickedCheckEcho()
 	if (m_chkEcho.GetCheck() == BST_CHECKED) {
 		// @todo
 		TRACE0("ECHO_CHECKED");
+		//GstDebugLevel logLevel = GST_LEVEL_DEBUG;
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_DEBUG);
+		gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_DEBUG);
+		//gst_debug_set_default_threshold(GST_LEVEL_FIXME);
 
 	}
 	else {
+		//gst_debug_set_threshold_for_name("GST_SCHEDULING", GST_LEVEL_NONE);
+		gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_NONE);
+		//gst_debug_set_default_threshold(GST_LEVEL_NONE);
 		// @todo
 		TRACE0("ECHO_UNCHECKED");
 
