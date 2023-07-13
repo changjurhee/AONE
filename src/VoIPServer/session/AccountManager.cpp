@@ -107,28 +107,32 @@ string AccountManager::handleLogin(Json::Value data, string ipAddress, string fr
 		// Check password
 		string storedPassword = contactDb->get(cid, "password").asString();
 		Json::Value enabled = contactDb->get(cid, "enable");
-		if ( enabled != NULL && enabled == false ) {
+		Json::Value login = contactDb->get(cid, "login");
+		if ( enabled != NULL && enabled.asBool() == false) {
 			// ID Disabled by admin
-			payload["result"] = 3; // Fail 
+			payload["result"] = 3; // Fail
 			cout << "handleLogin()[" << cid << "]FAIL/ID Disabled by Administrator/From[" << from << "]" << endl;
 		} else if (data["password"] == storedPassword) {
-			if (contactDb->get(cid, "login") == true) {
-				// TODO : Do we have to check already logged in state?
+			if (login != NULL && login.asBool() == true) {
+				// Already login
+				payload["result"] = 4; // Fail 
+				cout << "handleLogin()[" << cid << "]FAIL/Already Login/From[" << from << "]" << endl;
+			} else {
+				// Password patch 
+				contactDb->update(cid, "login", true); // Update login status	
+				contactDb->update(cid, "ipAddress", ipAddress); // Update IP address
+				payload["result"] = 0; // Success
+				payload["myContactData"] = contactDb->get(cid);
+				if (!payload["myContactData"].isNull()) {
+					payload["myContactData"].removeMember("ipAddress");
+					payload["myContactData"].removeMember("login");
+					payload["myContactData"].removeMember("password");
+					payload["myContactData"].removeMember("passwordAnswer");
+					payload["myContactData"].removeMember("passwordQuestion");
+				}
+				cout << "handleLogin()[" << cid << "]OK/From[" << from << "]" << endl;
+				result = true;
 			}
-			// Password patch 
-			contactDb->update(cid, "login", true); // Update login status	
-			contactDb->update(cid, "ipAddress", ipAddress); // Update IP address
-			payload["result"] = 0; // Success
-			payload["myContactData"] = contactDb->get(cid);
-			if (!payload["myContactData"].isNull()) {
-				payload["myContactData"].removeMember("ipAddress");
-				payload["myContactData"].removeMember("login");
-				payload["myContactData"].removeMember("password");
-				payload["myContactData"].removeMember("passwordAnswer");
-				payload["myContactData"].removeMember("passwordQuestion");
-			}
-			cout << "handleLogin()[" << cid << "]OK/From[" << from << "]" << endl;
-			result = true;
 		} else {
 			// Wrong password
 			payload["result"] = 2; // Fail 
@@ -144,6 +148,8 @@ string AccountManager::handleLogin(Json::Value data, string ipAddress, string fr
 		result 0 : SUCCESS
 		result 1 : FAILED (NOT REGISTERED)
 		result 2 : FAILED (WRONG PASSWORD)
+		result 3 : FAILED (DISABLED BY ADMIN)
+		result 4 : FAILED (ALREADY LOGIN)
 	*/
 	sessionControl->sendData(102, payload, from);
 	if (result == true) {

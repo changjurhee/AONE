@@ -327,6 +327,14 @@ void AccountManager::handleLogin(Json::Value msg) {
 	std::list<std::string > myContactListResult;
 
 	int result = payload["result"].asInt();
+	if (uiControl != NULL) {
+		uiControl->notify(MSG_RESPONSE_LOGIN, result);
+	}
+
+	if (result != 0) {
+		return;
+	}
+
 	Json::Value myContactData = payload["myContactData"];
 	cid = myContactData["cid"].asString();
 	email = myContactData["email"].asString();
@@ -352,9 +360,6 @@ void AccountManager::handleLogin(Json::Value msg) {
 		std::cout << element << " ";
 	}
 	std::cout << std::endl;
-	if (uiControl != NULL) {
-		uiControl->notify(MSG_RESPONSE_LOGIN, result);
-	}
 	// Request contact data and conference data
 	getAllContact();
 	getAllConference(cid);
