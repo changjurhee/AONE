@@ -744,8 +744,7 @@ void MediaPipeline::request_add_client(ContactInfo* client_info)
 void MediaPipeline::update_client_info(ContactInfo* client_info)
 {
 	string cid = client_info->cid;
-	int client_index = client_id_list_.find(cid) == client_id_list_.end() ? client_id_list_.size() : client_id_list_[cid].first;
-
+	int client_index = client_id_list_.size();
 	client_id_list_[cid] = make_pair(client_index, true);
 	contact_info_list_[client_index] = *client_info;
 	stop_state_pipeline(true);
