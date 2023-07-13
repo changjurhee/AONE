@@ -241,6 +241,7 @@ void SessionManager::HandleClient(int clientSocket) {
 					payloads["from"] = contactId;
 					std::string to(payloads["to"].asString());
 					if (clientMap.count(to) == 0) {
+						std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 						telephonyManager->handleOutgoingCallNoUser(payloads);
 						break;
 					}

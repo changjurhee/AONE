@@ -57,15 +57,15 @@ void CallsManager::startOutgoingCall(std::string to) {
 	call->setCallState(CallState::STATE_DIALING);
 	std::cout << "(STATE_DIALING) startOutgoingCall... (" << call->getContactId() << ")" << std::endl;
 
-	Json::Value payload;
-	payload["to"] = to;
-	sessionControl->sendData(301, payload);
-
 	if (uiControl != NULL) {
 		CallResult result(CallState::STATE_DIALING, 0);
 		result.callerId = to;
 		uiControl->notifyCallState(result);
 	}
+
+	Json::Value payload;
+	payload["to"] = to;
+	sessionControl->sendData(301, payload);
 }
 
 void CallsManager::answerCall() {
@@ -246,7 +246,7 @@ void CallsManager::onSuccessfulJoinConference(Json::Value data) {
 void CallsManager::onFailedJoinConference(Json::Value data) {
 	int cause = data["cause"].asInt();
 	call->setCallState(CallState::STATE_DISCONNECTED);
-	std::cout << "[Received] -> (STATE_DISCONNECTED) onFailedOutgoingCall cause: " << cause << std::endl;
+	std::cout << "[Received] -> (STATE_DISCONNECTED) onFailedJoinConference cause: " << cause << std::endl;
 
 	if (uiControl != NULL) {
 		CallResult result(CallState::STATE_DISCONNECTED, cause);

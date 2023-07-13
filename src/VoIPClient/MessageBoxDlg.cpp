@@ -80,9 +80,8 @@ LRESULT CMessageBoxDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 		CallResult* res = reinterpret_cast<CallResult*>(lParam);
 		int result = res->result;
 		if (result != CallState::STATE_DIALING && result != CallState::STATE_RINGING) {
-			if (result == CallState::STATE_ACTIVE) GetDocument()->SetConnection(TRUE);
-			PlaySound(NULL, NULL, SND_PURGE | SND_NOWAIT | SND_ASYNC);
 			EndDialog(IDOK);
+			PlaySound(NULL, NULL, SND_PURGE | SND_NOWAIT | SND_ASYNC);
 		}
 		break;
 	}
@@ -106,9 +105,6 @@ BOOL CMessageBoxDlg::OnInitDialog()
 	GetDlgItem(IDCANCEL)->SetWindowText(m_mode == (INT)Msg::INCOMING ? _T("Reject") : _T("End"));
 	if (m_mode == (int)Msg::INCOMING) {
 		PlaySound(MAKEINTRESOURCE(IDR_WAVE2), AfxGetInstanceHandle(), SND_RESOURCE | SND_ASYNC | SND_LOOP);
-		//if (PlaySound(NULL, NULL, SND_PURGE | SND_NOSTOP | SND_NOWAIT | SND_SYNC))
-		//	break;
-		//PlaySound(NULL, NULL, SND_PURGE | SND_NOWAIT | SND_ASYNC);
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -120,6 +116,7 @@ void CMessageBoxDlg::OnBnClickedOk()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if(m_mode == (INT)Msg::INCOMING) UiController::getInstance()->request_AnswerCall(this);
 	PlaySound(NULL, NULL, SND_PURGE | SND_NOWAIT | SND_ASYNC);
+	EndDialog(IDOK);
 }
 
 void CMessageBoxDlg::OnBnClickedCancel()
@@ -130,4 +127,5 @@ void CMessageBoxDlg::OnBnClickedCancel()
 	else 
 		UiController::getInstance()->request_EndCall(this);
 	PlaySound(NULL, NULL, SND_PURGE | SND_NOWAIT | SND_ASYNC);
+	EndDialog(IDOK);
 }
