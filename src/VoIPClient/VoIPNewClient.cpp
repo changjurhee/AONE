@@ -103,7 +103,7 @@ void CVoIPNewClient::AdjustLayout()
 	GetClientRect(rectClient);
 	
 	GetDlgItem(IDC_MFCBTN_CONNECT)->GetClientRect(&rect);
-	m_DisplayBox.SetWindowPos(nullptr, rect.right + 50, rect.top, 1280, 960, SWP_NOACTIVATE | SWP_NOZORDER);
+	m_DisplayBox.SetWindowPos(nullptr, rect.right + 50, rect.top, 1280, 960 , SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
 void CVoIPNewClient::OnBnClickedMfcbtnConnect()
