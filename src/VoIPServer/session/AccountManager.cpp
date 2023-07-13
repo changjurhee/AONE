@@ -69,6 +69,7 @@ void AccountManager::handleRegisterContact(Json::Value data, string from)
 	if (!emailExists && !cidExists) {
 		// No user exists : Add registration data to database
 		contactDb->update(cid, data);
+		contactDb->setEnable(cid, true);
 		payload["result"] = 0; // Success
 		payload["reason"] = "Success";
 		cout << "handleRegisterContact()[" << cid << "]OK/from[" << from << endl;
@@ -107,13 +108,14 @@ string AccountManager::handleLogin(Json::Value data, string ipAddress, string fr
 		// Check password
 		string storedPassword = contactDb->get(cid, "password").asString();
 		Json::Value enabled = contactDb->get(cid, "enable");
+		std::cout << "enabld: " << enabled.isNull() << ", enabled.asBool(): " << enabled.asBool() << std::endl;
 		Json::Value login = contactDb->get(cid, "login");
-		if ( enabled != NULL && enabled.asBool() == false) {
+		if (!enabled.isNull() && enabled.asBool() == false) {
 			// ID Disabled by admin
 			payload["result"] = 3; // Fail
 			cout << "handleLogin()[" << cid << "]FAIL/ID Disabled by Administrator/From[" << from << "]" << endl;
 		} else if (data["password"] == storedPassword) {
-			if (login != NULL && login.asBool() == true) {
+			if (!login.isNull() && login.asBool() == true) {
 				// Already login
 				payload["result"] = 4; // Fail 
 				cout << "handleLogin()[" << cid << "]FAIL/Already Login/From[" << from << "]" << endl;

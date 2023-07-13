@@ -841,8 +841,25 @@ LRESULT CMainFrame::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 			CMessageBoxDlg dlg(this, (INT)CMessageBoxDlg::Msg::OUTGOING, cid);
 			dlg.DoModal();
 		}
+		else if (result == CallState::STATE_ACTIVE) {
+			pDoc->SetConnection(TRUE);
+		}
 		else if (result == CallState::STATE_DISCONNECTED) {
-			MessageBox(_T("DISCONNECTED"));
+			std::string causeString;
+			if (cause == 1) {
+				causeString = "REJECTED";
+			}
+			else if (cause == 2) {
+				causeString = "BUSY";
+			}
+			else if (cause == 3) {
+				causeString = "UNREACHABLE";
+			}
+			std::cout << "Disconnected " << result << ", " << causeString << std::endl;
+			std::string str = "Disconnected " + causeString;
+			CString cstr(str.c_str());
+			MessageBox(cstr);
+			//MessageBox(FormatString(_T("Disconnected %s"), causeString.c_str()).data());
 			pDoc->SetConnection(FALSE);
 			pView->OnPaint();
 		}
