@@ -9,6 +9,7 @@
 
 #include "session/UiController.h"
 #include "session/Constants.h"
+#include "ClientMediaManager.h"
 
 // CVoIPNewClient
 
@@ -216,10 +217,12 @@ void CVoIPNewClient::OnBnClickedCheckVad()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if (m_chkVAD.GetCheck() == BST_CHECKED) {
 		// @todo
-
+		ClientMediaManager::getInstance()->setVad(true);
 		TRACE0("VAD_CHECKED");
+
 	}
 	else {
+		ClientMediaManager::getInstance()->setVad(false);
 		// @todo
 		TRACE0("VAD_UNCHECKED");
 

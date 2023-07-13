@@ -34,6 +34,7 @@ public:
 	void setViewHandler(handleptr view_handler) override;
 	void endCall(Json::Value client_join_info) override;
 	void setSessionCallback(IRequestSessionMediaCallback* callback);
+	void setVad(bool on) { vad_on_ = on; }
 	static ClientMediaManager* getInstance();
 	static void releaseInstance();
 };
