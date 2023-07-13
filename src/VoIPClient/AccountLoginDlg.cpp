@@ -163,6 +163,10 @@ LRESULT CAccountLoginDlg::processUiControlNotify(WPARAM wParam, LPARAM lParam)
 		} else if ( lParam == 3 ) {
 			cout << "FAILED" << endl;
 			MessageBox(_T("Login Failed : ID disabled by Administrator"));
+		}
+		else if (lParam == 4) {
+			cout << "FAILED" << endl;
+			MessageBox(_T("Login Failed : Already Login"));
 		} else {
 			cout << "FAILED" << endl;
 			MessageBox(_T("Login Failed"));
