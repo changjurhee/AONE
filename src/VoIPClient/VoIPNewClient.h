@@ -52,6 +52,7 @@ public:
 	CButton m_chkVAD;
 	CButton m_chkEcho;
 	afx_msg void OnBnClickedrtplog();
+	afx_msg void OnBnClickedMfcEcho2();
 };
 
 
