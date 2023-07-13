@@ -13,7 +13,7 @@ unsigned int MediaConfig::GetNumOfContinousLost() {
 }
 
 uint64_t MediaConfig::ThresholdOfNumLostForChangingVideoQuality() {
-	return 50;
+	return 10;
 }
 
 }
