@@ -22,12 +22,13 @@ class MediaManager : public PipelineMonitorable::Callback
 protected:
 	struct VqaData {
 		VqaData() :
-			num_lost_last(0), begin_time(0), elapsed_time(0), num_clients(0), cur_level(VideoPresetLevel::kVideoPreset5) {}
-		uint64_t num_lost_last; // store last seen num_lost every 1 sec.
-		clock_t begin_time;
-		clock_t elapsed_time;
+			next_check_time(0), num_clients(0), need_restart(true), cur_level(VideoPresetLevel::kVideoPreset5) {}
+		clock_t next_check_time; // If a changing happens then we'll try to check again 3 seconds later.
 		int num_clients;
+		bool need_restart;
 		VideoPresetLevel cur_level;
+		std::map<std::string, uint64_t> lost_nums; // store last seen num_lost every 1 sec.
+		std::map<std::string, uint64_t> lost_nums_per_sec;
 	};
 	int max_pipleline_;
 	map<string, Pipelines> pipelineMap_;

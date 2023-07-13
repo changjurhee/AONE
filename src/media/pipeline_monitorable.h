@@ -12,6 +12,7 @@ class PipelineMonitorable {
 public:
 	struct RtpStats {
 		std::string rid;
+		std::string buffer_name;
 		uint64_t num_lost;
 		uint64_t num_late;
 		uint64_t avg_jitter_us;
