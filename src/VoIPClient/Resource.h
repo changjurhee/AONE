@@ -244,6 +244,8 @@
 #define IDC_MFC_ECHO                    1046
 #define IDC_IMAGE_VIEW                  1047
 #define IDC_SPIN_PRESET                 1049
+#define IDC_MFC_ECHO2                   1049
+#define IDC_rtplog                      1049
 #define IDC_MFCBTN_RESET                1052
 #define IDC_RESET_CANCEL                1054
 #define IDC_MB_SESSEION_CREATE          1055

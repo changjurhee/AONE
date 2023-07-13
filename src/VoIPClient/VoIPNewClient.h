@@ -51,6 +51,7 @@ public:
 	afx_msg void OnBnClickedCheckEcho();
 	CButton m_chkVAD;
 	CButton m_chkEcho;
+	afx_msg void OnBnClickedrtplog();
 };
 
 

@@ -28,7 +28,7 @@ VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& c
 	// initialize if 0
 	if (vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] == 0) {
 		vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] = stats.num_lost;
-		LOG_OBJ_INFO() << "[rid:" << stats.rid << "] INIT " << stats.buffer_name << " " << vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] << std::endl;
+		//LOG_OBJ_INFO() << "[rid:" << stats.rid << "] INIT " << stats.buffer_name << " " << vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] << std::endl;
 		return cur_level;
 	}
 
