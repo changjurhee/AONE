@@ -15,20 +15,20 @@ VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& c
 	if (!vqa_data_per_room_[stats.rid].num_clients)
 		return cur_level;
 
-	LOG_OBJ_LOG() << "cur_bitrate " << current_preset.bitrate << ", num_lost " << stats.num_lost
+	LOG_OBJ_LOG() << "[rid:" << stats.rid << "] cur_bitrate " << current_preset.bitrate << ", num_lost " << stats.num_lost
 		<< ", num_late " << stats.num_late << ", avg_jitter " << stats.avg_jitter_us << " us" << std::endl;
 
 	// Check if it's reached firstly
 	if (vqa_data_per_room_[stats.rid].next_check_time == 0) {
 		vqa_data_per_room_[stats.rid].next_check_time = clock() + CLOCKS_PER_SEC; // 1 sec later
-		LOG_INFO("================================FIRST TIME!!!!!!!!!!!!!!!!!!!");
+		LOG_OBJ_INFO() << "[rid:" << stats.rid << "] ================================FIRST TIME!!!!!!!!!!!!!!!!!!!" << std::endl;
 		return cur_level;
 	}
 
 	// initialize if 0
 	if (vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] == 0) {
 		vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] = stats.num_lost;
-		LOG_OBJ_INFO() << "0INIT " << stats.buffer_name << " " << vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] << std::endl;
+		LOG_OBJ_INFO() << "[rid:" << stats.rid << "] INIT " << stats.buffer_name << " " << vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] << std::endl;
 		return cur_level;
 	}
 
@@ -38,7 +38,7 @@ VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& c
 
 	// If passed the next checking time Do checking
 	if (clock() > vqa_data_per_room_[stats.rid].next_check_time) {
-		LOG_OBJ_INFO() << "CHECKTIME " << stats.buffer_name << " " << vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] << std::endl;
+		LOG_OBJ_INFO() << "[rid:" << stats.rid << "] CHECKTIME " << stats.buffer_name << " " << vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] << std::endl;
 		// Reset values if we've done changing quality and reached here
 		if (vqa_data_per_room_[stats.rid].need_restart) {
 			LOG_INFO("Re-initialize");
@@ -49,7 +49,7 @@ VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& c
 			for_each(vqa_data_per_room_[stats.rid].lost_nums.begin(), vqa_data_per_room_[stats.rid].lost_nums.end(),
 				[](auto& elem) { elem.second = 0; });
 
-			LOG_OBJ_INFO() << "NEEDRESTART " << stats.buffer_name << " " << vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] << std::endl;
+			LOG_OBJ_INFO() << "[rid:" << stats.rid << "] NEEDRESTART " << stats.buffer_name << " " << vqa_data_per_room_[stats.rid].lost_nums[stats.buffer_name] << std::endl;
 			return cur_level;
 		}
 
@@ -65,19 +65,64 @@ VideoPresetLevel MediaManager::ShouldChangeVideoQuality(const VideoPresetType& c
 			<< ", num_lost_per_last_1sec " << largest_num_lost_per_sec << std::endl;
 
 		if ((largest_num_lost_per_sec > MediaConfig::ThresholdOfNumLostForChangingVideoQuality())) {
+
+			// Check need to lower
+			while (vqa_data_per_room_[stats.rid].lost_status.size() > MediaConfig::GetNumOfContinousLost()-1) {
+				vqa_data_per_room_[stats.rid].lost_status.pop();
+			}
+			vqa_data_per_room_[stats.rid].lost_status.push(true);
+			bool need_to_lower = true;
+			std::queue<bool> lost_checkq = vqa_data_per_room_[stats.rid].lost_status;
+			while (!lost_checkq.empty()) {
+				if (!lost_checkq.front()) need_to_lower = false;
+				lost_checkq.pop();
+			};
+
 			LOG_OBJ_WARN() << "[rid:" << stats.rid << "] num_lost_per_sec("
 				<< vqa_data_per_room_[stats.rid].lost_nums_per_sec[stats.buffer_name]
 				<< ") is bigger than threshold(" << MediaConfig::ThresholdOfNumLostForChangingVideoQuality()
-				<< "). Need to decrease video quality!" << std::endl;
+				<< "). right now need_to_lower " << need_to_lower << std::endl;
 
-			if (cur_level > VideoPresetLevel::kVideoPresetOff)
+			vqa_data_per_room_[stats.rid].next_check_time = clock() + CLOCKS_PER_SEC; // 1 secs later
+			if (need_to_lower && (cur_level > VideoPresetLevel::kVideoPresetOff)) {
 				ret = VideoPresetType::Lower(cur_level);
+				// Reset
+				while (!vqa_data_per_room_[stats.rid].lost_status.empty()) {
+					vqa_data_per_room_[stats.rid].lost_status.pop();
+				};
 
-			vqa_data_per_room_[stats.rid].next_check_time = clock() + (CLOCKS_PER_SEC * 3); // 3 secs later
-			vqa_data_per_room_[stats.rid].need_restart = true;
+				vqa_data_per_room_[stats.rid].next_check_time = clock() + (CLOCKS_PER_SEC * 3); // 3 secs later
+				vqa_data_per_room_[stats.rid].need_restart = true;
+			}
 		}
 		else {
+			// Check need to upper
+			while (vqa_data_per_room_[stats.rid].lost_status.size() > MediaConfig::GetNumOfContinousLost() - 1) {
+				vqa_data_per_room_[stats.rid].lost_status.pop();
+			}
+			vqa_data_per_room_[stats.rid].lost_status.push(true);
+			bool need_to_upper = true;
+			std::queue<bool> lost_checkq = vqa_data_per_room_[stats.rid].lost_status;
+			while (!lost_checkq.empty()) {
+				if (lost_checkq.front()) need_to_upper = false;
+				lost_checkq.pop();
+			};
+
+			LOG_OBJ_WARN() << "[rid:" << stats.rid << "] num_lost_per_sec("
+				<< vqa_data_per_room_[stats.rid].lost_nums_per_sec[stats.buffer_name]
+				<< ") is less than threshold(" << MediaConfig::ThresholdOfNumLostForChangingVideoQuality()
+				<< "). right now need_to_upper " << need_to_upper << std::endl;
+
 			vqa_data_per_room_[stats.rid].next_check_time = clock() + CLOCKS_PER_SEC; // 1 secs later
+			if (need_to_upper && (cur_level < VideoPresetLevel::kVideoPresetMax)) {
+				ret = VideoPresetType::Upper(cur_level);
+				// Reset
+				while (!vqa_data_per_room_[stats.rid].lost_status.empty()) {
+					vqa_data_per_room_[stats.rid].lost_status.pop();
+				};
+				vqa_data_per_room_[stats.rid].next_check_time = clock() + (CLOCKS_PER_SEC * 3); // 3 secs later
+				vqa_data_per_room_[stats.rid].need_restart = true;
+			}
 		}
 
 		for_each(vqa_data_per_room_[stats.rid].lost_nums.begin(), vqa_data_per_room_[stats.rid].lost_nums.end(),

@@ -423,7 +423,7 @@ void MediaPipeline::pipeline_run() {
 	gst_element_add_property_deep_notify_watch(pipeline, NULL, TRUE);
 
 	LOG_INFO("Setting timer (500 ms)");
-	g_timeout_add(500, (GSourceFunc)TimerTask, (gpointer)this);
+	g_timeout_add(300, (GSourceFunc)TimerTask, (gpointer)this);
 
 	g_timeout_add(100, (GSourceFunc)messageTask, (gpointer)this);
 

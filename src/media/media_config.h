@@ -8,6 +8,7 @@ namespace media {
 class MediaConfig {
 public:
 	static unsigned int GetRtpJitterBufferLatency();
+	static unsigned int GetNumOfContinousLost();
 	static uint64_t ThresholdOfNumLostForChangingVideoQuality();
 };
 

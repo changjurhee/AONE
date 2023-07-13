@@ -29,6 +29,7 @@ protected:
 		VideoPresetLevel cur_level;
 		std::map<std::string, uint64_t> lost_nums; // store last seen num_lost every 1 sec.
 		std::map<std::string, uint64_t> lost_nums_per_sec;
+		std::queue<bool> lost_status;
 	};
 	int max_pipleline_;
 	map<string, Pipelines> pipelineMap_;
