@@ -1,7 +1,6 @@
 
-[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs) [![Github All Releases](https://img.shields.io/github/downloads/atom/atom/total.svg?style=flat)]() [![Issues](https://img.shields.io/github/issues-raw/tterb/PlayMusic.svg?maxAge=25000)](https://github.com/tterb/Hyde/issues)  
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs) [![Github All Releases](https://img.shields.io/github/downloads/atom/atom/total.svg?style=flat)]() [![Issues](https://img.shields.io/github/issues-raw/tterb/PlayMusic.svg?maxAge=25000)](https://github.com/changjurhee/AONE/issues)  
  
-
 
 # AONE
 - 2023 LG SA 
