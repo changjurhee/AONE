@@ -6,6 +6,11 @@
 
 # [Architecture](https://github.com/changjurhee/AONE/wiki)
 
+# build info
+- SDK 10.0
+- MSVC 64-bit VS2022 (v143)
+- c++17
+
 # Prerequisite
 - [opencv-4.7.0](https://github.com/opencv/opencv/releases/tag/4.7.0)
 - [rpi4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/)
