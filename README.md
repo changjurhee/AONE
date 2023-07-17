@@ -1,4 +1,3 @@
-[![Issues](https://img.shields.io/github/issues-raw/tterb/PlayMusic.svg?maxAge=25000)](https://github.com/changjurhee/AONE/issues)  
  
 # AONE
 - 2023 LG SA 
